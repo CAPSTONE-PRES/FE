@@ -1,0 +1,47 @@
+.UpcomingItem {
+  position: relative;
+  font-family: "NotoSans";
+  display: flex;
+  width: 273px;
+  height: 96px;
+  padding: 10px;
+  flex-direction: column;
+  align-items: flex-start;
+  flex-shrink: 0;
+
+  border-radius: 8px;
+  background: #fafcfe;
+  box-sizing: border-box;
+}
+
+.UpcomingItem::before {
+  content: "";
+  position: absolute;
+  width: 4px;
+  height: 76px;
+  background: #79cdfa;
+  border-radius: 2px;
+}
+
+.upcoming-date,
+.upcoming-title {
+  color: #2e2e2e;
+  font-size: 14px;
+  line-height: 17px;
+  margin-left: 13px;
+}
+
+.upcoming-date {
+  margin-bottom: 15px;
+}
+
+.upcoming-title {
+  margin-top: 4px;
+}
+
+.upcoming-subject {
+  color: #62728d;
+  font-size: 12px;
+  line-height: 14px;
+  margin-left: 13px;
+}

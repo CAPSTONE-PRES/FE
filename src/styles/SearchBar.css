@@ -1,0 +1,41 @@
+.SearchBar {
+  display: flex;
+  width: 464px;
+  padding: 16px 24px;
+  justify-content: space-between;
+  align-items: center;
+
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.12);
+
+  box-sizing: border-box;
+}
+
+.SearchBar input {
+  border: none;
+  width: 270px;
+  height: 24px;
+  flex-shrink: 0;
+
+  font-feature-settings: "liga" off, "clig" off;
+
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 150%; /* 24px */
+}
+
+.SearchBar input::placeholder {
+  color: #c9ced6;
+  font-family: "NotoSans";
+}
+
+.SearchBar button {
+  background-color: transparent;
+  cursor: pointer;
+  border: none;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}

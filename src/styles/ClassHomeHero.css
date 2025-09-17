@@ -1,0 +1,35 @@
+.hero-actions {
+  display: flex;
+  gap: 535px;
+
+  margin: 82px 120px 0px 120px;
+}
+
+.new-button {
+  width: 201px;
+  height: 54px;
+  padding: 15px 30px 15px 30px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  border: none;
+  cursor: pointer;
+
+  border-radius: 30px;
+  background: linear-gradient(90deg, #77c2c8 0%, #4b5f77 100%);
+  box-shadow: 0 1px 4px 0 rgba(25, 33, 61, 0.08);
+
+  font-family: "NotoSans";
+  font-size: 16px;
+  line-height: 24px;
+  color: #fff;
+}
+
+.new-button > img {
+  width: 24px;
+  height: 24px;
+}
+
+.hero-fav-classes {
+  margin-top: 74px;
+}

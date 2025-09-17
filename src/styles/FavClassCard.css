@@ -1,0 +1,35 @@
+.FavClassCard {
+  position: relative;
+  width: 282px;
+  height: 148px;
+  padding: 16px;
+  gap: 16px;
+  box-sizing: border-box;
+
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 0 31.6px 0 rgba(205, 214, 229, 0.25);
+}
+
+.fav-card_title {
+  font-family: "GothicA1";
+  color: #2e2e2e;
+  font-size: 20px;
+  line-height: 30px;
+  margin: 0 0 4px 0;
+}
+
+.fav-card_times {
+  font-family: "NotoSans";
+  font-size: 14px;
+  color: #a9a9a9;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.fav-card_fav {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+}

@@ -1,0 +1,163 @@
+.HomeHero {
+  font-family: "GothicA1";
+}
+
+.hero-top {
+  display: flex;
+  height: 96px;
+  justify-content: space-between;
+  margin-top: 102px;
+  margin-left: 116px;
+  margin-right: 123px;
+  margin-bottom: 34px;
+}
+
+.hero-greeting h2 {
+  margin: 0;
+  font-size: 32px;
+  line-height: 150%;
+  color: #2e2e2e;
+}
+
+.hero-greeting span {
+  color: #4b5f77;
+}
+
+.hero-search {
+  margin-top: 34px;
+  margin-bottom: 6px;
+}
+
+.hero-bottom {
+  display: flex;
+  justify-content: space-between;
+  margin-left: 116px;
+  margin-right: 123px;
+}
+
+.hero-dday {
+  width: 475px;
+  height: 322px;
+  padding-top: 33px;
+  padding-left: 28px;
+  padding-bottom: 26px;
+  padding-right: 22px;
+  box-sizing: border-box;
+
+  position: relative;
+
+  border-radius: 20px;
+  box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.12);
+  background-image: url("../assets/SVG_Main/notice_Bg.svg");
+  background-size: cover;
+}
+
+.hero-dday h3 {
+  color: #fff;
+  font-size: 28px;
+  font-style: normal;
+  line-height: 40px;
+  margin: 0;
+}
+
+.hero-dday h4 {
+  color: #f2f3f7;
+  font-size: 24px;
+  font-style: normal;
+  line-height: 40px;
+  margin-top: -5px;
+}
+
+.hero-dday p {
+  color: #f2f3f7;
+  font-family: "NotoSans";
+  font-size: 14px;
+  font-style: normal;
+  line-height: 17px;
+  margin-top: 30px;
+  margin-bottom: 20px;
+}
+
+.dday-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+}
+
+.dday-thumb {
+  width: 215.11px;
+  height: 121px;
+  background-color: #fff;
+  border-radius: 5px;
+}
+
+.dday-button {
+  color: #4b5f77;
+  font-size: 20px;
+  font-style: normal;
+  font-family: "GothicA1";
+  line-height: 1;
+
+  position: absolute;
+  right: 22px;
+  bottom: 26px;
+
+  height: 48px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 0px 30px;
+  border-radius: 32px;
+  background: #fff;
+  border: none;
+}
+
+.dday-button img {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
+
+.hero-upcoming {
+  display: flex;
+  box-sizing: border-box;
+  width: 680px;
+  height: 322px;
+  padding: 22px 23px 24px 22px;
+
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.12);
+}
+
+.upcoming-list {
+  width: 293px;
+  margin: 0;
+}
+
+.upcoming-list h3 {
+  font-family: "GothicA1";
+  color: #000;
+  font-size: 20px;
+  line-height: 25px;
+  margin-top: 4px;
+  margin-left: 5px;
+  margin-bottom: 21px;
+}
+
+.upcoming-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-right: 20px;
+}
+
+.upcoming-empty-message {
+  color: #62728d;
+  font-family: "NotoSans";
+  font-size: 12px;
+
+  text-align: center;
+  margin-top: 103px;
+}

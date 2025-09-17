@@ -1,0 +1,18 @@
+@font-face {
+  font-family: "GothicA1";
+  src: url("/public/fonts/GothicA1-Bold.ttf");
+}
+
+@font-face {
+  font-family: "NotoSans";
+  src: url("/public/fonts/NotoSansKR-Medium.ttf");
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: "test";
+  src: url("/public/fonts/NanumPenScript-Regular.ttf");
+}
+body {
+  margin: 0;
+}

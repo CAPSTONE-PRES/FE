@@ -1,0 +1,50 @@
+.FavoriteClasses {
+  margin: 0px 120px 119px 120px;
+}
+
+.fav-class_title {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.fav-class_title h3 {
+  color: #2e2e2e;
+  font-family: "GothicA1";
+  font-size: 28px;
+  line-height: 40px;
+
+  margin: 0;
+}
+
+.fav-class_title a {
+  font-family: "NotoSans";
+  font-size: 16px;
+  color: #7a7a7a;
+  text-decoration: none;
+  line-height: 24px;
+
+  display: flex;
+  gap: 9px;
+  align-items: center;
+}
+
+.fav-class_title a img {
+  width: 6px;
+  height: 8px;
+}
+
+.fav-empty-message {
+  color: #a9a9a9;
+  font-family: "NotoSans";
+  font-size: 18px;
+  line-height: 27px;
+
+  margin-top: 56px;
+  text-align: center;
+}
+
+.fav-list-wrapper {
+  display: flex;
+  gap: 24px;
+}

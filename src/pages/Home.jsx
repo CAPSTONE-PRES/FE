@@ -1,0 +1,55 @@
+import "../styles/Home.css";
+import Header from "../components/Header";
+import HomeHero from "../components/HomeHero";
+import BaseHero from "../components/BaseHero";
+import FavoriteClasses from "../components/FavoriteClasses";
+import RecentPresentation from "../components/RecentPresentation";
+import circle_Bg from "../assets/SVG_Main/circle_Bg.svg";
+import graph_Circle from "../assets/SVG_Main/graph_Circle.svg";
+import graph_Line from "../assets/SVG_Main/graph_Line.svg";
+
+const Home = () => {
+  const bg = (
+    <>
+      <img
+        src={circle_Bg}
+        style={{
+          position: "absolute",
+          left: 0,
+          top: -80,
+        }}
+      />
+      <img
+        src={graph_Circle}
+        style={{
+          position: "absolute",
+          right: 393,
+          top: 123,
+        }}
+      />
+      <img
+        src={graph_Line}
+        style={{
+          position: "absolute",
+          right: 70,
+          top: 93,
+        }}
+      />
+    </>
+  );
+
+  return (
+    <div className="Home">
+      <BaseHero bg={bg}>
+        <Header />
+        <HomeHero />
+      </BaseHero>
+      <div className="fav-classes">
+        <FavoriteClasses type={"HOME"} />
+      </div>
+      <RecentPresentation />
+    </div>
+  );
+};
+
+export default Home;

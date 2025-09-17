@@ -1,0 +1,10 @@
+.FavoriteButton button {
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.FavoriteButton img {
+  width: 46px;
+  height: 46px;
+}
