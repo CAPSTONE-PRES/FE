@@ -12,7 +12,7 @@ const today = new Date();
 const isSameDay = (a, b) => getStringedDate(a) === getStringedDate(b);
 
 //다가오는 발표 오름차순 정렬
-function getSortByDate(presentations) {
+function getUpcomingPresentations(presentations) {
   const startOfToday = new Date(
     today.getFullYear(),
     today.getMonth(),
@@ -26,7 +26,7 @@ function getSortByDate(presentations) {
 
 //dday 카드 발표
 function getNearestUpcoming(presentations) {
-  return getSortByDate(presentations)[0] || null;
+  return getUpcomingPresentations(presentations)[0] || null;
 }
 
 //dday 계산
@@ -51,7 +51,7 @@ function daysUntil(targetISO) {
 
 //날짜 선택X -> 다가오는 발표 2개(일주일 이내)
 function getUpcomingTwo(presentations) {
-  return getSortByDate(presentations)
+  return getUpcomingPresentations(presentations)
     .filter(
       (p) =>
         new Date(p.date) <=
@@ -71,7 +71,7 @@ const HomeHero = () => {
   const { classes, presentations } = useContext(DataContext);
   const [selectedDate, setSelectedDate] = useState(null);
 
-  const isEmpty = getIsEmpty(presentations);
+  const isEmpty = getIsEmpty(presentations) || getIsEmpty(classes);
 
   const nearestUpcoming = !isEmpty ? getNearestUpcoming(presentations) : null;
 

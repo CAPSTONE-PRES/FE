@@ -1,5 +1,5 @@
 import "../styles/ClassHomeHero.css";
-import plus from "../assets/plus.svg";
+import plus from "../assets/SVG_ClassHome/plus.svg";
 import SearchBar from "./SearchBar";
 import FavoriteClasses from "./FavoriteClasses";
 

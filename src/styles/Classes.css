@@ -1,0 +1,62 @@
+.Classes {
+  padding: 114px 120px 129px 120px;
+}
+.classes_title h3 {
+  color: #2e2e2e;
+  font-family: "GothicA1";
+  font-size: 28px;
+  line-height: 40px;
+  margin: 0;
+}
+
+.classes_toolbar {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 28px;
+  margin-bottom: 24px;
+}
+
+.classes_toolbar select::-ms-expand {
+  display: none;
+}
+
+.classes_toolbar select {
+  -o-appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+
+  background-image: url("../assets/SVG_ClassHome/select-arrow.svg");
+  background-repeat: no-repeat;
+  background-color: transparent;
+  background-position: right;
+  border: none;
+  padding-right: 35px;
+  width: 155px;
+  height: 24px;
+  cursor: pointer;
+  outline: none;
+
+  text-align: center;
+  font-family: "NotoSans";
+  color: #2e2e2e;
+  font-size: 14px;
+  line-height: 150%;
+}
+
+.class-list-wrapper {
+  display: grid;
+  grid-template-columns: repeat(3, 388px);
+  row-gap: 24px;
+  column-gap: 18px;
+}
+
+.class-empty-message {
+  color: #a9a9a9;
+  font-family: "NotoSans";
+  font-size: 18px;
+  line-height: 27px;
+
+  margin-top: 56px;
+  text-align: center;
+}

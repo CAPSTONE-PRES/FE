@@ -1,0 +1,137 @@
+.ClassCard {
+  width: 388px;
+  height: 380px;
+  padding: 19px 21px 19px 19px;
+  box-sizing: border-box;
+
+  border-radius: 12px;
+  border: 5px solid #fff;
+  background: #fafafa;
+  box-shadow: 0 3px 15px 0 rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.class-card_thumb {
+  display: grid;
+  grid-template-columns: repeat(2, 160px);
+  row-gap: 12px;
+  column-gap: 18px;
+}
+
+.thumbnail {
+  width: 160px;
+  height: 83px;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.class-card_header {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 12px;
+}
+
+.class-title {
+  font-family: "GothicA1";
+  font-size: 20px;
+  line-height: 140%;
+  color: #2e2e2e;
+  margin-top: 0;
+  margin-bottom: 5px;
+}
+
+.class-times {
+  font-family: "NotoSans";
+  font-size: 14px;
+  color: #a9a9a9;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.class-card_info {
+  display: flex;
+  gap: 20px;
+  margin-top: 15px;
+  position: absolute;
+  bottom: 19px;
+}
+
+.class-card_label {
+  color: #4b5f77;
+  font-family: "NotoSans";
+  font-size: 14px;
+  line-height: 200%;
+}
+
+.next-presentation {
+  display: flex;
+  flex-direction: column;
+}
+
+.next-presentation-date,
+.next-presentation-none {
+  color: #62728d;
+  font-family: "NotoSans-Bold";
+  font-size: 16px;
+  line-height: 175%;
+  margin-top: 4px;
+}
+
+.team-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.avatars {
+  margin: 0;
+}
+
+.avatar,
+.avatar-more {
+  border: 2px solid #fff;
+  border-radius: 50%;
+  position: relative;
+  margin-left: -18px;
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  background-size: cover;
+}
+
+.avatar:first-child {
+  margin-left: 0;
+}
+
+.avatar-more {
+  justify-content: center;
+  font-family: "NotoSans";
+  font-size: 14px;
+}
+
+.avatar-none {
+  color: #62728d;
+  font-family: "NotoSans-Bold";
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 150%; /* 24px */
+  display: inline-block;
+  margin-top: 6px;
+}
+
+.class-card_add {
+  position: absolute;
+  right: 21px;
+  bottom: 19px;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 24px;
+  background-color: #4b5f77;
+
+  font-family: "NotoSans-Bold";
+  font-size: 16px;
+  color: #fff;
+  line-height: 140%;
+}

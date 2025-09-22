@@ -31,12 +31,13 @@ const PresentationCard = ({
         <div className="meta">
           <div className="meta-left">
             <div className="meta-item">
-              <span className="label">발표일</span>{" "}
+              <span className="meta-item_label">발표일</span>{" "}
               <time dateTime={date}>{getStringedDate(new Date(date))}</time>
             </div>
 
             <div className="meta-item">
-              <span className="label">발표자</span> <img src={ellipse} />
+              <span className="meta-item_label">발표자</span>{" "}
+              <img src={ellipse} />
               <span className="presenter">{presenter}</span>
             </div>
           </div>

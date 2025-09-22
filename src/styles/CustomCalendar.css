@@ -107,12 +107,12 @@
 
 /*오늘 날짜*/
 .react-calendar__tile--now {
-  background-color: #4b5f77;
+  background-color: #4b5f77 !important;
   border-radius: 50px;
 }
 
 .react-calendar__tile--now abbr {
-  color: #fff;
+  color: #fff !important;
 }
 
 /*발표가 있는 날짜*/

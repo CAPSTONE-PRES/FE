@@ -1,8 +1,8 @@
 import "../styles/SortToggle.css";
 
-const SortToggle = ({ value, onChange }) => {
+const SortToggle = ({ value, onChange, dateType }) => {
   const OPTIONS = [
-    { key: "date", label: "날짜순" },
+    { key: "date", label: `${dateType}` },
     { key: "title", label: "제목순" },
   ];
 

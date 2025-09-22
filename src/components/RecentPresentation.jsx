@@ -33,7 +33,11 @@ const RecentPresentation = () => {
         <h3>최근 연습한 발표</h3>
       </section>
       <section className="recent-presentation_list">
-        <SortToggle value={sortBy} onChange={(next) => setSortBy(next)} />
+        <SortToggle
+          value={sortBy}
+          onChange={(next) => setSortBy(next)}
+          dateType={"날짜순"}
+        />
         {getIsEmpty(recentPracticed) ? (
           <div className="recent-empty-message">
             업로드 된 발표자료가 없어요!
