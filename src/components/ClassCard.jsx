@@ -1,41 +1,35 @@
 import "../styles/ClassCard.css";
 import FavoriteButton from "./FavoriteButton";
-import test from "../assets/SVG_Main/user/user1.svg";
+import AvatarGroup from "./AvatarGroup";
 import { getStringedDate } from "../util/get-stringed-date";
+import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { DataContext } from "../App";
 
-const ClassCard = ({ id, name, times, teamMembers, upComingDate }) => {
-  function renderTeamMembers(teamMembers) {
-    if (!teamMembers || teamMembers.length === 0) {
-      return <span className="avatar-none">개인</span>;
-    }
+const ClassCard = ({
+  id,
+  name,
+  times,
+  isTeamProject,
+  teamMembers,
+  upComingDate,
+  owner,
+}) => {
+  const { currentUser } = useContext(DataContext);
+  const isOwner = owner.id === currentUser.id;
+  const nav = useNavigate();
 
-    const visibleMembers =
-      teamMembers.length <= 4 ? teamMembers : teamMembers.slice(0, 3);
-
-    return (
-      <>
-        {visibleMembers.map((member) => (
-          <span
-            key={member.id}
-            className="avatar"
-            style={{ backgroundImage: `url(${member.avatar})` }}
-          />
-        ))}
-
-        {teamMembers.length > 4 && (
-          <span
-            className="avatar-more"
-            style={{ backgroundImage: `url(${teamMembers[3].avatar})` }}
-          >
-            +{teamMembers.length - 3}
-          </span>
-        )}
-      </>
-    );
-  }
+  const members = isOwner
+    ? [owner, ...teamMembers]
+    : [currentUser, owner, ...teamMembers];
 
   return (
-    <div className="ClassCard">
+    <div
+      className="ClassCard"
+      onClick={() => {
+        nav(`/class/${id}`);
+      }}
+    >
       <div className="class-card_thumb">
         <div className="thumbnail"></div>
         <div className="thumbnail"></div>
@@ -68,12 +62,31 @@ const ClassCard = ({ id, name, times, teamMembers, upComingDate }) => {
         </div>
         <div className="team-info">
           <span className="class-card_label">팀원정보</span>
-          <div className="avatars">{renderTeamMembers(teamMembers)}</div>
+          <div className="avatars">
+            <AvatarGroup members={isTeamProject ? members : []} spacing={-18} />
+          </div>
         </div>
       </div>
 
       <div className="class-card_footer">
-        <button className="class-card_add">발표자료 추가</button>
+        <button
+          className="class-card_add"
+          onClick={(e) => {
+            e.stopPropagation();
+            nav("/newPresentation", {
+              state: {
+                id,
+                name,
+                times,
+                isTeamProject,
+                teamMembers,
+                owner,
+              },
+            });
+          }}
+        >
+          발표자료 추가
+        </button>
       </div>
     </div>
   );

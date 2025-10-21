@@ -2,6 +2,13 @@
   font-family: "NotoSans";
   width: 240px;
   height: 239px;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.PresentationCard.with-shadow {
+  box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.12);
 }
 
 .presentation-card_thumb {
@@ -26,6 +33,7 @@
 }
 
 .presentation-card_info {
+  background-color: #fff;
   display: flex;
   flex-direction: column;
   gap: 8px;

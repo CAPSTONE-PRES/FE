@@ -6,6 +6,7 @@ import Classes from "../components/Classes";
 import FavoriteClasses from "../components/FavoriteClasses";
 import graph_Circle from "../assets/SVG_Main/graph_Circle.svg";
 import graph_Line from "../assets/SVG_Main/graph_Line.svg";
+import AvatarGroup from "../components/AvatarGroup";
 
 const ClassHome = () => {
   const bg = (

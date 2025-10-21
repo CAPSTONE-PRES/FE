@@ -1,0 +1,33 @@
+.TeamMemberListModal {
+  position: absolute;
+  z-index: 1;
+
+  width: 357px;
+  height: auto;
+  max-height: 328px;
+  overflow: scroll;
+  box-sizing: border-box;
+  padding: 42px 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.12);
+}
+
+.TeamMemberListModal.newPres {
+  top: 130%;
+  left: -30%;
+}
+
+.TeamMemberListModal.class {
+  top: 260px;
+  left: 180px;
+}
+
+.TeamMemberListModal.pres {
+  width: 50%;
+  top: 50px;
+}

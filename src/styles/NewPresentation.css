@@ -1,0 +1,256 @@
+.np-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 84px;
+  margin-top: 37px;
+  margin-left: 28px;
+}
+
+.np-title h2 {
+  color: #5e6c76;
+  font-family: "GothicA1";
+  font-size: 24px;
+  line-height: 40px; /* 166.667% */
+  margin: 0;
+}
+
+.np-title input {
+  margin-top: 15px;
+  margin-bottom: 40px;
+  border: none;
+  outline: none;
+
+  color: #2e2e2e;
+  font-family: "GothicA1";
+  font-size: 32px;
+  line-height: 40px; /* 125% */
+}
+
+.np-title input::placeholder {
+  color: #a9a9a9;
+}
+
+hr {
+  width: 78%; /* 1125px */
+  stroke-width: 2px;
+  stroke: rgba(90, 90, 91, 0.2);
+  flex-shrink: 0;
+}
+
+.np-settings {
+  width: 1120px;
+  height: 116px;
+  flex-shrink: 0;
+  margin: 0 auto;
+  margin-top: 30.5px;
+  margin-bottom: 30px;
+  padding: 22px 0 22px 40px;
+  box-sizing: border-box;
+  display: flex;
+  gap: 44px;
+
+  border-radius: 8px;
+  border: 2px solid rgba(197, 198, 200, 0.3);
+  background: rgba(242, 243, 247, 0.5);
+}
+
+.np-settings-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.np-settings-column:last-child {
+  justify-content: flex-start;
+}
+
+.np-setting {
+  display: flex;
+  align-items: center;
+  height: auto;
+}
+
+.setting-label {
+  color: #2e2e2e;
+  font-family: "GothicA1";
+  font-size: 18px;
+  letter-spacing: 1.44px;
+  margin-right: 35px;
+  line-height: 1;
+}
+
+.np-date {
+  color: #5e6c76;
+  font-family: "NotoSans";
+  font-size: 18px;
+  line-height: 1;
+
+  width: 144px;
+  height: 18px;
+  padding: 0;
+  margin-right: 20px;
+  border: none;
+  outline: none;
+  background-color: transparent;
+}
+
+.np-date-setting {
+  position: relative;
+}
+
+.np-date-btn {
+  cursor: pointer;
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  height: 27px;
+  padding: 4px 18px 4px 25px;
+  border: none;
+  border-radius: 20px;
+  background: #fff;
+
+  color: #2e2e2e;
+  font-family: "NotoSans-Bold";
+  font-size: 16px;
+  line-height: 1;
+}
+
+.np-input-time {
+  border-style: none;
+  border-bottom: solid 1px #b6c5cb;
+  background-color: transparent;
+  width: 23px;
+  outline: none;
+
+  color: #5e6c76;
+  font-family: "NotoSans";
+  font-size: 18px;
+  letter-spacing: 1.44px;
+  line-height: normal;
+}
+
+/*
+.np-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  cursor: pointer;
+  margin-right: 47px;
+}
+
+.np-checkbox span {
+  color: #2e2e2e;
+  font-family: "Notosans";
+  font-size: 16px;
+  line-height: normal;
+  letter-spacing: 1.28px;
+}
+
+.np-checkbox input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 28px;
+  height: 28px;
+  background: url("/src/assets/SVG_NewPresentation/check_none.svg") no-repeat
+    center/contain;
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+.np-checkbox input[type="checkbox"]:checked {
+  background: url("/src/assets/SVG_NewPresentation/check_active.svg") no-repeat
+    center/contain;
+}
+
+.push-label,
+.push-setting {
+  color: #2e2e2e;
+  font-family: "NotoSans";
+  font-size: 16px;
+  line-height: normal;
+  letter-spacing: 1.28px;
+  margin-right: 28px;
+}
+
+.push-setting {
+  text-decoration-line: underline;
+  text-decoration-style: solid;
+  text-decoration-skip-ink: none;
+  text-decoration-thickness: auto;
+  text-underline-offset: auto;
+  text-underline-position: from-font;
+  text-transform: lowercase;
+}
+*/
+
+.np-presenter-setting {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  position: relative;
+}
+
+.np-presenter-select {
+  cursor: pointer;
+}
+
+.np-presenter-avatar {
+  width: 32px;
+  height: 32px;
+}
+
+.np-presenter-name {
+  color: #000;
+  font-family: "NotoSans";
+  font-size: 16px;
+  line-height: normal;
+}
+
+.np-upload {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  width: 1120px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.upload-limit {
+  margin: 0;
+  align-self: flex-start;
+  color: #b2b4ba;
+  font-family: "NotoSans";
+  font-size: 12px;
+}
+
+.np-footer {
+  width: 1120px;
+  margin: 0 auto;
+  margin-bottom: 88px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.np-add-btn {
+  cursor: pointer;
+  width: 357px;
+  height: 58px;
+  padding: 22px;
+  box-sizing: border-box;
+
+  border: none;
+  border-radius: 42px;
+  background: #f2f3f7;
+  box-shadow: 0 1px 4px 0 rgba(25, 33, 61, 0.08);
+
+  font-family: "GothicA1";
+  color: #707d9b;
+  font-size: 18px;
+}
+
+.np-add-btn.active {
+  color: #fff;
+  background: linear-gradient(90deg, #79cdfa 0%, #88afe9 100%);
+}

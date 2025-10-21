@@ -1,0 +1,55 @@
+.TimePopup {
+  width: 516px;
+  height: 173px;
+  padding: 40px 40px 24px 40px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 4px 32px 0 rgba(0, 0, 0, 0.1);
+}
+
+.time-section {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.time-section span {
+  color: #4b5f77;
+  font-family: "GothicA1";
+  font-size: 24px;
+  line-height: 100%;
+}
+
+.popup-actions {
+  display: flex;
+  gap: 24px;
+  justify-content: flex-end;
+}
+
+.popup-actions button {
+  width: 112px;
+  height: 33px;
+  padding: 12px 18px;
+  box-sizing: border-box;
+
+  cursor: pointer;
+  border: none;
+  border-radius: 20px;
+  background: #fafafa;
+  box-shadow: 0 1px 4px 0 rgba(25, 33, 61, 0.08);
+
+  color: #4b5f77;
+  font-family: "NotoSans-Bold";
+  font-size: 12px;
+  line-height: 1;
+}
+
+.popup-actions .popup-save {
+  background: #4b5f77;
+  color: #fff;
+}

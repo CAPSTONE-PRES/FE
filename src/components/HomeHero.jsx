@@ -2,11 +2,11 @@ import "../styles/HomeHero.css";
 import SearchBar from "./SearchBar";
 import UpcomingItem from "./UpcomingItem";
 import notice_Button from "../assets/SVG_Main/notice_Button.svg";
-import CustomCalendar from "./CustomCalendar";
 import { getIsEmpty } from "../util/get-is-empty";
 import { getStringedDate } from "../util/get-stringed-date";
 import { useContext, useState, useMemo } from "react";
 import { DataContext } from "../App";
+import HomeCalendar from "./calendars/HomeCalendar";
 
 const today = new Date();
 const isSameDay = (a, b) => getStringedDate(a) === getStringedDate(b);
@@ -162,7 +162,7 @@ const HomeHero = () => {
             )}
           </div>
           <div className="calendar">
-            <CustomCalendar
+            <HomeCalendar
               value={selectedDate}
               onChange={setSelectedDate}
               eventDates={eventDates}

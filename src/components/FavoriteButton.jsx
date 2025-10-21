@@ -8,7 +8,7 @@ const FavoriteButton = ({ id }) => {
   const { favoriteClassIds, setFavoriteClassIds } = useContext(DataContext);
   const isFavorite = favoriteClassIds.includes(id);
 
-  const onClick = () => {
+  const onClick = (e) => {
     setFavoriteClassIds((prev) => {
       if (prev.includes(id)) {
         return prev.filter((c) => c !== id);
@@ -17,6 +17,7 @@ const FavoriteButton = ({ id }) => {
         return [...prev, id];
       }
     });
+    e.stopPropagation();
   };
 
   return (

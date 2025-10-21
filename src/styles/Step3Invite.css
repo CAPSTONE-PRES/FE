@@ -1,0 +1,82 @@
+.step3-inner > p {
+  color: #4b5f77;
+  font-family: "GothicA1";
+  font-size: 32px;
+  line-height: 125%;
+  margin-top: 50px;
+  margin-bottom: 0;
+}
+
+.step3-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 40px;
+}
+
+.step3-inner .member-input {
+  width: 453px;
+  height: 64px;
+  display: flex;
+  justify-content: space-between;
+  padding: 14px 16px 16px 21px;
+  box-sizing: border-box;
+
+  border: 2px solid transparent;
+  border-radius: 5px;
+  background: linear-gradient(#fff, #fff) padding-box,
+    linear-gradient(90deg, #bed5f9 0%, #daf4e6 100%) border-box;
+}
+
+.step3-inner .add-member {
+  display: flex;
+  flex-direction: column;
+  gap: 17px;
+}
+
+.member-input input {
+  border: none;
+  flex: 1;
+  outline: none;
+  color: #4b5f77;
+
+  font-family: "NotoSans";
+  font-size: 16px;
+}
+
+.member-input input::placeholder {
+  color: #a9a9a9;
+}
+
+.member-input button {
+  width: 99px;
+  height: 34px;
+  box-sizing: border-box;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 30px;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+
+  background-color: #4b5f77;
+  font-family: "NotoSans";
+  font-size: 12px;
+  color: #fff;
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.08);
+}
+
+.member-list {
+  width: 453px;
+  height: 270px;
+  box-sizing: border-box;
+  padding: 24px 16px;
+  border-radius: 5px;
+  background: #f5f7f9;
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.08);
+
+  overflow: scroll;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}

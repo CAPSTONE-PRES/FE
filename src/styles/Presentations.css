@@ -1,13 +1,12 @@
-.RecentPresentation {
-  background-color: #fff;
-  padding: 75px 120px 124px 120px;
+.Presentations {
+  background-color: transparent;
 }
 
-.recent-presentation_title {
+.Presentations_title {
   margin-bottom: 24px;
 }
 
-.recent-presentation_title h3 {
+.Presentations_title h3 {
   color: #2e2e2e;
   font-family: "GothicA1";
   font-size: 28px;
@@ -15,7 +14,7 @@
   margin: 0;
 }
 
-.recent-empty-message {
+.Presentations_empty-message {
   color: #a9a9a9;
   font-family: "NotoSans";
   font-size: 18px;
@@ -25,7 +24,7 @@
   text-align: center;
 }
 
-.recent-list-wrapper {
+.Presentations_wrapper {
   margin-top: 40px;
   display: grid;
   grid-template-columns: repeat(4, 240px);

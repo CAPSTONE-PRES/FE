@@ -1,16 +1,21 @@
-import "../styles/CustomCalendar.css";
-import nextLabel from "../assets/SVG_Main/nextLabel.svg";
-import prevLabel from "../assets/SVG_Main/prevLabel.svg";
+import "../../styles/BaseCalendar.css";
 import moment from "moment";
 import Calendar from "react-calendar";
 import { useState, useMemo, useRef, useEffect } from "react";
-import { getStringedDate } from "../util/get-stringed-date";
+import { getStringedDate } from "../../util/get-stringed-date";
 
 const WEEK_START = 1; //Monday
-const TILE = 32;
-const GAP_COL = 16;
 
-const CustomCalendar = ({ value, onChange, eventDates }) => {
+const BaseCalendar = ({
+  value,
+  onChange,
+  eventDates, //optional
+  nextLabel,
+  prevLabel,
+  variant = "home",
+  tile = 32, //home: 32, modal: 18
+  gap = 16, //home: 16,modal: 19
+}) => {
   const wrapRef = useRef(null);
   const [activeStartDate, setActiveStartDate] = useState(new Date());
 
@@ -30,24 +35,26 @@ const CustomCalendar = ({ value, onChange, eventDates }) => {
     const day = first.getDay();
     const col = (day - WEEK_START + 7) % 7;
 
-    return col * (TILE + GAP_COL);
-  }, [activeStartDate]);
+    return col * (tile + gap);
+  }, [activeStartDate, tile, gap]);
 
   useEffect(() => {
     setFirstOffset(initialOffsetPx);
   }, [initialOffsetPx]);
 
   return (
-    <div ref={wrapRef} className="calendar-wrap">
+    <div ref={wrapRef} className={`calendar-wrap ${variant}`}>
       <Calendar
         value={value}
         onChange={onChange}
         formatDay={(locale, date) => moment(date).format("D")}
         formatMonthYear={(locale, date) =>
-          `${moment(date).format("YYYY")} ${moment(date).format("M")}월`
+          variant === "home"
+            ? `${moment(date).format("YYYY")} ${moment(date).format("M")}월`
+            : `${moment(date).format("M")}월`
         }
-        nextLabel={<img src={nextLabel}></img>}
-        prevLabel={<img src={prevLabel}></img>}
+        nextLabel={nextLabel}
+        prevLabel={prevLabel}
         next2Label={null}
         prev2Label={null}
         showNeighboringMonth={false}
@@ -66,4 +73,4 @@ const CustomCalendar = ({ value, onChange, eventDates }) => {
   );
 };
 
-export default CustomCalendar;
+export default BaseCalendar;

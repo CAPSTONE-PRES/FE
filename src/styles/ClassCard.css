@@ -9,6 +9,7 @@
   background: #fafafa;
   box-shadow: 0 3px 15px 0 rgba(0, 0, 0, 0.1);
   position: relative;
+  cursor: pointer;
 }
 
 .class-card_thumb {
@@ -62,6 +63,7 @@
   font-family: "NotoSans";
   font-size: 14px;
   line-height: 200%;
+  margin-bottom: 4px;
 }
 
 .next-presentation {
@@ -75,7 +77,6 @@
   font-family: "NotoSans-Bold";
   font-size: 16px;
   line-height: 175%;
-  margin-top: 4px;
 }
 
 .team-info {
@@ -87,40 +88,6 @@
   margin: 0;
 }
 
-.avatar,
-.avatar-more {
-  border: 2px solid #fff;
-  border-radius: 50%;
-  position: relative;
-  margin-left: -18px;
-  width: 30px;
-  height: 30px;
-  display: inline-flex;
-  align-items: center;
-  vertical-align: middle;
-  background-size: cover;
-}
-
-.avatar:first-child {
-  margin-left: 0;
-}
-
-.avatar-more {
-  justify-content: center;
-  font-family: "NotoSans";
-  font-size: 14px;
-}
-
-.avatar-none {
-  color: #62728d;
-  font-family: "NotoSans-Bold";
-  font-size: 16px;
-  font-weight: 700;
-  line-height: 150%; /* 24px */
-  display: inline-block;
-  margin-top: 6px;
-}
-
 .class-card_add {
   position: absolute;
   right: 21px;
@@ -129,6 +96,7 @@
   border: none;
   border-radius: 24px;
   background-color: #4b5f77;
+  cursor: pointer;
 
   font-family: "NotoSans-Bold";
   font-size: 16px;

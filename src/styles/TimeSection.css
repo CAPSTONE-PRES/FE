@@ -1,0 +1,76 @@
+.TimeSection {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ampm-toggle {
+  width: 101px;
+  height: 36px;
+  padding: 2px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+
+  border-radius: 30px;
+  background: #f2f3f7;
+}
+
+.ampm-toggle button {
+  width: 51px;
+  height: 32px;
+  box-sizing: border-box;
+  padding: 8px;
+
+  border: none;
+  color: #2e2e2e;
+  font-family: "NotoSans";
+  font-size: 14px;
+  line-height: 1;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.ampm-toggle .active {
+  background-color: #fff;
+  border-radius: 30px;
+  border: 0.5px solid rgba(0, 0, 0, 0.04);
+  background: #fff;
+  box-shadow: 0 3px 8px 0 rgba(0, 0, 0, 0.12), 0 3px 1px 0 rgba(0, 0, 0, 0.04);
+}
+
+.time-input {
+  width: 86px;
+  height: 36px;
+  padding: 10px 13px 9px 12px;
+  box-sizing: border-box;
+  display: flex;
+  gap: 3px;
+  align-items: center;
+
+  border-radius: 30px;
+  background: #f2f3f7;
+  color: #2e2e2e;
+  font-family: "GothicA1";
+  font-size: 20px;
+  line-height: 140%;
+}
+
+.time-input input {
+  border: none;
+  outline: none;
+  padding: 0;
+  width: 24px;
+
+  color: #2e2e2e;
+  font-family: "GothicA1";
+  font-size: 20px;
+  line-height: 140%;
+  background-color: transparent;
+}
+
+.time-input input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

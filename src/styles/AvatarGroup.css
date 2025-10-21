@@ -1,0 +1,32 @@
+.AvatarGroup.no-border .avatar,
+.avatar-more {
+  border: none;
+}
+
+.avatar,
+.avatar-more {
+  border: 2px solid #fff;
+  border-radius: 50%;
+  position: relative;
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  background-size: cover;
+}
+
+.avatar-more {
+  justify-content: center;
+  font-family: "NotoSans";
+  font-size: 14px;
+}
+
+.avatar-none {
+  color: #62728d;
+  font-family: "NotoSans-Bold";
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 175%;
+  display: inline-block;
+}

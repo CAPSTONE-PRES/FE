@@ -1,0 +1,60 @@
+.step1-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 90px;
+}
+
+.step1-inner > p {
+  color: #4b5f77;
+  font-family: "GothicA1";
+  font-size: 32px;
+  line-height: 125%;
+  margin-top: 50px;
+  margin-bottom: 0;
+}
+
+.content-step1 .project-type {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.content-step1 .option > input {
+  display: none;
+}
+
+.content-step1 .option {
+  display: flex;
+  justify-content: space-between;
+  width: 652px;
+  height: 80px;
+  padding: 25px 32px;
+  align-items: center;
+  box-sizing: border-box;
+  cursor: pointer;
+
+  border-radius: 12px;
+  background: #f5f7f9;
+}
+
+.content-step1 .option.selected {
+  border-radius: 12px;
+  border: 5px solid transparent;
+  background: linear-gradient(#fff, #fff) padding-box,
+    linear-gradient(90deg, #bed5f9 0%, #daf4e6 100%) border-box;
+  box-shadow: 0 1px 10px 0 rgba(25, 33, 61, 0.2);
+}
+
+.content-step1 .option-left {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.content-step1 .option-left_label {
+  color: #4b5f77;
+  font-family: "GothicA1";
+  font-size: 24px;
+  line-height: 135%;
+}

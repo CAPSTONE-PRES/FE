@@ -1,14 +1,14 @@
 import "../styles/SortToggle.css";
 
-const SortToggle = ({ value, onChange, dateType }) => {
-  const OPTIONS = [
-    { key: "date", label: `${dateType}` },
-    { key: "title", label: "제목순" },
-  ];
+const SortToggle = ({ value, onChange, options }) => {
+  // const OPTIONS = [
+  //   { key: "date", label: "날짜순" },
+  //   { key: "title", label: "제목순" },
+  // ];
 
   return (
     <div className="SortToggle" role="radiogroup" aria-label="정렬 기준">
-      {OPTIONS.map((opt) => (
+      {options.map((opt) => (
         <button
           key={opt.key}
           type="button"

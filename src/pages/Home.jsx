@@ -3,7 +3,7 @@ import Header from "../components/Header";
 import HomeHero from "../components/HomeHero";
 import BaseHero from "../components/BaseHero";
 import FavoriteClasses from "../components/FavoriteClasses";
-import RecentPresentation from "../components/RecentPresentation";
+import Presentations from "../components/Presentations";
 import circle_Bg from "../assets/SVG_Main/circle_Bg.svg";
 import graph_Circle from "../assets/SVG_Main/graph_Circle.svg";
 import graph_Line from "../assets/SVG_Main/graph_Line.svg";
@@ -47,7 +47,9 @@ const Home = () => {
       <div className="fav-classes">
         <FavoriteClasses type={"HOME"} />
       </div>
-      <RecentPresentation />
+      <div className="Home_presentations">
+        <Presentations context="home" />
+      </div>
     </div>
   );
 };

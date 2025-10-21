@@ -10,6 +10,11 @@ const Classes = () => {
   const [sortBy, setSortBy] = useState("date");
   const [filterBy, setFilterBy] = useState("all");
 
+  const SORT_OPRIONS = [
+    { key: "date", label: "최근방문" },
+    { key: "title", label: "제목순" },
+  ];
+
   function onChangeFilterBy(e) {
     setFilterBy(e.target.value);
   }
@@ -62,7 +67,7 @@ const Classes = () => {
           <SortToggle
             value={sortBy}
             onChange={(next) => setSortBy(next)}
-            dateType={"최근 방문"}
+            options={SORT_OPRIONS}
           />
           <select onChange={onChangeFilterBy}>
             <option value="all">All</option>
