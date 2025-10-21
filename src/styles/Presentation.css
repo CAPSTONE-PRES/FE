@@ -47,6 +47,7 @@
 .Presentation__review {
   transition: all 0.3s ease;
   background: linear-gradient(0deg, #e9f0f4 0%, #f9fbfc 100%);
+  padding: 32px 8px 0 8px;
 }
 
 /*플로팅 액션 바*/

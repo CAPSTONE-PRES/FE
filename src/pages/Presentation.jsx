@@ -8,6 +8,7 @@ import chevronDown from "../assets/SVG_Presentation/ChevronDown.svg";
 import useOutsideClick from "../hooks/useOutsideClick";
 import TeamMemberListModal from "../components/TeamMemberListModal";
 import LeftNav from "../components/LeftNav";
+import CommentList from "../components/CommentList";
 
 const Presentation = () => {
   //pid: params.id
@@ -37,7 +38,7 @@ const Presentation = () => {
       setIsReviewOpen(false);
       setIsNonverbal(false);
 
-      // advanced 데이터가 있다면 교체
+      // advanced 데이터가 있다면 교체(덮어쓰기 -> 수정 반영 안됨)
       setCueCards(
         slide.advanced.map((item) => ({
           section: item.section,
@@ -257,7 +258,11 @@ const Presentation = () => {
             </div>
           </div>
 
-          {isReviewOpen && <div className="Presentation__review">review</div>}
+          {isReviewOpen && (
+            <div className="Presentation__review">
+              <CommentList />
+            </div>
+          )}
 
           <div className={"Presentation__floating-action"}>
             <div className="Presentation__version-toggle">
