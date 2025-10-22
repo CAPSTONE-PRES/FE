@@ -9,6 +9,79 @@ import useOutsideClick from "../hooks/useOutsideClick";
 import TeamMemberListModal from "../components/TeamMemberListModal";
 import LeftNav from "../components/LeftNav";
 import CommentList from "../components/CommentList";
+import PresSlideView from "../components/PresSlideView";
+
+const uncheckedMembers = [
+  {
+    id: "u3",
+    name: "이호성",
+    avatar: "/avatars/user3.svg",
+    email: "333@gmail.com",
+  },
+  {
+    id: "u4",
+    name: "김소영",
+    avatar: "/avatars/user4.svg",
+    email: "444@gmail.com",
+  },
+  {
+    id: "u5",
+    name: "김현서",
+    avatar: "/avatars/user1.svg",
+    email: "555@gmail.com",
+  },
+];
+
+const backendResponse = {
+  fileId: 16,
+  slides: [
+    {
+      slideNumber: 1,
+      basic: [
+        {
+          section: 1,
+          keyword: "인사말",
+          text: "안녕하세요. 오늘은 '타겟 및 비즈니스 모델'에 대해 발표하겠습니다. <🌬 호흡>이번 발표에서는 카페 사장님과 20대 카공족을 대상으로 한 전략을 설명드리겠습니다. <🔍 청중 바라보기>",
+        },
+        {
+          section: 2,
+          keyword: "타겟 고객",
+          text: "우리의 주요 타겟은 장시간 이용 고객 관리가 필요한 카페 사장님과, 눈치 보지 않고 카페를 이용하고 싶은 20대 카공족입니다. <👉 화면 가리키기> 이 두 그룹의 요구를 충족시키기 위해 맞춤형 서비스를 제공할 것입니다. <🌬 호흡>",
+        },
+        {
+          section: 3,
+          keyword: "초기 유저 모으기 전략",
+          text: "초기 유저를 모으기 위해 카공 가능한 카페 정보 및 예약 시스템을 제공할 계획입니다. <✋ 제스처> 카페 이용료는 1인 시간당 1000원으로 설정하고, 서비스 이용 시 수수료 10%를 부과할 것입니다. <👉 화면 가리키기>",
+        },
+        {
+          section: 4,
+          keyword: "경영 전략",
+          text: "또한, 청년 사업 비용을 지원하기 위해 월별 카페 이용료와 청년 Office 구독권 패키지를 제공할 예정입니다. <🔍 청중 바라보기> 제휴 카페와의 매칭 및 무료 이용권을 통해 청년들에게 실질적인 혜택을 제공할 것입니다. <🌬 호흡>",
+        },
+        {
+          section: 5,
+          keyword: "매출 전략",
+          text: "이제 이러한 전략들이 어떻게 매출로 이어질 수 있는지에 대해 설명드리겠습니다. <📄 발표자료 보기>",
+        },
+      ],
+      advanced: [
+        {
+          section: 1,
+          keyword: "매출 전략",
+          text: "타겟 고객을 정의하고 비즈니스 모델을 통해 매출 전략을 설명하는 발표.",
+        },
+        {
+          section: 2,
+          keyword: "매출 전략",
+          text: "타겟 고객을 정의하고 비즈니스 모델을 통해 매출 전략을 설명하는 발표.",
+        },
+      ],
+      qrSlug: "f9aacd893f65",
+      qrUrl: "https://pres.app/cuecard/f9aacd893f65",
+    },
+  ],
+  errors: {},
+};
 
 const Presentation = () => {
   //pid: params.id
@@ -25,6 +98,20 @@ const Presentation = () => {
     reveiwOpen: false,
     nonverbal: true,
   });
+
+  //cue-card
+  const [cueCards, setCueCards] = useState(
+    backendResponse.slides[0].basic.map((item) => ({
+      section: item.section,
+      keyword: item.keyword,
+      text: item.text,
+    }))
+  );
+
+  //cue-card-review
+  const [selectedSection, setSelectedSection] = useState(null);
+  const [openMemberModal, setOpenMemberModal] = useState(null);
+  const [isChecked, setIsChecked] = useState(false);
 
   useEffect(() => {
     const slide = backendResponse.slides[0];
@@ -61,71 +148,6 @@ const Presentation = () => {
     }
   }, [isDeepMode]);
 
-  //cue-card
-  const backendResponse = {
-    fileId: 16,
-    slides: [
-      {
-        slideNumber: 1,
-        basic: [
-          {
-            section: 1,
-            keyword: "인사말",
-            text: "안녕하세요. 오늘은 '타겟 및 비즈니스 모델'에 대해 발표하겠습니다. <🌬 호흡>이번 발표에서는 카페 사장님과 20대 카공족을 대상으로 한 전략을 설명드리겠습니다. <🔍 청중 바라보기>",
-          },
-          {
-            section: 2,
-            keyword: "타겟 고객",
-            text: "우리의 주요 타겟은 장시간 이용 고객 관리가 필요한 카페 사장님과, 눈치 보지 않고 카페를 이용하고 싶은 20대 카공족입니다. <👉 화면 가리키기> 이 두 그룹의 요구를 충족시키기 위해 맞춤형 서비스를 제공할 것입니다. <🌬 호흡>",
-          },
-          {
-            section: 3,
-            keyword: "초기 유저 모으기 전략",
-            text: "초기 유저를 모으기 위해 카공 가능한 카페 정보 및 예약 시스템을 제공할 계획입니다. <✋ 제스처> 카페 이용료는 1인 시간당 1000원으로 설정하고, 서비스 이용 시 수수료 10%를 부과할 것입니다. <👉 화면 가리키기>",
-          },
-          {
-            section: 4,
-            keyword: "경영 전략",
-            text: "또한, 청년 사업 비용을 지원하기 위해 월별 카페 이용료와 청년 Office 구독권 패키지를 제공할 예정입니다. <🔍 청중 바라보기> 제휴 카페와의 매칭 및 무료 이용권을 통해 청년들에게 실질적인 혜택을 제공할 것입니다. <🌬 호흡>",
-          },
-          {
-            section: 5,
-            keyword: "매출 전략",
-            text: "이제 이러한 전략들이 어떻게 매출로 이어질 수 있는지에 대해 설명드리겠습니다. <📄 발표자료 보기>",
-          },
-        ],
-        advanced: [
-          {
-            section: 1,
-            keyword: "매출 전략",
-            text: "타겟 고객을 정의하고 비즈니스 모델을 통해 매출 전략을 설명하는 발표.",
-          },
-          {
-            section: 2,
-            keyword: "매출 전략",
-            text: "타겟 고객을 정의하고 비즈니스 모델을 통해 매출 전략을 설명하는 발표.",
-          },
-        ],
-        qrSlug: "f9aacd893f65",
-        qrUrl: "https://pres.app/cuecard/f9aacd893f65",
-      },
-    ],
-    errors: {},
-  };
-
-  const [cueCards, setCueCards] = useState(
-    backendResponse.slides[0].basic.map((item) => ({
-      section: item.section,
-      keyword: item.keyword,
-      text: item.text,
-    }))
-  );
-
-  //cue-card-review
-  const [selectedSection, setSelectedSection] = useState(null);
-  const [openMemberModal, setOpenMemberModal] = useState(null);
-  const [isChecked, setIsChecked] = useState(false);
-
   useOutsideClick(".Presentation__cue-selection", () =>
     setSelectedSection(null)
   );
@@ -139,37 +161,18 @@ const Presentation = () => {
     );
   };
 
-  const uncheckedMembers = [
-    {
-      id: "u3",
-      name: "이호성",
-      avatar: "/avatars/user3.svg",
-      email: "333@gmail.com",
-    },
-    {
-      id: "u4",
-      name: "김소영",
-      avatar: "/avatars/user4.svg",
-      email: "444@gmail.com",
-    },
-    {
-      id: "u5",
-      name: "김현서",
-      avatar: "/avatars/user1.svg",
-      email: "555@gmail.com",
-    },
-  ];
-
   return (
     <div className="Presentation">
       <PresentationHeader id={params.id} name={name} title={title} />
       <div className="Presentation__panel">
         <div className={`Presentation__left ${isReviewOpen ? "shrink" : ""}`}>
-          <div className="Presentation__left-nav">
-            <LeftNav />
+          <LeftNav />
+
+          <div className="Presentation__slide">
+            <PresSlideView />
           </div>
-          <div></div>
         </div>
+
         <div
           className={`Presentation__rightCluster ${isReviewOpen ? "open" : ""}`}
         >

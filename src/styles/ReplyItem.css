@@ -1,0 +1,40 @@
+.ReplyItem {
+  width: 100%;
+  display: flex;
+  gap: 4px;
+  align-items: flex-start;
+}
+
+.ReplyItem__icon {
+  width: 16px;
+  height: 16px;
+}
+
+.ReplyItem__author {
+  display: flex;
+  gap: 2.8px;
+  align-items: center;
+
+  color: #333;
+  font-family: "NotoSans";
+  font-size: 12px;
+  line-height: normal;
+}
+
+.ReplyItem__author img {
+  width: 16px;
+  height: 16px;
+}
+
+.ReplyItem__content {
+  color: #333;
+  font-family: "NotoSans";
+  font-size: 10px;
+  line-height: normal;
+}
+
+.ReplyItem__content-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}

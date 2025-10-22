@@ -15,8 +15,9 @@ const mockComments = [
     replies: [
       {
         id: 101,
-        author: "이호성",
-        authorProfile: "/avatars/user3.svg",
+        author: "김호석",
+        authorProfile: "/avatars/user4.svg",
+        role: "You",
         content: "저는 좋은 것 같습니다.",
       },
     ],
@@ -34,12 +35,14 @@ const mockComments = [
         id: 102,
         author: "이호성",
         authorProfile: "/avatars/user3.svg",
+        role: "",
         content: "저는 좋은 것 같습니다.",
       },
       {
         id: 103,
         author: "원태인",
         authorProfile: "/avatars/user2.svg",
+        role: "You",
         content: "좋아요!",
       },
     ],
