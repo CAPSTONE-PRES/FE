@@ -1,0 +1,28 @@
+<svg width="573" height="262" viewBox="0 0 573 262" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g filter="url(#filter0_d_530_15343)">
+<path d="M8 48C8 25.9086 25.9086 8 48 8H553C559.627 8 565 13.3726 565 20V242C565 248.627 559.627 254 553 254H20C13.3726 254 8 248.627 8 242V48Z" fill="url(#paint0_radial_530_15343)"/>
+<path d="M8 48C8 25.9086 25.9086 8 48 8H553C559.627 8 565 13.3726 565 20V242C565 248.627 559.627 254 553 254H20C13.3726 254 8 248.627 8 242V48Z" fill="url(#paint1_linear_530_15343)" fill-opacity="0.15" style="mix-blend-mode:plus-lighter"/>
+<path d="M48 9.5H553C558.799 9.5 563.5 14.201 563.5 20V242C563.5 247.799 558.799 252.5 553 252.5H20C14.201 252.5 9.5 247.799 9.5 242V48C9.5 26.737 26.737 9.5 48 9.5Z" stroke="#DAF4E6" stroke-width="3"/>
+</g>
+<rect x="8" y="54" width="9" height="36" fill="#DAF4E6"/>
+<defs>
+<filter id="filter0_d_530_15343" x="0" y="0" width="573" height="262" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset/>
+<feGaussianBlur stdDeviation="4"/>
+<feComposite in2="hardAlpha" operator="out"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0.556352 0 0 0 0 0.745703 0 0 0 0 0.798077 0 0 0 0.3 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_530_15343"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_530_15343" result="shape"/>
+</filter>
+<radialGradient id="paint0_radial_530_15343" cx="0" cy="0" r="1" gradientTransform="matrix(-417.242 226 -511.715 -914.447 544.163 20.4999)" gradientUnits="userSpaceOnUse">
+<stop stop-color="#F0FBF5"/>
+<stop offset="1" stop-color="#DAF4E6"/>
+</radialGradient>
+<linearGradient id="paint1_linear_530_15343" x1="391.7" y1="24" x2="31.6825" y2="153.182" gradientUnits="userSpaceOnUse">
+<stop stop-color="#DAF4E6" stop-opacity="0"/>
+<stop offset="1" stop-color="#DAF4E6"/>
+</linearGradient>
+</defs>
+</svg>
