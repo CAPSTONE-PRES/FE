@@ -9,6 +9,8 @@ import Notfound from "./pages/Notfound";
 import Storage from "./pages/Storage";
 import Settings from "./pages/Settings";
 import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import ResetPassword from "./pages/ResetPassword";
 
 export const DataContext = createContext();
 
@@ -124,6 +126,8 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/class/:id" element={<Class />} />
             <Route path="/classHome" element={<ClassHome />} />
             <Route path="/multiScreen/:id" element={<MultiScrren />} />

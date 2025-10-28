@@ -56,27 +56,7 @@
   gap: 8px;
 }
 
-.field-label {
-  margin-top: 12px;
-  font-size: 12px;
-  color: #5b5f66;
-}
-
-.text-input {
-  height: 44px;
-  width: 392px;
-  border-radius: 10px;
-  border: 1px ;
-  background: #EDF2F7;
-  padding: 0 16px;
-  outline: none;
-  font-size: 14px;
-}
-
-.text-input:focus {
-  border-color: #9fd2e5;
-  box-shadow: 0 0 0 3px rgba(74, 174, 204, 0.15);
-}
+/* input styles moved to TextInput.css */
 
 .password-help {
   text-align: right;
@@ -132,14 +112,14 @@
   text-align: center;
   margin-top: 40px;
   padding: 10px;
-  color: #9aa1a9;
-  font-size: 13px;
+  color: #7A7A7A;
+  font-size: 14px;
 }
 
 .signup-cta .link {
-  color: #2b77c5;
+  color: #2E2E2E;
   font-weight: 700;
-  text-decoration: none;
-  margin-left: 6px;
+  text-decoration: underline;
+  margin-left: 4px;
 }
 

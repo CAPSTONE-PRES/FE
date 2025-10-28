@@ -1,16 +1,19 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../styles/Login.css";
 import PrimaryButton from "../components/PrimaryButton";
+import TextInput from "../components/TextInput";
 import iconKakao from "../assets/SVG_Login/icon-kakaoLogo.svg";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // submit placeholder
+    // TODO: validate and authenticate; on success navigate home
+    navigate("/");
   };
 
   return (
@@ -23,26 +26,26 @@ const Login = () => {
           </div>
 
           <form className="login-form" onSubmit={handleSubmit}>
-            <label className="field-label" htmlFor="email">E-mail</label>
-            <input
+            <TextInput
               id="email"
+              label="E-mail"
               type="email"
-              className="text-input"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
 
-            <label className="field-label" htmlFor="password">비밀번호</label>
-            <input
+            <TextInput
               id="password"
+              label="비밀번호"
               type="password"
-              className="text-input"
-             
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-
-            <div className="password-help">비밀번호를 잊어버리셨나요?</div>
+            <div style={{ textAlign: "right", marginBottom: "8px" }}>
+              <Link to="/reset-password" style={{ fontSize: "11px", color: "#9aa1a9", textDecoration: "none" }}>
+                비밀번호를 잊어버리셨나요?
+              </Link>
+            </div>
 
             <PrimaryButton type="submit">로그인</PrimaryButton>
           </form>
@@ -56,7 +59,7 @@ const Login = () => {
           </button>
 
           <div className="signup-cta">
-            계정이 없으신가요? <Link to="#" className="link">회원가입</Link>
+            계정이 없으신가요? <Link to="/signup" className="link">회원가입</Link>
           </div>
         </div>
       </section>
