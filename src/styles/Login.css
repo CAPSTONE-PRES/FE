@@ -1,0 +1,145 @@
+.LoginPage {
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  background-color: #f6fbff;
+  background-image: url("../assets/SVG_Login/Login_Bg.svg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  padding: 64px 24px 24px;
+  font-family: "NotoSans";
+}
+
+.LoginCard {
+    height: 518px;
+  width: 424px;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+  padding: 123px 118px;
+  margin-right: 54px;
+  display: flex;
+  align-items: center;
+}
+
+.LoginCard__inner {
+  width: 424px;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+}
+
+.login-header {
+  margin-bottom: 24px;
+}
+
+.login-title {
+  margin: 0 0 8px;
+  font-size: 28px;
+  font-weight: 800;
+  color: #2c2c2c;
+  font-family: "GothicA1";
+}
+
+.login-subtitle {
+  margin: 0;
+  color: #7A7A7A;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.field-label {
+  margin-top: 12px;
+  font-size: 12px;
+  color: #5b5f66;
+}
+
+.text-input {
+  height: 44px;
+  width: 392px;
+  border-radius: 10px;
+  border: 1px ;
+  background: #EDF2F7;
+  padding: 0 16px;
+  outline: none;
+  font-size: 14px;
+}
+
+.text-input:focus {
+  border-color: #9fd2e5;
+  box-shadow: 0 0 0 3px rgba(74, 174, 204, 0.15);
+}
+
+.password-help {
+  text-align: right;
+  margin-top: 4px;
+  font-size: 11px;
+  color: #9aa1a9;
+}
+
+.btn {
+  height: 50px;
+  width: 424px;
+  border: none;
+  border-radius: 25px;
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0 12px;
+  color: #a0a6ad;
+  font-size: 12px;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1 1 0;
+  height: 1px;
+  background: #edf1f5;
+}
+
+.btn-kakao {
+  background: #fee500;
+  color: #3a1d1d;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.kakao-dot {
+  width: 19px;
+  height: 18px;
+  display: inline-block;
+}
+
+.signup-cta {
+  text-align: center;
+  margin-top: 40px;
+  padding: 10px;
+  color: #9aa1a9;
+  font-size: 13px;
+}
+
+.signup-cta .link {
+  color: #2b77c5;
+  font-weight: 700;
+  text-decoration: none;
+  margin-left: 6px;
+}
+

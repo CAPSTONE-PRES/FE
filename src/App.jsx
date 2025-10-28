@@ -8,6 +8,7 @@ import Class from "./pages/Class";
 import Notfound from "./pages/Notfound";
 import Storage from "./pages/Storage";
 import Settings from "./pages/Settings";
+import Login from "./pages/Login";
 
 export const DataContext = createContext();
 
@@ -122,6 +123,7 @@ function App() {
         >
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
             <Route path="/class/:id" element={<Class />} />
             <Route path="/classHome" element={<ClassHome />} />
             <Route path="/multiScreen/:id" element={<MultiScrren />} />
