@@ -20,6 +20,10 @@
   align-items: center;
 }
 
+.header-left img {
+  cursor: pointer;
+}
+
 .header-left_title {
   display: flex;
   align-items: center;

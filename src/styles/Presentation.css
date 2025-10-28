@@ -26,6 +26,8 @@
 
 /* 슬라이드 */
 .Presentation__slide {
+  /* padding-left: 120px;
+  padding-right: 50px; */
   padding-left: 70px;
   height: 100%;
 }

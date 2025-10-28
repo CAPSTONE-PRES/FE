@@ -1,5 +1,6 @@
 import "../styles/Class.css";
 import backIcon from "../assets/SVG_NewClass/back.svg";
+import api from "../api";
 import selectArrow from "../assets/SVG_ClassHome/select-arrow.svg";
 import { useNavigate, useParams } from "react-router-dom";
 import { useContext, useState } from "react";
@@ -15,18 +16,24 @@ import useOutsideClick from "../hooks/useOutsideClick";
 const Class = () => {
   const nav = useNavigate();
   const params = useParams();
+  console.log(params.id);
   const [isPresenterModalOpen, setIsPresenterModalOpen] = useState(false);
-  const { classes, currentUser } = useContext(DataContext);
-  const { id, name, times, isTeamProject, owner, teamMembers } =
-    classes[params.id];
+  const { classes, currentUser, loading } = useContext(DataContext);
+  console.log(classes);
+  useOutsideClick(".Class_member-info", () => setIsPresenterModalOpen(false));
+
+  const classData = classes[params.id];
+  if (loading || !classData) {
+    return <div>Loading..</div>;
+  }
+
+  const { id, name, times, isTeamProject, owner, teamMembers } = classData;
 
   const isOwner = owner.id === currentUser.id;
 
-  const members = isOwner
-    ? [owner, ...teamMembers]
-    : [currentUser, owner, ...teamMembers];
-
-  useOutsideClick(".Class_member-info", () => setIsPresenterModalOpen(false));
+  // const members = isOwner
+  //   ? [owner, ...teamMembers]
+  //   : [currentUser, owner, ...teamMembers];
 
   return (
     <div className="Class">
@@ -54,7 +61,7 @@ const Class = () => {
               {isTeamProject && (
                 <div className="Class_member-info">
                   <span className="Class_team-label">TEAM</span>
-                  <AvatarGroup members={members} spacing={-10} />
+                  <AvatarGroup members={teamMembers} spacing={-10} />
                   <img
                     src={selectArrow}
                     className="Class_select"
@@ -64,7 +71,7 @@ const Class = () => {
                   />
                   {isPresenterModalOpen && (
                     <TeamMemberListModal
-                      teamMembers={members}
+                      teamMembers={teamMembers}
                       variant="class"
                     />
                   )}
@@ -84,6 +91,21 @@ const Class = () => {
       <div className="Class_presentations">
         <Presentations context="class" classId={id} />
       </div>
+      {/* 임시 삭제 버튼(state 반영X) */}
+      <button
+        onClick={async () => {
+          try {
+            const res = await api.delete(`/workspace/${id}/delete`);
+            console.log("응답: ", res.data);
+
+            nav("/classHome");
+          } catch (err) {
+            console.log("요청 실패: ", err);
+          }
+        }}
+      >
+        클래스 삭제
+      </button>
     </div>
   );
 };

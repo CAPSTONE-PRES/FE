@@ -14,7 +14,7 @@ const PresentationHeader = ({ id, name, title }) => {
   return (
     <div className="PresentationHeader">
       <div className="header-left">
-        <img src={logo} />
+        <img src={logo} onClick={() => nav("/")} />
         <div className="header-left_title">
           <span className="header-title">{name}</span>
           <img src={separator} />
