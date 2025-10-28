@@ -1,13 +1,13 @@
 import "../styles/Feedback.css";
 import Header from "../components/Header";
-import { useState } from "react";
-import backgroundDetail from "../assets/SVG_ Feedback/background-detail.svg";
-import backgroundRecord from "../assets/SVG_ Feedback/background-record.svg";
+import { useState, useRef, useEffect } from "react";
 import backgroundWave from "../assets/SVG_ Feedback/background-wave.svg";
 import backgroundLine from "../assets/SVG_ Feedback/background-line.svg";
 import backgroundChart from "../assets/SVG_ Feedback/background-chart.svg";
 import iconRetry from "../assets/SVG_ Feedback/icon-retry.svg";
 import iconThumbsUp from "../assets/SVG_ Feedback/icon-thumbs-up.svg";
+import iconNode from "../assets/SVG_ Feedback/icon-node.svg";
+import iconChevron from "../assets/SVG_ Feedback/icon-chevron.svg";
 
 const Feedback = () => {
   const [activeTab, setActiveTab] = useState('page');
@@ -21,13 +21,81 @@ const Feedback = () => {
     7: true
   });
   const [expandedRecommendedAnswer, setExpandedRecommendedAnswer] = useState(false);
+  const containerRef = useRef(null);
+  const lineRef = useRef(null);
+  const scrollRef = useRef(null);
 
   const toggleCard = (pageNumber) => {
+    // 기준 요소: 카드 헤더의 화면 내 위치를 기준으로
+    const header = document.querySelector(
+      `.timeline-item[data-page="${pageNumber}"] .card-header`
+    );
+
+    const beforeTop = header?.getBoundingClientRect().top ?? null;
+
     setExpandedCards(prev => ({
       ...prev,
       [pageNumber]: !prev[pageNumber]
     }));
+
+    // 레이아웃 적용된 직후 프레임에서 재측정
+    if (beforeTop !== null) {
+      requestAnimationFrame(() => {
+        if (!header) return;
+        const afterTop = header.getBoundingClientRect().top;
+        const diff = afterTop - beforeTop;
+        // 뷰포트 역이동
+        if (diff !== 0) {
+          window.scrollBy({ top: diff, left: 0, behavior: 'auto' });
+        }
+      });
+    }
   };
+
+  useEffect(() => {
+    const containerEl = containerRef.current;
+    const lineEl = lineRef.current;
+    if (!containerEl || !lineEl) return;
+
+    if (activeTab !== 'page') return;
+
+    const recalc = () => {
+      const nodes = Array.from(
+        containerEl.querySelectorAll('.timeline-node')
+      );
+
+      if (nodes.length < 2) {
+        lineEl.style.height = '0px';
+        return;
+      }
+
+      const containerTop = containerEl.getBoundingClientRect().top;
+      const centers = nodes.map((n) => {
+        const r = n.getBoundingClientRect();
+        return (r.top - containerTop) + r.height / 2;
+      });
+
+      const firstY = Math.min(...centers);
+      const lastY = Math.max(...centers);
+
+      lineEl.style.top = `${firstY}px`;
+      lineEl.style.height = `${lastY - firstY}px`;
+    };
+
+    recalc();
+
+    const onResize = () => recalc();
+    const onScroll = () => recalc();
+
+    window.addEventListener('resize', onResize);
+    scrollRef.current?.addEventListener('scroll', onScroll);
+
+    return () => {
+      window.removeEventListener('resize', onResize);
+      scrollRef.current?.removeEventListener('scroll', onScroll);
+    };
+  }, [activeTab, expandedCards]);
+
 
   return (
     <div className="Feedback">
@@ -61,8 +129,8 @@ const Feedback = () => {
         src={backgroundChart}
         style={{
           position: "absolute",
-          left: "1054px",
-          top: "298px",
+          left: "1154px",
+          top: "150px",
           width: "173px",
           height: "356px",
           opacity: 0.8,
@@ -81,17 +149,20 @@ const Feedback = () => {
                 </div>
               </div>
               <div className="total-score-oval">
-                <span className="total-score-text">총점: 81</span>
+                <span className="total-score-label">총점:</span>
+                <span className="total-score-number">81</span>
               </div>
             </div>
           </div>
           
           <div className="feedback-right">
             <div className="feedback-message">
-              말하기 속도를 좀만 더 천천히하여 전달력을 높여보아요!
+              <div>말하기 속도를 좀만 더 천천히하여</div>
+              <div>전달력을 높여보아요!</div>
             </div>
             <div className="presentation-time">
-              총 발표 시간 : 4분 32초 11
+              <span className="time-label">총 발표 시간 : </span>
+              <span className="time-value">4분 32초 11</span>
             </div>
             <button className="practice-button">
               <img src={iconRetry} alt="재시도" className="practice-icon" />
@@ -125,34 +196,36 @@ const Feedback = () => {
             </div>
           </div>
 
-          <div className="svg-section-container record">
-            <div className="section-content">
-              <h2 className="section-title">연습 기록</h2>
-              <div className="record-container">
-                <div className="record-item current-record">
-                  <span className="record-label">현재 점수</span>
-                  <div className="record-bar-container">
-                    <div className="record-bar current-bar" style={{width: '81%'}}></div>
-                    <span className="record-score">81점</span>
+          <div className="record-wrapper">
+            <div className="svg-section-container record">
+              <div className="section-content">
+                <h2 className="section-title">연습 기록</h2>
+                <div className="record-container">
+                  <div className="record-item current-record">
+                    <span className="record-label">현재 점수</span>
+                    <div className="record-bar-container">
+                      <div className="record-bar current-bar" style={{width: '81%'}}></div>
+                      <span className="record-score">81점</span>
+                    </div>
                   </div>
-                </div>
-                <div className="record-item">
-                  <span className="record-date">06/05</span>
-                  <div className="record-bar-container">
-                    <div className="record-bar" style={{width: '58%'}}></div>
-                    <span className="record-score">58점</span>
+                  <div className="record-item">
+                    <span className="record-date">06/05</span>
+                    <div className="record-bar-container">
+                      <div className="record-bar" style={{width: '58%'}}></div>
+                      <span className="record-score">58점</span>
+                    </div>
                   </div>
-                </div>
-                <div className="record-item">
-                  <span className="record-date">06/05</span>
-                  <div className="record-bar-container">
-                    <div className="record-bar" style={{width: '64%'}}></div>
-                    <span className="record-score">64점</span>
+                  <div className="record-item">
+                    <span className="record-date">06/05</span>
+                    <div className="record-bar-container">
+                      <div className="record-bar" style={{width: '64%'}}></div>
+                      <span className="record-score">64점</span>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div className="record-note">최근 점수 3개만 저장됩니다.</div>
+            <div className="record-note">최근 점수가 3개만 저장됩니다.</div>
           </div>
         </div>
 
@@ -177,21 +250,17 @@ const Feedback = () => {
                 </button>
               </div>
             </div>
-            <div className="feedback-content-area">
+            <div className="feedback-content-area" ref={scrollRef}>
               {activeTab === 'page' ? (
                 <div className="page-feedback">
-                  <div className="timeline-container">
-                    <div className="timeline-line"></div>
+                  <div className="timeline-container" ref={containerRef}>
+                    <div className="timeline-line" ref={lineRef}></div>
                     
-                    <div className="timeline-item">
+                    <div className="timeline-item" data-page="1">
                       <div className="timeline-node">
                       </div>
-                      <div className="horizontal-line"></div>
                       <div className="thumbnail-box">
                         <div className="thumbnail-placeholder">PPT 썸네일</div>
-                      </div>
-                      <div className="horizontal-line"></div>
-                      <div className="timeline-node">
                       </div>
                       <div className="feedback-card">
                         <div className="card-header">
@@ -202,7 +271,7 @@ const Feedback = () => {
                               className={`expand-icon ${expandedCards[1] ? 'expanded' : ''}`}
                               onClick={() => toggleCard(1)}
                             >
-                              ⌄
+                              <img src={iconChevron} alt="toggle" style={{width: '14px', height: '8px'}} />
                             </span>
                           </div>
                         </div>
@@ -215,15 +284,12 @@ const Feedback = () => {
                       </div>
                     </div>
 
-                    <div className="timeline-item">
+                    <div className="timeline-item" data-page="2">
                       <div className="timeline-node has-feedback">
+                        <img src={iconNode} alt="피드백" style={{width: '100%', height: '100%'}} />
                       </div>
-                      <div className="horizontal-line"></div>
                       <div className="thumbnail-box">
                         <div className="thumbnail-placeholder">PPT 썸네일</div>
-                      </div>
-                      <div className="horizontal-line"></div>
-                      <div className="timeline-node has-feedback">
                       </div>
                       <div className="feedback-card">
                         <div className="card-header">
@@ -239,7 +305,7 @@ const Feedback = () => {
                               className={`expand-icon ${expandedCards[2] ? 'expanded' : ''}`}
                               onClick={() => toggleCard(2)}
                             >
-                              ⌄
+                              <img src={iconChevron} alt="toggle" style={{width: '14px', height: '8px'}} />
                             </span>
                           </div>
                         </div>
@@ -262,15 +328,12 @@ const Feedback = () => {
                       </div>
                     </div>
 
-                    <div className="timeline-item">
+                    <div className="timeline-item" data-page="3">
                       <div className="timeline-node has-feedback">
+                        <img src={iconNode} alt="피드백" style={{width: '100%', height: '100%'}} />
                       </div>
-                      <div className="horizontal-line"></div>
                       <div className="thumbnail-box">
                         <div className="thumbnail-placeholder">PPT 썸네일</div>
-                      </div>
-                      <div className="horizontal-line"></div>
-                      <div className="timeline-node has-feedback">
                       </div>
                       <div className="feedback-card">
                         <div className="card-header">
@@ -286,7 +349,7 @@ const Feedback = () => {
                               className={`expand-icon ${expandedCards[3] ? 'expanded' : ''}`}
                               onClick={() => toggleCard(3)}
                             >
-                              ⌄
+                              <img src={iconChevron} alt="toggle" style={{width: '14px', height: '8px'}} />
                             </span>
                           </div>
                         </div>
@@ -325,15 +388,11 @@ const Feedback = () => {
                       </div>
                     </div>
 
-                    <div className="timeline-item">
+                    <div className="timeline-item" data-page="4">
                       <div className="timeline-node">
                       </div>
-                      <div className="horizontal-line"></div>
                       <div className="thumbnail-box">
                         <div className="thumbnail-placeholder">PPT 썸네일</div>
-                      </div>
-                      <div className="horizontal-line"></div>
-                      <div className="timeline-node">
                       </div>
                       <div className="feedback-card">
                         <div className="card-header">
@@ -344,7 +403,7 @@ const Feedback = () => {
                               className={`expand-icon ${expandedCards[4] ? 'expanded' : ''}`}
                               onClick={() => toggleCard(4)}
                             >
-                              ⌄
+                              <img src={iconChevron} alt="toggle" style={{width: '14px', height: '8px'}} />
                             </span>
                           </div>
                         </div>
@@ -357,15 +416,12 @@ const Feedback = () => {
                       </div>
                     </div>
 
-                    <div className="timeline-item">
+                    <div className="timeline-item" data-page="5">
                       <div className="timeline-node has-feedback">
+                        <img src={iconNode} alt="피드백" style={{width: '100%', height: '100%'}} />
                       </div>
-                      <div className="horizontal-line"></div>
                       <div className="thumbnail-box">
                         <div className="thumbnail-placeholder">PPT 썸네일</div>
-                      </div>
-                      <div className="horizontal-line"></div>
-                      <div className="timeline-node has-feedback">
                       </div>
                       <div className="feedback-card">
                         <div className="card-header">
@@ -381,7 +437,7 @@ const Feedback = () => {
                               className={`expand-icon ${expandedCards[5] ? 'expanded' : ''}`}
                               onClick={() => toggleCard(5)}
                             >
-                              ⌄
+                              <img src={iconChevron} alt="toggle" style={{width: '14px', height: '8px'}} />
                             </span>
                           </div>
                         </div>
@@ -404,15 +460,12 @@ const Feedback = () => {
                       </div>
                     </div>
 
-                    <div className="timeline-item">
+                    <div className="timeline-item" data-page="6">
                       <div className="timeline-node has-feedback">
+                        <img src={iconNode} alt="피드백" style={{width: '100%', height: '100%'}} />
                       </div>
-                      <div className="horizontal-line"></div>
                       <div className="thumbnail-box">
                         <div className="thumbnail-placeholder">PPT 썸네일</div>
-                      </div>
-                      <div className="horizontal-line"></div>
-                      <div className="timeline-node has-feedback">
                       </div>
                       <div className="feedback-card">
                         <div className="card-header">
@@ -428,7 +481,7 @@ const Feedback = () => {
                               className={`expand-icon ${expandedCards[6] ? 'expanded' : ''}`}
                               onClick={() => toggleCard(6)}
                             >
-                              ⌄
+                              <img src={iconChevron} alt="toggle" style={{width: '14px', height: '8px'}} />
                             </span>
                           </div>
                         </div>
@@ -451,15 +504,11 @@ const Feedback = () => {
                       </div>
                     </div>
 
-                    <div className="timeline-item">
+                    <div className="timeline-item" data-page="7">
                       <div className="timeline-node">
                       </div>
-                      <div className="horizontal-line"></div>
                       <div className="thumbnail-box">
                         <div className="thumbnail-placeholder">PPT 썸네일</div>
-                      </div>
-                      <div className="horizontal-line"></div>
-                      <div className="timeline-node">
                       </div>
                       <div className="feedback-card">
                         <div className="card-header">
@@ -470,7 +519,7 @@ const Feedback = () => {
                               className={`expand-icon ${expandedCards[7] ? 'expanded' : ''}`}
                               onClick={() => toggleCard(7)}
                             >
-                              ⌄
+                              <img src={iconChevron} alt="toggle" style={{width: '14px', height: '8px'}} />
                             </span>
                           </div>
                         </div>
@@ -508,7 +557,7 @@ const Feedback = () => {
                         <img src={iconThumbsUp} alt="추천" className="thumbs-up-icon" />
                         <span>추천 답안 보기</span>
                         <span className={`expand-icon ${expandedRecommendedAnswer ? 'expanded' : ''}`}>
-                          ⌄
+                          <img src={iconChevron} alt="toggle" style={{width: '14px', height: '8px'}} />
                         </span>
                       </div>
                     </div>
