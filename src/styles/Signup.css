@@ -1,0 +1,140 @@
+/* Reuse Login page styles, add signup-specific styles */
+@import './Login.css';
+
+.signup-header {
+  margin-bottom: 14px;
+}
+
+.signup-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.progress-indicator {
+  display: flex;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.progress-step {
+  font-size: 16px;
+  color: #a0a6ad;
+  font-weight: 500;
+}
+
+.progress-step.active {
+  color: #517686;
+  font-weight: 700;
+}
+
+.terms-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 20px;
+  margin-bottom: 16px;
+}
+
+.terms-checkbox input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  min-height: 16px;
+  margin: 0;
+  cursor: pointer;
+  appearance: none;
+  border: 2px solid #d1d9e0;
+  border-radius: 4px;
+  background-color: #ffffff;
+}
+
+.terms-checkbox input[type="checkbox"]:checked {
+  background-color: #517686;
+  border-color: #517686;
+  position: relative;
+}
+
+.terms-checkbox input[type="checkbox"]:checked::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.terms-checkbox label {
+  font-size: 12px;
+  color: #7A7A7A;
+  font-weight: 400;
+  line-height: 1.5;
+  cursor: pointer;
+  user-select: none;
+}
+
+.terms-text .terms-link {
+  font-weight: 700;
+  text-decoration: underline;
+  color: inherit;
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0 2px;
+  cursor: pointer;
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: #ffffff;
+  width: 360px;
+  border-radius: 12px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+  position: relative;
+  padding: 24px 20px;
+}
+
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  border: none;
+  background: transparent;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  color: #7a7f87;
+}
+
+.modal-body {
+  font-size: 14px;
+  color: #2c2c2c;
+  text-align: center;
+  padding-top: 12px;
+}
+
+.email-verify-message {
+  font-size: 16px;
+  color: #7A7A7A;
+  margin-bottom: 20px;
+  line-height: 150%;
+}
+
+.complete-message {
+  font-size: 16px;
+  color: #7A7A7A;
+  margin-bottom: 32px;
+  line-height: 150%;
+  text-align: left;
+}

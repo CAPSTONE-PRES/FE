@@ -15,6 +15,9 @@ import user2 from "./assets/SVG_Main/user/user2.svg";
 import user3 from "./assets/SVG_Main/user/user3.svg";
 import user4 from "./assets/SVG_Main/user/user4.svg";
 import NewPresentation from "./pages/NewPresentation";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import ResetPassword from "./pages/ResetPassword";
 
 export const DataContext = createContext();
 export const DataDispatchContext = createContext();
@@ -300,6 +303,9 @@ function App() {
           >
             <Routes>
               <Route path="/" element={<Home />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/class/:id" element={<Class />} />
               <Route path="/classHome" element={<ClassHome />} />
               <Route path="/newClass" element={<NewClass />} />

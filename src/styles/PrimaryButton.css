@@ -1,0 +1,16 @@
+.btn {
+  height: 50px;
+  width: 424px;
+  border: none;
+  border-radius: 999px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn-primary {
+  margin-top: 30px;
+  background: linear-gradient(90deg, #77C2C8 0%, #4B5F77 100%);
+  color: #FCFCFD;
+}
+
+
