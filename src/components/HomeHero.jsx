@@ -7,6 +7,7 @@ import { getStringedDate } from "../util/get-stringed-date";
 import { useContext, useState, useMemo } from "react";
 import { DataContext } from "../App";
 import HomeCalendar from "./calendars/HomeCalendar";
+import { useNavigate } from "react-router-dom";
 
 const today = new Date();
 const isSameDay = (a, b) => getStringedDate(a) === getStringedDate(b);
@@ -68,11 +69,13 @@ function getDailyTwo(presentations, selectedDate) {
 }
 
 const HomeHero = () => {
+  const nav = useNavigate();
   const { classes, presentations } = useContext(DataContext);
   const [selectedDate, setSelectedDate] = useState(null);
 
-  const isEmpty = getIsEmpty(presentations) || getIsEmpty(classes);
+  const { currentUser } = useContext(DataContext);
 
+  const isEmpty = getIsEmpty(presentations) || getIsEmpty(classes);
   const nearestUpcoming = !isEmpty ? getNearestUpcoming(presentations) : null;
 
   const upcomingTwo = useMemo(() => {
@@ -89,13 +92,12 @@ const HomeHero = () => {
     );
   }, [isEmpty, presentations]);
 
-  const userName = "박민영";
   return (
     <div className="HomeHero">
       <section className="hero-top">
         <div className="hero-greeting">
           <h2>
-            <span>{userName}</span> 님,
+            <span>{currentUser.name}</span> 님,
             <br />
             이번에는 A+ 받아보세요
           </h2>
@@ -136,7 +138,11 @@ const HomeHero = () => {
           <div className="dday-foot">
             {nearestUpcoming ? <div className="dday-thumb"></div> : null}
 
-            <button className="dday-button" type="button">
+            <button
+              className="dday-button"
+              type="button"
+              onClick={() => !nearestUpcoming && nav("/newClass")}
+            >
               <img src={notice_Button} />
               {nearestUpcoming ? "연습하기" : "워크스페이스 만들기"}
             </button>

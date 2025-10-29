@@ -19,9 +19,9 @@ const ClassCard = ({
   const isOwner = owner.id === currentUser.id;
   const nav = useNavigate();
 
-  const members = isOwner
-    ? [owner, ...teamMembers]
-    : [currentUser, owner, ...teamMembers];
+  // const members = isOwner
+  //   ? [owner, ...teamMembers]
+  //   : [currentUser, owner, ...teamMembers];
 
   return (
     <div
@@ -63,7 +63,10 @@ const ClassCard = ({
         <div className="team-info">
           <span className="class-card_label">팀원정보</span>
           <div className="avatars">
-            <AvatarGroup members={isTeamProject ? members : []} spacing={-18} />
+            <AvatarGroup
+              members={isTeamProject ? teamMembers : []}
+              spacing={-18}
+            />
           </div>
         </div>
       </div>
