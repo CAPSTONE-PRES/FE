@@ -261,7 +261,7 @@ function App() {
               <Route path="/newPresentation" element={<NewPresentation />} />
               <Route path="/storage" element={<Storage />} />
               <Route path="/settings" element={<Settings />} />
-              <Route path="/feedback" element={<Feedback />} />
+              <Route path="/feedback/:sessionId" element={<Feedback />} />
               <Route path="*" element={<Notfound />} />
             </Routes>
           </DataDispatchContext.Provider>
