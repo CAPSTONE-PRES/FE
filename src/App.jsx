@@ -16,13 +16,14 @@ import user2 from "./assets/SVG_Main/user/user2.svg";
 import user3 from "./assets/SVG_Main/user/user3.svg";
 import user4 from "./assets/SVG_Main/user/user4.svg";
 import NewPresentation from "./pages/NewPresentation";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
-import ResetPassword from "./pages/ResetPassword";
 import { mapClasses } from "./util/mapClasses";
 import { mapPresentations } from "./util/mapPresentations";
 import { mapUser } from "./util/mapUser";
 import PracticeMode from "./pages/PracticeMode";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import ResetPassword from "./pages/ResetPassword";
+import MobileCueCard from "./pages/MobileCueCard";
 
 export const DataContext = createContext();
 export const DataDispatchContext = createContext();
@@ -258,6 +259,7 @@ function App() {
               <Route path="/newClass" element={<NewClass />} />
               <Route path="/presentation/:id" element={<Presentation />} />
               <Route path="/practice/:id" element={<PracticeMode />} />
+              <Route path="/mobile-cuecard/:id" element={<MobileCueCard />} />
               <Route path="/newPresentation" element={<NewPresentation />} />
               <Route path="/storage" element={<Storage />} />
               <Route path="/settings" element={<Settings />} />
