@@ -1,9 +1,10 @@
 import "../styles/PresentationCard.css";
 import ellipse from "../assets/SVG_Main/ellipse.svg";
 import { getStringedDate } from "../util/get-stringed-date";
+import { useNavigate } from "react-router-dom";
 
-function getTimeAgo(lastPracticedAt) {
-  let t = new Date(lastPracticedAt);
+function getTimeAgo(lastVisited) {
+  let t = new Date(lastVisited);
   let seconds = Math.floor((new Date() - t.getTime()) / 1000);
   if (seconds > 86400) return getStringedDate(t);
   if (seconds > 3600) return Math.floor(seconds / 3600) + "시간 전";
@@ -12,17 +13,30 @@ function getTimeAgo(lastPracticedAt) {
 }
 
 const PresentationCard = ({
-  classBadge,
+  name,
+  id,
   title,
   date,
   presenter,
-  lastPracticedAt,
+  lastVisited,
+  hasShadow = false,
+  showBadge = true,
 }) => {
-  const timeAgo = getTimeAgo(lastPracticedAt);
+  const nav = useNavigate();
+
+  const timeAgo = getTimeAgo(lastVisited);
+
   return (
-    <div className="PresentationCard">
+    <div
+      className={`PresentationCard ${hasShadow ? "with-shadow" : ""}`}
+      onClick={() => {
+        nav(`/presentation/${id}`, {
+          state: { name, title },
+        });
+      }}
+    >
       <div className="presentation-card_thumb">
-        <span className="badge">{classBadge}</span>
+        {showBadge && <span className="badge">{name}</span>}
       </div>
 
       <div className="presentation-card_info">
@@ -31,12 +45,13 @@ const PresentationCard = ({
         <div className="meta">
           <div className="meta-left">
             <div className="meta-item">
-              <span className="label">발표일</span>{" "}
+              <span className="meta-item_label">발표일</span>{" "}
               <time dateTime={date}>{getStringedDate(new Date(date))}</time>
             </div>
 
             <div className="meta-item">
-              <span className="label">발표자</span> <img src={ellipse} />
+              <span className="meta-item_label">발표자</span>{" "}
+              <img src={ellipse} />
               <span className="presenter">{presenter}</span>
             </div>
           </div>

@@ -1,0 +1,107 @@
+.CommentItem {
+  width: auto;
+  padding: 12px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+
+  border-radius: 5.6px;
+  background: var(--WireFrame-colors-100, #fff);
+  box-shadow: 0 1px 8px 0 rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+}
+.CommentItem.replying {
+  gap: 8px;
+}
+
+.CommentItem__comment {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.CommentItem__header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.CommentItem__author {
+  display: flex;
+  align-items: center;
+  gap: 2.8px;
+
+  color: #333;
+  font-family: "NotoSans";
+  font-size: 12px;
+  line-height: normal;
+}
+.CommentItem__author img {
+  width: 16px;
+  height: 16px;
+}
+
+.CommentItem__meta {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.CommentItem__time,
+.CommentItem__action {
+  color: #2e4f6d;
+  font-family: "NotoSans";
+  font-size: 10px;
+  line-height: normal;
+}
+
+.CommentItem__action {
+  border: none;
+  background-color: transparent;
+  padding: 0;
+}
+
+.CommentItem__target {
+  color: #86b4c8;
+  font-family: "NotoSans";
+  font-size: 10px;
+  line-height: normal;
+  text-decoration-line: underline;
+  text-decoration-style: solid;
+  text-decoration-skip-ink: auto;
+  text-decoration-thickness: auto;
+  text-underline-offset: auto;
+  text-underline-position: from-font;
+}
+
+.CommentItem__content {
+  margin: 0;
+  color: #333;
+  font-family: "NotoSans";
+  font-size: 12px;
+  line-height: normal;
+}
+
+.CommentItem__replies {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.CommentItem__more {
+  cursor: pointer;
+  color: #bbc3cd;
+  font-family: "NotoSans";
+  font-size: 10px;
+  line-height: normal;
+
+  margin-top: -8px;
+  align-self: flex-end;
+  border: none;
+  background: transparent;
+}

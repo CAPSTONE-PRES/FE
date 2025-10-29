@@ -1,0 +1,51 @@
+.TeamMember {
+  width: auto;
+  height: 49px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.TeamMember.clickable {
+  cursor: pointer;
+}
+
+.tm-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-size: cover;
+}
+
+.tm-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 4px;
+}
+
+.tm-name {
+  color: #2e2e2e;
+  font-family: "NotoSans";
+  font-size: 16px;
+  margin: 0;
+}
+
+.tm-email {
+  color: #7a7a7a;
+  font-family: "NotoSans";
+  font-size: 12px;
+  margin: 0;
+}
+
+.tm-remove-btn {
+  cursor: pointer;
+  border: none;
+  background-color: transparent;
+  padding: 0;
+
+  color: #a9a9a9;
+  font-family: "NotoSans";
+  font-size: 12px;
+}

@@ -10,9 +10,14 @@
 }
 
 @font-face {
-  font-family: "test";
-  src: url("/public/fonts/NanumPenScript-Regular.ttf");
+  font-family: "NotoSans-Bold";
+  src: url("/public/fonts/NotoSansKR-Bold.ttf");
 }
 body {
   margin: 0;
+}
+
+#root {
+  min-width: 1440px;
+  min-height: 100vh;
 }

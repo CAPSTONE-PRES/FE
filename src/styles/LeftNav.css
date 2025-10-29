@@ -1,0 +1,81 @@
+.LeftNav {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 19px 0 8px 0;
+  width: 56px;
+  height: calc(100vh - 115px);
+
+  border-radius: 28px;
+  border: 2px solid transparent;
+  background: linear-gradient(#fff, #fff) padding-box,
+    linear-gradient(180deg, #fff 0%, #8cb2dd 100%) border-box;
+  opacity: 0.8;
+  box-shadow: 0 4px 10px 0 #bed5f9;
+  transition: width 0.3s ease;
+  overflow: hidden;
+}
+
+.LeftNav.expanded {
+  width: 141px;
+  opacity: 1;
+}
+
+.LeftNav button {
+  border: none;
+  background-color: transparent;
+  padding: 0;
+  cursor: pointer;
+}
+
+.LeftNav__top {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.LeftNav__item {
+  display: flex;
+  padding: 4px 16px;
+  gap: 16px;
+  align-items: center;
+}
+
+.LeftNav__item img {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.LeftNav__label {
+  color: rgba(75, 95, 119, 0.7);
+  text-align: center;
+  font-family: "NotoSans-Bold";
+  font-size: 12px;
+  line-height: normal;
+  white-space: nowrap;
+  animation: fadeIn 0.2s ease forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.LeftNav__bottom {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+
+.LeftNav.expanded .LeftNav__bottom {
+  justify-content: flex-start;
+}

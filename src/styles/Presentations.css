@@ -1,0 +1,33 @@
+.Presentations {
+  background-color: transparent;
+}
+
+.Presentations_title {
+  margin-bottom: 24px;
+}
+
+.Presentations_title h3 {
+  color: #2e2e2e;
+  font-family: "GothicA1";
+  font-size: 28px;
+  line-height: 40px;
+  margin: 0;
+}
+
+.Presentations_empty-message {
+  color: #a9a9a9;
+  font-family: "NotoSans";
+  font-size: 18px;
+  line-height: 27px;
+
+  margin-top: 17px;
+  text-align: center;
+}
+
+.Presentations_wrapper {
+  margin-top: 40px;
+  display: grid;
+  grid-template-columns: repeat(4, 240px);
+  gap: 80px;
+  justify-content: center;
+}

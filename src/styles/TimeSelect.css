@@ -1,0 +1,49 @@
+.TimeSelect {
+  position: relative;
+}
+
+.time-select {
+  display: flex;
+  gap: 44px;
+  margin-bottom: 24px;
+}
+
+.time-select_day {
+  -o-appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+
+  background-image: url("../assets/SVG_NewClass/time-select-arrow.svg");
+  background-repeat: no-repeat;
+  background-color: transparent;
+  background-position: right;
+  border: none;
+  padding-right: 34px;
+  cursor: pointer;
+  outline: none;
+}
+
+.time-select_time {
+  border: none;
+  background-color: transparent;
+  display: flex;
+  gap: 10px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.time-select_day,
+.time-select_time {
+  color: #2e2e2e;
+  font-family: "GothicA1";
+  font-size: 24px;
+  line-height: 40px;
+}
+
+.pop-up {
+  position: absolute;
+  left: 171.5px;
+  top: 47px;
+  z-index: 1;
+}

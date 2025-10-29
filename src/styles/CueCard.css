@@ -1,0 +1,56 @@
+.CueCard {
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 0 10px 0 rgba(113, 141, 184, 0.2);
+}
+
+.CueCard__keyword {
+  margin: 12px;
+  color: #2e4f6d;
+  font-family: "NotoSans-Bold";
+  font-size: 18px;
+  line-height: normal;
+}
+
+.CueCard__editor {
+  outline: none;
+  padding: 20px;
+  border: none;
+  border-radius: 8px;
+  background: #f5f7f9;
+  cursor: default;
+
+  color: #5a5a5b;
+  font-family: "NotoSans";
+  font-size: 16px;
+  line-height: 160%; /* 25.6px */
+}
+
+.cue-chip {
+  height: 20px;
+  padding: 3.424px 4px;
+  box-sizing: border-box;
+  align-items: center;
+  display: inline-flex;
+  white-space: nowrap;
+  vertical-align: middle;
+  word-break: keep-all;
+  margin-right: 10px;
+
+  border-radius: 4.566px;
+  background: #f2f7fb;
+  box-shadow: 0 0 2.283px 0 rgba(0, 0, 0, 0.16);
+
+  color: #5d8daa;
+  font-family: "NotoSans";
+  font-size: 10px;
+  line-height: 156.008%; /* 15.601px */
+  letter-spacing: -0.2px;
+}
+
+.cue-chip.cue-chip--hidden {
+  display: none !important;
+}

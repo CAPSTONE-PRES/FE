@@ -2,17 +2,18 @@ import "../styles/HomeHero.css";
 import SearchBar from "./SearchBar";
 import UpcomingItem from "./UpcomingItem";
 import notice_Button from "../assets/SVG_Main/notice_Button.svg";
-import CustomCalendar from "./CustomCalendar";
 import { getIsEmpty } from "../util/get-is-empty";
 import { getStringedDate } from "../util/get-stringed-date";
 import { useContext, useState, useMemo } from "react";
 import { DataContext } from "../App";
+import HomeCalendar from "./calendars/HomeCalendar";
+import { useNavigate } from "react-router-dom";
 
 const today = new Date();
 const isSameDay = (a, b) => getStringedDate(a) === getStringedDate(b);
 
 //다가오는 발표 오름차순 정렬
-function getSortByDate(presentations) {
+function getUpcomingPresentations(presentations) {
   const startOfToday = new Date(
     today.getFullYear(),
     today.getMonth(),
@@ -26,7 +27,7 @@ function getSortByDate(presentations) {
 
 //dday 카드 발표
 function getNearestUpcoming(presentations) {
-  return getSortByDate(presentations)[0] || null;
+  return getUpcomingPresentations(presentations)[0] || null;
 }
 
 //dday 계산
@@ -51,7 +52,7 @@ function daysUntil(targetISO) {
 
 //날짜 선택X -> 다가오는 발표 2개(일주일 이내)
 function getUpcomingTwo(presentations) {
-  return getSortByDate(presentations)
+  return getUpcomingPresentations(presentations)
     .filter(
       (p) =>
         new Date(p.date) <=
@@ -68,11 +69,13 @@ function getDailyTwo(presentations, selectedDate) {
 }
 
 const HomeHero = () => {
+  const nav = useNavigate();
   const { classes, presentations } = useContext(DataContext);
   const [selectedDate, setSelectedDate] = useState(null);
 
-  const isEmpty = getIsEmpty(presentations);
+  const { currentUser } = useContext(DataContext);
 
+  const isEmpty = getIsEmpty(presentations) || getIsEmpty(classes);
   const nearestUpcoming = !isEmpty ? getNearestUpcoming(presentations) : null;
 
   const upcomingTwo = useMemo(() => {
@@ -89,13 +92,12 @@ const HomeHero = () => {
     );
   }, [isEmpty, presentations]);
 
-  const userName = "박민영";
   return (
     <div className="HomeHero">
       <section className="hero-top">
         <div className="hero-greeting">
           <h2>
-            <span>{userName}</span> 님,
+            <span>{currentUser.name}</span> 님,
             <br />
             이번에는 A+ 받아보세요
           </h2>
@@ -136,7 +138,11 @@ const HomeHero = () => {
           <div className="dday-foot">
             {nearestUpcoming ? <div className="dday-thumb"></div> : null}
 
-            <button className="dday-button" type="button">
+            <button
+              className="dday-button"
+              type="button"
+              onClick={() => !nearestUpcoming && nav("/newClass")}
+            >
               <img src={notice_Button} />
               {nearestUpcoming ? "연습하기" : "워크스페이스 만들기"}
             </button>
@@ -162,7 +168,7 @@ const HomeHero = () => {
             )}
           </div>
           <div className="calendar">
-            <CustomCalendar
+            <HomeCalendar
               value={selectedDate}
               onChange={setSelectedDate}
               eventDates={eventDates}

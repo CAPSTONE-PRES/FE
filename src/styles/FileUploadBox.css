@@ -1,0 +1,101 @@
+.FileUploadBox {
+  width: 1120px;
+  height: 172px;
+  flex-shrink: 0;
+  margin: 0 auto;
+  padding-top: 34px;
+  padding-bottom: 35px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  border-radius: 8px;
+  background: #f5f7f9;
+  cursor: pointer;
+}
+
+.FileUploadBox.optional {
+  height: 184px;
+  padding-bottom: 24.5px;
+}
+
+.FileUploadBox.optional .file-note {
+  color: #b2b4ba;
+  font-family: "NotoSans";
+  font-size: 12px;
+  margin: 0;
+}
+
+.FileUploadBox h3 {
+  color: #2e2e2e;
+  font-family: "GothicA1";
+  font-size: 24px;
+  margin: 0;
+}
+
+.file-types {
+  color: #5e6c76;
+  font-family: "NotoSans";
+  font-size: 16px;
+  margin-top: 4px;
+  margin-bottom: 30px;
+}
+
+.FileUploadBox.optional .file-types {
+  margin-bottom: 26.5px;
+}
+
+.file-sub {
+  color: #5e6c76;
+  font-family: "NotoSans";
+  font-size: 16px;
+  margin-top: 0;
+  margin-bottom: 12px;
+}
+
+.file-uploaded {
+  display: flex;
+  width: 1080px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 24px;
+  box-sizing: border-box;
+
+  border-radius: 12px;
+  background: #fff;
+}
+
+.file-info {
+  width: 1007px;
+  display: flex;
+  align-items: center;
+}
+
+.file-name {
+  min-width: 396px;
+  width: auto;
+  color: #2e2e2e;
+  font-family: "NotoSans";
+  font-size: 14px;
+}
+
+.file-size,
+.file-date {
+  padding: 0 24px;
+  width: 220px;
+  box-sizing: border-box;
+  color: #7a7a7a;
+  font-family: "NotoSans";
+  font-size: 14px;
+}
+
+.file-delete {
+  cursor: pointer;
+  border: none;
+  background-color: transparent;
+  width: 23px;
+  height: 24px;
+  padding: 0;
+}

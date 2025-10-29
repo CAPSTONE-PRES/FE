@@ -1,0 +1,104 @@
+.Class {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #fafafa 0%, #e9f0f4 80%, #dce7f9 100%);
+}
+
+.Class_hero-bg {
+  width: 100%;
+  height: 307px;
+
+  border-radius: 0 0 60px 60px;
+  background: #fff;
+  box-shadow: 0 3px 20px 0 rgba(0, 0, 0, 0.1);
+}
+
+.Class_back {
+  cursor: pointer;
+}
+
+.Class_hero-inner {
+  margin: 45px 120px 54px 27px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.Class_info {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-left: 44px;
+}
+
+.Class_name {
+  color: #2e2e2e;
+  font-family: "GothicA1";
+  font-size: 32px;
+  line-height: 125%;
+  margin: 4px 0;
+}
+
+.Class_times {
+  font-family: "NotoSans";
+  font-size: 16px;
+  color: #a9a9a9;
+  list-style: none;
+  margin-top: 7px;
+  padding: 0;
+}
+
+.Class_team-info {
+  display: flex;
+  align-items: center;
+  margin-top: 18px;
+}
+
+.Class_team-label {
+  position: relative;
+  color: #2e2e2e;
+  font-family: "GothicA1";
+  font-size: 20px;
+  text-transform: uppercase;
+  margin-right: 17px;
+}
+
+.Class_owner-info p {
+  color: #2e2e2e;
+  font-family: "NotoSans";
+  font-size: 14px;
+  margin-left: 8px;
+  margin-right: 32px;
+}
+
+.Class_owner-info {
+  display: flex;
+  align-items: center;
+}
+
+.Class_owner-info img {
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  background-size: cover;
+}
+
+.Class_member-info {
+  display: flex;
+  align-items: center;
+}
+
+.Class_select {
+  width: 24px;
+  height: 24px;
+  margin-left: 12px;
+  cursor: pointer;
+}
+
+.Class_actions {
+  align-self: self-end;
+}
+
+.Class_presentations {
+  padding: 100px 120px 199px 120px;
+}
