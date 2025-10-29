@@ -7,6 +7,8 @@ import Presentations from "../components/Presentations";
 import circle_Bg from "../assets/SVG_Main/circle_Bg.svg";
 import graph_Circle from "../assets/SVG_Main/graph_Circle.svg";
 import graph_Line from "../assets/SVG_Main/graph_Line.svg";
+import { useContext } from "react";
+import { DataContext } from "../App";
 
 const Home = () => {
   const bg = (
@@ -37,6 +39,12 @@ const Home = () => {
       />
     </>
   );
+
+  const { loading } = useContext(DataContext);
+
+  if (loading) {
+    return <div>Loading..</div>;
+  }
 
   return (
     <div className="Home">

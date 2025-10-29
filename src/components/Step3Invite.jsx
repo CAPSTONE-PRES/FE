@@ -1,6 +1,9 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import "../styles/Step3Invite.css";
 import TeamMember from "../components/TeamMember";
+import api from "../api";
+import { flushSync } from "react-dom";
+import { DataContext } from "../App";
 
 const mockUsers = [
   {
@@ -27,30 +30,66 @@ const mockUsers = [
     avatar: "/avatars/user1.svg",
     email: "555@gmail.com",
   },
+  {
+    id: "u6",
+    name: "김승빈",
+    avatar: "/avatars/user2.svg",
+    email: "666@gmail.com",
+  },
 ];
 
 const Step3Invite = ({ teamMembers, setTeamMembers }) => {
   const [email, setEmail] = useState("");
   const [emailPlaceholder, setEmailPlaceholder] = useState("이메일 입력");
+  const [loading, setLoading] = useState(false);
+  const { currentUser } = useContext(DataContext);
 
-  const addMember = () => {
-    const found = mockUsers.find((user) => user.email === email.trim());
+  const addMember = async () => {
+    const trimmed = email.trim();
+    if (!trimmed) return;
 
-    if (!found) {
-      setEmail("");
-      setEmailPlaceholder("이메일을 다시 입력해주세요");
-      return;
-    }
-
-    if (teamMembers.some((m) => m.email === found.email)) {
+    //중복검사
+    if (teamMembers.some((m) => m.email === trimmed)) {
       setEmail("");
       setEmailPlaceholder("이미 추가된 팀원입니다");
       return;
     }
 
-    setTeamMembers([...teamMembers, found]);
-    setEmail("");
-    setEmailPlaceholder("이메일 입력");
+    try {
+      setLoading(true);
+
+      //회원 조회 api 호출
+      const body = {
+        memberEmail: trimmed,
+      };
+      const res = await api.post("/workspace/user/validation", body);
+      const found = res.data;
+
+      if (!found || !found.email || found.email === currentUser.email) {
+        setEmail("");
+        setEmailPlaceholder("이메일을 다시 입력해주세요");
+        return;
+      }
+
+      //팀원 추가
+      setTeamMembers([
+        ...teamMembers,
+        {
+          name: found.name,
+          email: found.email,
+          avatar: found.profileUrl || "/avatars/user2.svg",
+        },
+      ]);
+
+      setEmail("");
+      setEmailPlaceholder("이메일 입력");
+    } catch (err) {
+      console.error("팀원 추가 실패: ", err);
+      setEmail("");
+      setEmailPlaceholder("이메일을 다시 입력해주세요");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const removeMember = (email) => {
@@ -84,7 +123,7 @@ const Step3Invite = ({ teamMembers, setTeamMembers }) => {
             {teamMembers.length > 0 &&
               teamMembers.map((m) => (
                 <TeamMember
-                  key={m.id}
+                  key={m.email}
                   {...m}
                   onRemove={() => removeMember(m.email)}
                 />

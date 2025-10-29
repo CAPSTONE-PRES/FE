@@ -1,9 +1,10 @@
 import "../styles/NewClass.css";
 import Header from "../components/Header";
 import { useEffect, useState, useContext } from "react";
+import api from "../api";
 import backIcon from "../assets/SVG_NewClass/back.svg";
 import { useNavigate } from "react-router-dom";
-import { DataDispatchContext } from "../App";
+import { DataContext, DataDispatchContext } from "../App";
 import Step1SelectType from "../components/Step1SelectType";
 import Step2Schedule from "../components/Step2Schedule";
 import Step3Invite from "../components/Step3Invite";
@@ -11,6 +12,7 @@ import BackButton from "../components/BackButton";
 
 const NewClass = () => {
   const { onCreateClass } = useContext(DataDispatchContext);
+  const { currentUser } = useContext(DataContext);
   const [step, setStep] = useState(1);
   const [projectType, setProjectType] = useState("");
   const [name, setName] = useState("");
@@ -230,6 +232,43 @@ const NewClass = () => {
     }
   }
 
+  async function onSubmit() {
+    if (step < lastStep) {
+      setStep(step + 1);
+      return;
+    }
+
+    try {
+      const body = {
+        workspaceName: name,
+        workspaceMemberList: teamMembers.map((m) => m.email),
+        workspaceTimeList: formatTimeSlots(),
+      };
+      console.log("요청 바디:", body);
+
+      const res = await api.post("/workspace/create", body);
+      console.log("응답:", res.data);
+
+      const newClassId = res.data.workspaceId;
+
+      //TODO: 최종 연결 후엔 삭제
+      onCreateClass(
+        newClassId,
+        name,
+        formatTimeSlots(),
+        // new Date().getTime(),
+        projectType === "팀",
+        [...teamMembers, currentUser]
+      );
+
+      nav(`/class/${newClassId}`);
+
+      /*    name, times, lastVisited, isTeamProject, teamMembers */
+    } catch (err) {
+      console.error("워크스페이스 생성 실패:", err);
+    }
+  }
+
   return (
     <div className="NewClass">
       <Header />
@@ -248,21 +287,7 @@ const NewClass = () => {
           <button
             className={`step-footer_btn ${isStepValid() ? "active" : ""}`}
             disabled={!isStepValid()}
-            onClick={() => {
-              if (step < lastStep) setStep(step + 1);
-              else {
-                const newClassId = onCreateClass(
-                  name,
-                  formatTimeSlots(),
-                  new Date().getTime(),
-                  projectType === "팀",
-                  teamMembers
-                );
-
-                nav(`/class/${newClassId}`);
-              }
-              /*    name, times, lastVisited, isTeamProject, teamMembers */
-            }}
+            onClick={() => onSubmit()}
           >
             {step < lastStep ? "다음으로" : "생성하기"}
           </button>

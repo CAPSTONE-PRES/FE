@@ -11,6 +11,7 @@ import FileUploadBox from "../components/FileUploadBox";
 import TeamMemberListModal from "../components/TeamMemberListModal";
 import DatePickerModal from "../components/DatePickerModal";
 import useOutsideClick from "../hooks/useOutsideClick";
+import api from "../api";
 
 const NewPresentation = () => {
   const nav = useNavigate();
@@ -31,17 +32,21 @@ const NewPresentation = () => {
   const [isDateModalOpen, setIsDateModalOpen] = useState(false);
   const [isPresenterModalOpen, setIsPresenterModalOpen] = useState(false);
 
+  // //임시 newId
+  // const newId = Object.keys(presentations).length + 1;
+  // console.log("newId: ", newId);
+
   // const [isChecked, setIsChecked] = useState(false);
 
   function isBtnValid() {
     return title !== "" && file;
   }
 
-  const isOwner = owner.id === currentUser.id;
+  // const isOwner = owner.id === currentUser.id;
 
-  const members = isOwner
-    ? [owner, ...teamMembers]
-    : [currentUser, owner, ...teamMembers];
+  // const members = isOwner
+  //   ? [owner, ...teamMembers]
+  //   : [currentUser, owner, ...teamMembers];
 
   useOutsideClick(".np-presenter-setting", () =>
     setIsPresenterModalOpen(false)
@@ -50,24 +55,83 @@ const NewPresentation = () => {
     setIsDateModalOpen(false)
   );
 
-  const handleAddPresentation = () => {
-    const newId = `p${Object.keys(presentations).length + 1}`;
+  const handleAddPresentation = async () => {
+    if (!isBtnValid()) return;
 
-    const newPres = {
-      id: newId,
-      classId: id,
-      title,
-      date,
-      time,
-      limitTime: { minute, second },
-      presenter: presenter.name,
-      lastVisited: new Date(),
-    };
+    try {
+      //0. dueDate 계산
+      /**      const dueDate = new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate(),
+        parseInt(time.split(":")[0]),
+        parseInt(time.split(":")[1])
+      ).toISOString(); */
 
-    onCreatePresentation(newPres);
-    nav(`/presentation/${newId}`, {
-      state: { name, title },
-    });
+      //1. 발표 생성 요청
+      const createBody = {
+        title,
+        dueDate: date, //dueDate?
+        limitTime: { minute: Number(minute), second: Number(second) },
+        presenterId: presenter.id ?? null,
+        // fileIds: optFileId ? [uploadedFileId, optFileId] : [uploadedFileId],
+      };
+
+      const createRes = await api.post(
+        `/workspace/${id}/projects/create`,
+        createBody
+      );
+      const { projectId } = createRes.data;
+      console.log("프로젝트 생성 완료: ", projectId);
+
+      const newPres = {
+        id: projectId,
+        classId: id,
+        title,
+        date,
+        presenter: presenter.name,
+        lastVisited: new Date(),
+      };
+
+      onCreatePresentation(newPres);
+
+      //2. 파일 업로드
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const uploadRes = await api.post(
+        `/files/upload?uploaderId=${currentUser.id}&projectId=${projectId}`,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+
+      const uploadedFileId = uploadRes.data.fileId;
+      console.log("파일 업로드 성공: ", uploadedFileId);
+
+      //자료조사 파일 업로드
+      let optFileId = null;
+      if (optionFile) {
+        const optForm = new FormData();
+        optForm.append("file", optionFile);
+        const optUploadRes = await api.post(
+          `/files/upload?uploaderId=${currentUser.id}&projectId=${projectId}`,
+          optForm,
+          {
+            headers: { "Content-Type": "multipart/form-data" },
+          }
+        );
+        optFileId = optUploadRes.data.fileId;
+        console.log("옵션 파일 업로드 성공: ", optFileId);
+      }
+
+      nav(`/presentation/${projectId}`, {
+        state: { name, title },
+      });
+    } catch (err) {
+      console.error("발표 생성 실패: ", err);
+    }
   };
 
   return (
@@ -141,7 +205,7 @@ const NewPresentation = () => {
 
               {isPresenterModalOpen && (
                 <TeamMemberListModal
-                  teamMembers={members}
+                  teamMembers={teamMembers}
                   onSelect={(member) => {
                     setPresenter(member);
                     setIsPresenterModalOpen(false);
@@ -226,6 +290,7 @@ const NewPresentation = () => {
         <button
           className={`np-add-btn ${isBtnValid() ? "active" : ""}`}
           onClick={handleAddPresentation}
+          disabled={!isBtnValid()}
         >
           발표자료 추가하기
         </button>

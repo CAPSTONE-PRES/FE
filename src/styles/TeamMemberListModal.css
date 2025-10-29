@@ -5,7 +5,7 @@
   width: 357px;
   height: auto;
   max-height: 328px;
-  overflow: scroll;
+  overflow: auto;
   box-sizing: border-box;
   padding: 42px 25px;
   display: flex;

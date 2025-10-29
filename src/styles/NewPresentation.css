@@ -234,7 +234,6 @@ hr {
 }
 
 .np-add-btn {
-  cursor: pointer;
   width: 357px;
   height: 58px;
   padding: 22px;
@@ -253,4 +252,5 @@ hr {
 .np-add-btn.active {
   color: #fff;
   background: linear-gradient(90deg, #79cdfa 0%, #88afe9 100%);
+  cursor: pointer;
 }

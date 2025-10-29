@@ -1,5 +1,6 @@
 import "./App.css";
-import { Routes, Route } from "react-router-dom";
+import api from "./api";
+import { Routes, Route, data } from "react-router-dom";
 import { useReducer, createContext, useState, useRef, useEffect } from "react";
 import Home from "./pages/Home";
 import Presentation from "./pages/Presentation";
@@ -9,126 +10,29 @@ import Class from "./pages/Class";
 import Notfound from "./pages/Notfound";
 import Storage from "./pages/Storage";
 import Settings from "./pages/Settings";
+
 import Feedback from "./pages/Feedback";
 import user1 from "./assets/SVG_Main/user/user1.svg";
 import user2 from "./assets/SVG_Main/user/user2.svg";
 import user3 from "./assets/SVG_Main/user/user3.svg";
 import user4 from "./assets/SVG_Main/user/user4.svg";
+
+
 import NewPresentation from "./pages/NewPresentation";
+import { mapClasses } from "./util/mapClasses";
+import { mapPresentations } from "./util/mapPresentations";
+import { mapUser } from "./util/mapUser";
+import PracticeMode from "./pages/PracticeMode";
 
 export const DataContext = createContext();
 export const DataDispatchContext = createContext();
 
-const currentUser = {
-  id: "u1",
-  name: "박민영",
-  avatar: "/avatars/user1.svg",
-  email: "111@gmail.com",
-};
-
-const initialClasses = {
-  c1: {
-    id: "c1",
-    name: "마케팅조사론",
-    times: ["월 09:00-10:15", "화 09:00-10:15"],
-    lastVisited: "2025-09-20T10:15:00",
-    isTeamProject: true,
-    owner: currentUser,
-    teamMembers: [
-      {
-        id: "u2",
-        name: "김민지",
-        avatar: "/avatars/user2.svg",
-        email: "222@gmail.com",
-      },
-    ],
-  },
-  c2: {
-    id: "c2",
-    name: "캡스톤디자인1",
-    times: ["목 15:00-17:45"],
-    lastVisited: "2025-09-19T10:15:00",
-    isTeamProject: true,
-    owner: {
-      id: "u2",
-      name: "김민지",
-      avatar: "/avatars/user2.svg",
-      email: "222@gmail.com",
-    },
-    teamMembers: [
-      {
-        id: "u3",
-        name: "이호성",
-        avatar: "/avatars/user3.svg",
-        email: "333@gmail.com",
-      },
-      {
-        id: "u4",
-        name: "김소영",
-        avatar: "/avatars/user4.svg",
-        email: "444@gmail.com",
-      },
-    ],
-  },
-  c3: {
-    id: "c3",
-    name: "이머징마켓경영론",
-    times: ["월 15:00-17:45", "수 09:00-10:15"],
-    lastVisited: "2025-08-20T10:15:00",
-    isTeamProject: false,
-    owner: currentUser,
-    teamMembers: [],
-  },
-  c4: {
-    id: "c4",
-    name: "데이터마이닝기반기업운영",
-    times: ["화 15:00-17:45"],
-    lastVisited: "2025-09-05T10:15:00",
-    isTeamProject: false,
-    owner: currentUser,
-    teamMembers: [],
-  },
-  c5: {
-    id: "c5",
-    name: "캡스톤디자인2",
-    times: ["금 15:00-17:45"],
-    lastVisited: "2025-09-20T09:15:00",
-    isTeamProject: true,
-    owner: currentUser,
-    teamMembers: [
-      {
-        id: "u2",
-        name: "김민지",
-        avatar: "/avatars/user2.svg",
-        email: "222@gmail.com",
-      },
-      {
-        id: "u3",
-        name: "이호성",
-        avatar: "/avatars/user3.svg",
-        email: "333@gmail.com",
-      },
-      {
-        id: "u4",
-        name: "김소영",
-        avatar: "/avatars/user4.svg",
-        email: "444@gmail.com",
-      },
-      {
-        id: "u5",
-        name: "김현서",
-        avatar: "/avatars/user1.svg",
-        email: "555@gmail.com",
-      },
-      {
-        id: "u6",
-        name: "김승빈",
-        avatar: "/avatars/user2.svg",
-        email: "666@gmail.com",
-      },
-    ],
-  },
-};
+// const currentUser = {
+//   id: "",
+//   name: "박민영",
+//   avatar: "/avatars/user1.svg",
+//   email: "111@gmail.com",
+// };
 
 const initialPresentations = {
   p1: {
@@ -225,10 +129,36 @@ const initialPresentations = {
 
 const initialFavorites = ["c1", "c2", "c3", "c5"];
 
+const beRes = [
+  {
+    projectId: 1,
+    date: "2025-10-16",
+    projectTitle: "타당성 분석_중간발표",
+    workspaceId: 1,
+    workspaceName: "프로그래밍기초",
+    presenterName: "yujin",
+    presenterProfileUrl: "/avatars/user2.svg",
+    lastVisited: "2025-08-24T10:10:00",
+  },
+
+  {
+    projectId: 2,
+    date: "2025-11-16",
+    projectTitle: "타당성 분석_기말발표",
+    workspaceId: 2,
+    workspaceName: "프로그래밍심화",
+    presenterName: "yujin",
+    presenterProfileUrl: "/avatars/user2.svg",
+    lastVisited: "2025-09-24T10:10:00",
+  },
+];
+
 function classReducer(state, action) {
   let nextState;
 
   switch (action.type) {
+    case "INIT":
+      return action.data;
     case "CREATE": {
       nextState = { [action.data.id]: action.data, ...state };
       return nextState;
@@ -239,17 +169,47 @@ function classReducer(state, action) {
 }
 
 function App() {
-  const [classes, classDispatch] = useReducer(classReducer, initialClasses);
-  const [presentations, setPresentations] = useState(initialPresentations);
-  const [favoriteClassIds, setFavoriteClassIds] = useState(initialFavorites);
+  const [classes, classDispatch] = useReducer(classReducer, {});
+  const [presentations, setPresentations] = useState({});
+  const [favoriteClassIds, setFavoriteClassIds] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [currentUser, setCurrentUser] = useState(null);
 
   const classIdRef = useRef();
 
   useEffect(() => {
-    const ids = Object.keys(classes).map((id) => Number(id.replace("c", "")));
-    let maxClassId = ids.length > 0 ? Math.max(...ids) : 0;
-    classIdRef.current = maxClassId + 1;
+    async function initData() {
+      try {
+        const [classRes, presRes, userRes] = await Promise.all([
+          api.get("/workspace/projects/list/tmp?type=1"),
+          api.get("/list/tmp?type=1"),
+          api.get("/user/me"),
+        ]);
+
+        console.log("class 응답:", classRes.data);
+        const mappedClasses = mapClasses(classRes.data);
+        classDispatch({ type: "INIT", data: mappedClasses });
+
+        console.log("pres 응답:", presRes.data);
+        const mappedPres = mapPresentations(presRes.data);
+        console.log("presentation: ", mappedPres);
+        setPresentations(mappedPres);
+
+        console.log("user 응답:", userRes.data);
+        const mappedUser = mapUser(userRes.data);
+        setCurrentUser(mappedUser);
+        console.log(currentUser);
+      } catch (err) {
+        console.error("데이터 초기화 실패: ", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    initData();
   }, []);
+
+  console.log("currentUser: ", currentUser);
 
   const onCreatePresentation = (newPresentation) => {
     setPresentations((prev) => ({
@@ -258,29 +218,18 @@ function App() {
     }));
   };
 
-  const onCreateClass = (
-    name,
-    times,
-    lastVisited,
-    isTeamProject,
-    teamMembers
-  ) => {
-    const newClassId = `c${classIdRef.current++}`;
-
+  const onCreateClass = (id, name, times, isTeamProject, teamMembers) => {
     classDispatch({
       type: "CREATE",
       data: {
-        id: newClassId,
+        id,
         name,
         times,
-        lastVisited,
         isTeamProject,
         owner: currentUser,
         teamMembers,
       },
     });
-
-    return newClassId;
   };
 
   return (
@@ -292,6 +241,7 @@ function App() {
             classes,
             presentations,
             favoriteClassIds,
+            loading,
             setFavoriteClassIds,
           }}
         >
@@ -303,7 +253,8 @@ function App() {
               <Route path="/class/:id" element={<Class />} />
               <Route path="/classHome" element={<ClassHome />} />
               <Route path="/newClass" element={<NewClass />} />
-              <Route path="/Presentation/:id" element={<Presentation />} />
+              <Route path="/presentation/:id" element={<Presentation />} />
+              <Route path="/practice/:id" element={<PracticeMode />} />
               <Route path="/newPresentation" element={<NewPresentation />} />
               <Route path="/storage" element={<Storage />} />
               <Route path="/settings" element={<Settings />} />

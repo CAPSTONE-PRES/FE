@@ -20,6 +20,10 @@
   align-items: center;
 }
 
+.header-left img {
+  cursor: pointer;
+}
+
 .header-left_title {
   display: flex;
   align-items: center;
@@ -70,4 +74,10 @@
   color: #fff;
   font-family: "NotoSans-Bold";
   font-size: 16px;
+}
+
+.header_btn-back {
+  cursor: pointer;
+  border: none;
+  background-color: transparent;
 }

@@ -9,6 +9,7 @@ const Classes = () => {
   const { classes, presentations } = useContext(DataContext);
   const [sortBy, setSortBy] = useState("date");
   const [filterBy, setFilterBy] = useState("all");
+  console.log(classes);
 
   const SORT_OPRIONS = [
     { key: "date", label: "최근방문" },
@@ -21,7 +22,7 @@ const Classes = () => {
 
   //다가오는 발표
   function getUpcomingDate(classId) {
-    if (getIsEmpty(presentations)) return [];
+    if (getIsEmpty(presentations)) return null;
     else
       return Object.values(presentations)
         .filter((p) => p.classId === classId && new Date(p.date) >= new Date())
@@ -31,9 +32,10 @@ const Classes = () => {
   //클래스 정렬
   function getSortedClasses() {
     if (sortBy === "date") {
-      return Object.values(classes).toSorted(
-        (a, b) => +new Date(b.lastVisited) - +new Date(a.lastVisited)
-      );
+      // return Object.values(classes).toSorted(
+      //   (a, b) => +new Date(b.lastVisited) - +new Date(a.lastVisited)
+      // );
+      return Object.values(classes);
     } else {
       return Object.values(classes).toSorted((a, b) =>
         a.name.localeCompare(b.name)
