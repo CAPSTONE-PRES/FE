@@ -71,7 +71,7 @@ const NewPresentation = () => {
       //1. 발표 생성 요청
       const createBody = {
         title,
-        dueDate: date, //dueDate?
+        dueDate: date.toISOString().split("T")[0], //dueDate?
         limitTime: { minute: Number(minute), second: Number(second) },
         presenterId: presenter.id ?? null,
         // fileIds: optFileId ? [uploadedFileId, optFileId] : [uploadedFileId],
@@ -88,7 +88,7 @@ const NewPresentation = () => {
         id: projectId,
         classId: id,
         title,
-        date,
+        date: date.toISOString().split("T")[0],
         presenter: presenter.name,
         lastVisited: new Date(),
       };
