@@ -14,6 +14,7 @@ import NewPresentation from "./pages/NewPresentation";
 import { mapClasses } from "./util/mapClasses";
 import { mapPresentations } from "./util/mapPresentations";
 import { mapUser } from "./util/mapUser";
+import PracticeMode from "./pages/PracticeMode";
 
 export const DataContext = createContext();
 export const DataDispatchContext = createContext();
@@ -173,7 +174,7 @@ function App() {
       try {
         const [classRes, presRes, userRes] = await Promise.all([
           api.get("/workspace/projects/list/tmp?type=1"),
-          api.get("/list/tmp"),
+          api.get("/list/tmp?type=1"),
           api.get("/user/me"),
         ]);
 
@@ -184,7 +185,7 @@ function App() {
         console.log("pres 응답:", presRes.data);
         const mappedPres = mapPresentations(presRes.data);
         console.log("presentation: ", mappedPres);
-        // setPresentations(mappedPres);
+        setPresentations(mappedPres);
 
         console.log("user 응답:", userRes.data);
         const mappedUser = mapUser(userRes.data);
@@ -244,7 +245,8 @@ function App() {
               <Route path="/class/:id" element={<Class />} />
               <Route path="/classHome" element={<ClassHome />} />
               <Route path="/newClass" element={<NewClass />} />
-              <Route path="/Presentation/:id" element={<Presentation />} />
+              <Route path="/presentation/:id" element={<Presentation />} />
+              <Route path="/practice/:id" element={<PracticeMode />} />
               <Route path="/newPresentation" element={<NewPresentation />} />
               <Route path="/storage" element={<Storage />} />
               <Route path="/settings" element={<Settings />} />

@@ -71,7 +71,7 @@ const NewPresentation = () => {
       //1. 발표 생성 요청
       const createBody = {
         title,
-        date, //dueDate?
+        dueDate: date, //dueDate?
         limitTime: { minute: Number(minute), second: Number(second) },
         presenterId: presenter.id ?? null,
         // fileIds: optFileId ? [uploadedFileId, optFileId] : [uploadedFileId],

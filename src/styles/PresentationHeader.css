@@ -75,3 +75,9 @@
   font-family: "NotoSans-Bold";
   font-size: 16px;
 }
+
+.header_btn-back {
+  cursor: pointer;
+  border: none;
+  background-color: transparent;
+}

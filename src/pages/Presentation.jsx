@@ -10,6 +10,7 @@ import TeamMemberListModal from "../components/TeamMemberListModal";
 import LeftNav from "../components/LeftNav";
 import CommentList from "../components/CommentList";
 import PresSlideView from "../components/PresSlideView";
+import { getProjectInfo } from "../api/projectApi";
 
 const uncheckedMembers = [
   {
@@ -86,8 +87,20 @@ const backendResponse = {
 const Presentation = () => {
   //pid: params.id
   const params = useParams();
-  const location = useLocation();
-  const { name, title } = location.state;
+  const [projectInfo, setProjectInfo] = useState(null);
+
+  useEffect(() => {
+    const fetchProject = async () => {
+      try {
+        const project = await getProjectInfo(params.id);
+        setProjectInfo(project);
+      } catch (err) {
+        console.error("프로젝트 정보 불러오기 실패:", err);
+      }
+    };
+
+    fetchProject();
+  }, [params.id]);
 
   //actions
   const [isReviewOpen, setIsReviewOpen] = useState(false); //검토의견
@@ -161,9 +174,21 @@ const Presentation = () => {
     );
   };
 
+  if (!projectInfo) {
+    return <div className="Presentation"></div>;
+  }
+
+  const { projectId, projectTitle, workspaceName, workspaceId } = projectInfo;
+
   return (
     <div className="Presentation">
-      <PresentationHeader id={params.id} name={name} title={title} />
+      <PresentationHeader
+        id={projectId}
+        workspaceId={workspaceId}
+        workspaceName={workspaceName}
+        title={projectTitle}
+        mode="splitView"
+      />
       <div className="Presentation__panel">
         <div className={`Presentation__left ${isReviewOpen ? "shrink" : ""}`}>
           <LeftNav />
