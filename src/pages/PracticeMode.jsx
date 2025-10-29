@@ -6,8 +6,6 @@ import { useState, useEffect } from "react";
 import { getSlides } from "../api/fileApi";
 import PracticeFooter from "../components/PracticeFooter";
 
-const BASE_URL = "http://54.180.107.216:8080";
-
 const PracticeMode = () => {
   const params = useParams();
   const [projectInfo, setProjectInfo] = useState(null);
@@ -34,9 +32,6 @@ const PracticeMode = () => {
     fetchProject();
   }, [params.id]);
 
-  console.log(slides);
-  console.log(slides[currnetIndex]);
-
   //키 입력으로 슬라이드 전환
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -54,14 +49,14 @@ const PracticeMode = () => {
     return <div className="PracticeMode"></div>;
   }
 
-  const { projectId, projectTitle, workspaceName, workspaceId } = projectInfo;
+  const { projectId, projectTitle, workspaceName, limitTime } = projectInfo;
+  console.log("limitTime:", limitTime);
 
   return (
     <div className="PracticeMode">
       <div className="PracticeMode__header">
         <PresentationHeader
           id={projectId}
-          workspaceId={workspaceId}
           workspaceName={workspaceName}
           title={projectTitle}
           mode="practice"
@@ -70,7 +65,6 @@ const PracticeMode = () => {
           {slides.length > 0 ? (
             <img
               src={slides[currnetIndex]}
-              //   src="/samples/TestPPT_1.jpg"
               alt={`slide-${currnetIndex + 1}`}
               className="PracticeMode__image"
             />
@@ -79,7 +73,11 @@ const PracticeMode = () => {
           )}
         </div>
         <div className="PracticeMode__footer">
-          <PracticeFooter />
+          <PracticeFooter
+            projectId={projectId}
+            currentSlide={currnetIndex + 1}
+            limitTime={limitTime}
+          />
         </div>
       </div>
     </div>

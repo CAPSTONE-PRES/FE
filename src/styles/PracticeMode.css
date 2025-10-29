@@ -1,4 +1,6 @@
-.PracticeMode__slide {
+.PracticeMode {
+  display: flex;
+  flex-direction: column;
 }
 
 .PracticeMode__image {
