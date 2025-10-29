@@ -10,6 +10,14 @@ import Class from "./pages/Class";
 import Notfound from "./pages/Notfound";
 import Storage from "./pages/Storage";
 import Settings from "./pages/Settings";
+
+import Feedback from "./pages/Feedback";
+import user1 from "./assets/SVG_Main/user/user1.svg";
+import user2 from "./assets/SVG_Main/user/user2.svg";
+import user3 from "./assets/SVG_Main/user/user3.svg";
+import user4 from "./assets/SVG_Main/user/user4.svg";
+
+
 import NewPresentation from "./pages/NewPresentation";
 import { mapClasses } from "./util/mapClasses";
 import { mapPresentations } from "./util/mapPresentations";
@@ -250,6 +258,7 @@ function App() {
               <Route path="/newPresentation" element={<NewPresentation />} />
               <Route path="/storage" element={<Storage />} />
               <Route path="/settings" element={<Settings />} />
+              <Route path="/feedback" element={<Feedback />} />
               <Route path="*" element={<Notfound />} />
             </Routes>
           </DataDispatchContext.Provider>
