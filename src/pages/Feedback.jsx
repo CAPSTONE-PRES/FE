@@ -35,7 +35,18 @@ const Feedback = () => {
     fillerScore: 88,
     silenceScore: 88,
     totalSilenceDuration: 272, // 4분 32초
-    qnaComparison: null,
+    qnaComparison: {
+      comparisonId: 0,
+      questionId: 0,
+      question: "타당성 분석에서는 1차 연구를 먼저 하고 나서 2차 연구도 꼭 해야 하나요? 두 방법은 순차적으로 진행되는 필수 관계인가요?",
+      idealAnswer: "1차 연구와 2차 연구는 반드시 순차적으로 진행할 필요는 없습니다. 상황과 목적에 따라 유연하게 선택하거나 병행할 수 있습니다. 일반적으로는 2차 연구를 통해 시장과 경쟁 상황을 파악한 뒤, 1차 연구로 고객의 구체적인 반응을 확인하는 방식을 사용합니다. 반대로 아이디어 검증이 우선일 경우 1차 연구를 먼저 수행하고, 이후 2차 연구로 데이터를 보완하기도 합니다. 핵심은 연구의 순서보다 목적에 맞는 방법을 활용해 실질적인 의사결정에 도움이 되도록 하는 것입니다.",
+      userAnswer: "1차 연구와 2차 연구는 필수적인 순차 관계는 아니며, 상황과 목적에 따라 유연하게 선택하거나 병행할 수 있는데요, 일반적으로는 2차 연구를 먼저 해서 시장과 경쟁 상황을 파악하고, 그 후 1차 연구로 고객 반응을 구체적으로 확인하는 경우가 많습니다. 하지만 아이디어 검증을 위해 1차 연구를 먼저 하고, 이후 2차 연구로 데이터를 보완하는 방식도 가능합니다. 중요한 건 순서보다 목적에 맞게 분석 방법을 활용해 실질적인 의사결정에 도움을 주는 것입니다.",
+      similarity: 0.85,
+      keywordRecall: 0.75,
+      coverage: 0.80,
+      feedback: "기존 문장은 한 문장 안에 여러 개념이 한꺼번에 들어 있어서 읽는 사람이 중간에 문맥을 따라가기 어려웠어요. 개선 문장은 문장을 짧게 나누어 구조화했어요. 문장이 좀 더 자연스럽고 구어체에 가까워져 '보고서'나 '발표용 원고'에 더 적합한 어조로 변했어요.",
+      missingKeywords: ["유연성", "병행"]
+    },
   }), []);
 
   const [feedbackData, setFeedbackData] = useState(defaultFeedbackData);
@@ -143,6 +154,62 @@ const Feedback = () => {
       scrollRef.current?.removeEventListener('scroll', onScroll);
     };
   }, [activeTab, expandedCards]);
+
+  // tag-count 텍스트 속 어휘 추출 및 텍스트 강조 함수
+  const highlightKeywords = (text, tagCountText) => {
+    if (!tagCountText || !text) return text;
+
+    // tag-count 텍스트에서 어휘 추출
+    const keywords = [];
+    
+    // 콜론(:) 뒤의 전체 텍스트 가져오기
+    const colonMatch = tagCountText.match(/:\s*(.+)/);
+    if (colonMatch) {
+      const afterColon = colonMatch[1].trim();
+      // 콤마로 구분된 각 어휘 추출
+      const commaSeparated = afterColon.split(',').map(s => s.trim()).filter(s => {
+        // "N회" 패턴 제외
+        return s && !s.match(/^\d+회$/);
+      });
+      keywords.push(...commaSeparated);
+    }
+    
+    if (!colonMatch || tagCountText.split(':').length > 2) {
+      const parts = tagCountText.split(',').map(part => part.trim());
+      parts.forEach(part => {
+        if (part.includes(':')) {
+          const keyword = part.split(':')[0].trim();
+          if (keyword && !keyword.match(/^\d+회$/)) {
+            keywords.push(keyword);
+          }
+        }
+      });
+    }
+
+    // 중복 제거
+    const uniqueKeywords = [...new Set(keywords.filter(k => k && k.length > 0))];
+
+    if (uniqueKeywords.length === 0) return text;
+
+    // 텍스트에서 키워드를 찾아서 빨간색으로 강조
+    // 긴 키워드부터 처리하여 부분 매칭 방지
+    const sortedKeywords = uniqueKeywords.sort((a, b) => b.length - a.length);
+    let highlightedText = text;
+    
+    sortedKeywords.forEach(keyword => {
+      // 정규식으로 키워드 찾기 (특수문자 이스케이프)
+      const escapedKeyword = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const regex = new RegExp(`(${escapedKeyword})`, 'gi');
+      highlightedText = highlightedText.replace(regex, '<span style="color: #FF0000; font-weight: 500;">$1</span>');
+    });
+
+    return highlightedText;
+  };
+
+  const renderHighlightedText = (text, tagCountText) => {
+    const highlighted = highlightKeywords(text, tagCountText);
+    return <span dangerouslySetInnerHTML={{ __html: highlighted }} />;
+  };
 
   // 로딩 상태
   if (loading) {
@@ -419,7 +486,7 @@ const Feedback = () => {
                         {expandedCards[2] && <div className="content-divider"></div>}
                         {expandedCards[2] && (
                           <div className="card-content">
-                            <p>타당성 분석은 일반적으로 네 가지 구성 요소를 중심으로 진행됩니다. 시장성, 기술성, 재무성, 조직 역량이 바로 그 네 가지입니다. 이 중 하나라도 기준에 미치지 못하면, 뭐지 아이디어를 폐기하거나 전면 수정해야 할 수 있습니다. 따라서 분석은 단순한 평가가 아니라, 음 실행 여부를 결정하는 핵심 기준입니다.</p>
+                            <p>{renderHighlightedText("타당성 분석은 일반적으로 네 가지 구성 요소를 중심으로 진행됩니다. 시장성, 기술성, 재무성, 조직 역량이 바로 그 네 가지입니다. 이 중 하나라도 기준에 미치지 못하면, 뭐지 아이디어를 폐기하거나 전면 수정해야 할 수 있습니다. 따라서 분석은 단순한 평가가 아니라, 음 실행 여부를 결정하는 핵심 기준입니다.", "음: 1회, 뭐지: 1회")}</p>
                             
                             <div className="feedback-details">
                               <div className="feedback-tag">
@@ -551,7 +618,7 @@ const Feedback = () => {
                         {expandedCards[5] && <div className="content-divider"></div>}
                         {expandedCards[5] && (
                           <div className="card-content">
-                            <p>타당성 분석은 다음과 같은 장점을 제공합니다. 첫째, 사업의 성공 가능성을 객관적으로 판단할 수 있습니다. 둘째, 투자자의 신뢰를 확보할 수 있어 자금 유치에 유리합니다. 그 다음에 셋째, 내부 의사결정 시 리스크를 최소화하는 데 도움이 됩니다. 그러니까 이처럼 타당성 분석은 약간 단순한 검토를 넘어 사업 실행의 필수 조건이라 할 수 있습니다.</p>
+                            <p>{renderHighlightedText("타당성 분석은 다음과 같은 장점을 제공합니다. 첫째, 사업의 성공 가능성을 객관적으로 판단할 수 있습니다. 둘째, 투자자의 신뢰를 확보할 수 있어 자금 유치에 유리합니다. 그 다음에 셋째, 내부 의사결정 시 리스크를 최소화하는 데 도움이 됩니다. 그러니까 이처럼 타당성 분석은 약간 단순한 검토를 넘어 사업 실행의 필수 조건이라 할 수 있습니다.", "3회 : 그 다음에, 그러니까, 약간")}</p>
                             
                             <div className="feedback-details">
                               <div className="feedback-tag">

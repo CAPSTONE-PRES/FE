@@ -778,17 +778,18 @@ html {
 .card-content p {
   font-size: 16px;
   line-height: 1.6;
-  color: #333;
+  color: #5A5A5B;
   margin-bottom: 15px;
+  margin-left: 40px;
+  margin-top: -10px;
 }
 
 .content-divider {
   margin: 20px 0 15px 0;
   height: 1px;
   background: #DED2D2;
-  width: 680px;
+  width: 500px;
   margin-left: 35px;
-  margin-right: 0;
 }
 
 .feedback-details {
