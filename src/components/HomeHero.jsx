@@ -141,7 +141,11 @@ const HomeHero = () => {
             <button
               className="dday-button"
               type="button"
-              onClick={() => !nearestUpcoming && nav("/newClass")}
+              onClick={() =>
+                nearestUpcoming
+                  ? nav(`/practice/${nearestUpcoming.id}`)
+                  : nav("/newClass")
+              }
             >
               <img src={notice_Button} />
               {nearestUpcoming ? "연습하기" : "워크스페이스 만들기"}

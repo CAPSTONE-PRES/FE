@@ -1,19 +1,26 @@
 import PresentationHeader from "../components/PresentationHeader";
 import { getProjectInfo } from "../api/projectApi";
 import "../styles/PracticeMode.css";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { useLoading } from "../contexts/LoadingContext";
 import { getSlides } from "../api/fileApi";
 import PracticeFooter from "../components/PracticeFooter";
-
-const BASE_URL = "http://54.180.107.216:8080";
+import qnaImg from "../assets/SVG_Practice/qna.svg";
+import LoadingScreen from "../components/LoadingScreen";
 
 const PracticeMode = () => {
+  const nav = useNavigate();
   const params = useParams();
   const [projectInfo, setProjectInfo] = useState(null);
   const [slides, setSlides] = useState([]);
   const [currnetIndex, setCurrentIndex] = useState(0);
+  const [step, setStep] = useState(1);
+  // const { showLoading, hideLoading } = useLoading();
+  const [isLoading, setIsLoading] = useState(false);
+  const [loadingText, setLoadingText] = useState("");
 
+  //프로젝트 정보 불러오기
   useEffect(() => {
     const fetchProject = async () => {
       try {
@@ -34,9 +41,6 @@ const PracticeMode = () => {
     fetchProject();
   }, [params.id]);
 
-  console.log(slides);
-  console.log(slides[currnetIndex]);
-
   //키 입력으로 슬라이드 전환
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -54,34 +58,81 @@ const PracticeMode = () => {
     return <div className="PracticeMode"></div>;
   }
 
-  const { projectId, projectTitle, workspaceName, workspaceId } = projectInfo;
+  const { projectId, projectTitle, workspaceName, limitTime } = projectInfo;
+  console.log("limitTime:", limitTime);
+
+  const handleFeedbackClick = async () => {
+    // showLoading("발표 피드백 중");
+    setLoadingText("발표 피드백 중");
+    setIsLoading(true);
+    await new Promise((resolve) => setTimeout(resolve, 8000));
+    // hideLoading();
+    setIsLoading(false);
+    nav("/feedback");
+  };
 
   return (
     <div className="PracticeMode">
-      <div className="PracticeMode__header">
-        <PresentationHeader
-          id={projectId}
-          workspaceId={workspaceId}
-          workspaceName={workspaceName}
-          title={projectTitle}
-          mode="practice"
-        />
-        <div className="PracticeMode__slide">
-          {slides.length > 0 ? (
-            <img
-              src={slides[currnetIndex]}
-              //   src="/samples/TestPPT_1.jpg"
-              alt={`slide-${currnetIndex + 1}`}
-              className="PracticeMode__image"
+      {isLoading ? (
+        <LoadingScreen text={loadingText} />
+      ) : (
+        <>
+          <div className="PracticeMode__header">
+            <PresentationHeader
+              id={projectId}
+              workspaceName={workspaceName}
+              title={projectTitle}
+              mode="practice"
             />
-          ) : (
-            <div className="PracticeMode__image-loading" />
+          </div>
+          {step === 1 && (
+            <>
+              <div className="PracticeMode__slide">
+                {slides.length > 0 ? (
+                  <img
+                    src={slides[currnetIndex]}
+                    alt={`slide-${currnetIndex + 1}`}
+                    className="PracticeMode__image"
+                  />
+                ) : (
+                  <div className="PracticeMode__image-loading" />
+                )}
+              </div>
+              <div className="PracticeMode__footer">
+                <PracticeFooter
+                  projectId={projectId}
+                  currentSlide={currnetIndex + 1}
+                  limitTime={limitTime}
+                  onEnd={() => setStep(2)}
+                />
+              </div>
+            </>
           )}
-        </div>
-        <div className="PracticeMode__footer">
-          <PracticeFooter />
-        </div>
-      </div>
+
+          {step === 2 && (
+            <div className="PracticeMode__step2">
+              <h3>발표 후 받을 수 있는 예상 질문에 답변해보시겠어요?</h3>
+              <img src={qnaImg} alt="" />
+              <div className="PracticeMode__step2-footer">
+                <button
+                  className="PracticeMode__step2-btn"
+                  onClick={() => handleFeedbackClick()}
+                >
+                  <span className="PracticeMode__gradient-text">
+                    피드백 받기
+                  </span>
+                </button>
+                <button
+                  className="PracticeMode__step2-btn primary"
+                  onClick={() => setStep(3)}
+                >
+                  답변 연습하기
+                </button>
+              </div>
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 };

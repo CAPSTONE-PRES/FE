@@ -6,7 +6,7 @@ import { getIsEmpty } from "../util/get-is-empty";
 import { DataContext } from "../App";
 
 const Presentations = ({ context = "home", classId }) => {
-  const [sortBy, setSortBy] = useState("date");
+  const [sortBy, setSortBy] = useState("title");
   const { classes, presentations } = useContext(DataContext);
 
   const filteredData =
