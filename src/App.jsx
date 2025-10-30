@@ -17,11 +17,11 @@ import user2 from "./assets/SVG_Main/user/user2.svg";
 import user3 from "./assets/SVG_Main/user/user3.svg";
 import user4 from "./assets/SVG_Main/user/user4.svg";
 
-
 import NewPresentation from "./pages/NewPresentation";
 import { mapClasses } from "./util/mapClasses";
 import { mapPresentations } from "./util/mapPresentations";
 import { mapUser } from "./util/mapUser";
+import { LoadingProvider } from "./contexts/LoadingContext";
 import PracticeMode from "./pages/PracticeMode";
 
 export const DataContext = createContext();
@@ -234,36 +234,34 @@ function App() {
 
   return (
     <>
-      <div>
-        <DataContext.Provider
-          value={{
-            currentUser,
-            classes,
-            presentations,
-            favoriteClassIds,
-            loading,
-            setFavoriteClassIds,
-          }}
+      <DataContext.Provider
+        value={{
+          currentUser,
+          classes,
+          presentations,
+          favoriteClassIds,
+          loading,
+          setFavoriteClassIds,
+        }}
+      >
+        <DataDispatchContext.Provider
+          value={{ onCreateClass, onCreatePresentation }}
         >
-          <DataDispatchContext.Provider
-            value={{ onCreateClass, onCreatePresentation }}
-          >
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/class/:id" element={<Class />} />
-              <Route path="/classHome" element={<ClassHome />} />
-              <Route path="/newClass" element={<NewClass />} />
-              <Route path="/presentation/:id" element={<Presentation />} />
-              <Route path="/practice/:id" element={<PracticeMode />} />
-              <Route path="/newPresentation" element={<NewPresentation />} />
-              <Route path="/storage" element={<Storage />} />
-              <Route path="/settings" element={<Settings />} />
-              <Route path="/feedback" element={<Feedback />} />
-              <Route path="*" element={<Notfound />} />
-            </Routes>
-          </DataDispatchContext.Provider>
-        </DataContext.Provider>
-      </div>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/class/:id" element={<Class />} />
+            <Route path="/classHome" element={<ClassHome />} />
+            <Route path="/newClass" element={<NewClass />} />
+            <Route path="/presentation/:id" element={<Presentation />} />
+            <Route path="/practice/:id" element={<PracticeMode />} />
+            <Route path="/newPresentation" element={<NewPresentation />} />
+            <Route path="/storage" element={<Storage />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/feedback" element={<Feedback />} />
+            <Route path="*" element={<Notfound />} />
+          </Routes>
+        </DataDispatchContext.Provider>
+      </DataContext.Provider>
     </>
   );
 }

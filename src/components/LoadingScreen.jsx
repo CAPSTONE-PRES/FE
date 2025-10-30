@@ -1,9 +1,9 @@
 import "../styles/LoadingScreen.css";
 
-const LoadingScreen = ({ text = "발표 피드백 중..." }) => {
+const LoadingScreen = ({ text = "로딩 중" }) => {
   return (
     <div className="LoadingScreen">
-      <h3>{text}</h3>
+      <h3 className="LoadingScreen__text">{text}</h3>
       <div className="LoadingScreen__bar">
         <div className="LoadingScreen__progress"></div>
       </div>
