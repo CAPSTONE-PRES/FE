@@ -24,10 +24,11 @@
 .PresSlideView__slide-thumbnails {
   display: flex;
   width: 100%;
-  padding: 38px 16px;
+  padding: 20px 16px;
   box-sizing: border-box;
   overflow: scroll;
   gap: 8px;
+  margin-top: 10px;
 
   border-radius: 20px;
   border: 5px solid #fff;
@@ -37,8 +38,8 @@
 
 .PresSlideView__thumbnail {
   cursor: pointer;
-  width: 204.369px;
-  height: 114px;
+  width: 120px;
+  height: 65px;
   aspect-ratio: 204.37/114;
   background-color: #fff;
   box-shadow: 0 0 5.7px 0 rgba(108, 108, 108, 0.15);
@@ -46,6 +47,9 @@
 .PresSlideView__thumbnail.active {
   border: 2px solid #517686;
   box-shadow: 0 0 5.7px 0 rgba(108, 108, 108, 0.15);
+}
+.PresSlideView__thumbnail-img {
+  width: 100%;
 }
 
 .PresSlideView__slide-index {

@@ -8,3 +8,67 @@
   margin: 0 auto;
   width: 80%;
 }
+
+.PracticeMode__step2 {
+  color: #4b5f77;
+  font-family: "GothicA1";
+  font-size: 32px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+
+  height: calc(100vh - 58px);
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  gap: 77px;
+}
+
+.PracticeMode__step2 h3 {
+  margin: 0;
+}
+
+.PracticeMode__step2-footer {
+  display: flex;
+  align-self: flex-end;
+  gap: 23px;
+}
+
+.PracticeMode__step2-btn {
+  cursor: pointer;
+  display: flex;
+  width: 357px;
+  height: 58px;
+  padding: 20px 22px;
+  box-sizing: border-box;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+
+  border: none;
+  border-radius: 47px;
+  background: #f2f3f7;
+  box-shadow: 0 0 7px 0 rgba(25, 33, 61, 0.25);
+
+  text-align: center;
+  font-family: "GothicA1";
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 22px; /* 122.222% */
+}
+.PracticeMode__step2-btn.primary {
+  border-radius: 52px;
+  background: linear-gradient(90deg, #79cdfa 0%, #88afe9 100%);
+  box-shadow: 0 0 7px 0 rgba(25, 33, 61, 0.25);
+  color: #fff;
+}
+
+.PracticeMode__gradient-text {
+  background: linear-gradient(180deg, #5c6d88 0%, #b4b5dd 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}

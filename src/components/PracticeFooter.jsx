@@ -9,16 +9,18 @@ import qrIcon from "../assets/SVG_Practice/qrIcon.svg";
 import { useState, useRef, useEffect } from "react";
 import { startPractice, endPractice } from "../api/practiceApi";
 
-const PracticeFooter = ({ projectId, currentSlide, limitTime }) => {
+const PracticeFooter = ({ projectId, currentSlide, limitTime, onEnd }) => {
   const [status, setStatus] = useState("ready"); // ready | running | paused
   const [sessionId, setSessionId] = useState(null);
   const [slideTransitions, setSlideTransitions] = useState([]);
   const [activeSlide, setActiveSlide] = useState(null);
   const mediaRef = useRef({ recorder: null, stream: null, chunks: [] });
   const startTimeRef = useRef(null);
-  const [remainingTime, setRemainingTime] = useState(0); // 남은시간(초 단위)
+  // const [remainingTime, setRemainingTime] = useState(0); // 남은시간(초 단위)
+  const [remainingTime, setRemainingTime] = useState(600000);
   const timerRef = useRef(null);
 
+  /**
   //limitTime 초로 변환
   useEffect(() => {
     if (limitTime) {
@@ -26,35 +28,39 @@ const PracticeFooter = ({ projectId, currentSlide, limitTime }) => {
       setRemainingTime(totalSec);
     }
   }, [limitTime]);
+   */
 
   //타이머 시작/정지/리셋
   const startTimer = () => {
+    const interval = 10;
     timerRef.current = setInterval(() => {
       setRemainingTime((prev) => {
-        if (prev <= 1) {
+        if (prev <= interval) {
           clearInterval(timerRef.current);
           handleStop(); // 자동 종료
           return 0;
         }
-        return prev - 1;
+        return prev - interval;
       });
-    }, 1000);
+    }, interval);
   };
 
   const pauseTimer = () => clearInterval(timerRef.current);
 
   const resetTimer = () => {
+    setStatus("ready");
     clearInterval(timerRef.current);
-    const totalSec = (limitTime.minute || 0) * 60 + (limitTime.second || 0);
-    setRemainingTime(totalSec);
+    setRemainingTime(600000);
+    // const totalSec = (limitTime.minute || 0) * 60 + (limitTime.second || 0);
+    // setRemainingTime(totalSec);
   };
 
   // 남은 시간 → 00:00:00 포맷
-  const formatTime = (sec) => {
-    const h = String(Math.floor(sec / 3600)).padStart(2, "0");
-    const m = String(Math.floor((sec % 3600) / 60)).padStart(2, "0");
-    const s = String(sec % 60).padStart(2, "0");
-    return `${h}:${m}:${s}`;
+  const formatTime = (ms) => {
+    const minutes = String(Math.floor(ms / 60000)).padStart(2, "0");
+    const seconds = String(Math.floor((ms % 60000) / 1000)).padStart(2, "0");
+    const milliseconds = String(Math.floor((ms % 1000) / 10)).padStart(2, "0"); // 1/100초 단위
+    return `${minutes}:${seconds}:${milliseconds}`;
   };
 
   const getElapsedSec = () =>
@@ -64,11 +70,11 @@ const PracticeFooter = ({ projectId, currentSlide, limitTime }) => {
   const handleStart = async () => {
     try {
       //세션 생성 요청
-      const res = await startPractice(projectId);
-      console.log("세션 시작:", res);
+      // // const res = await startPractice(projectId);
+      // console.log("세션 시작:", res);
 
-      const newSessionId = res.sessionId || res.id || res;
-      setSessionId(newSessionId);
+      // const newSessionId = res.sessionId || res.id || res;
+      // setSessionId(newSessionId);
 
       //마이크 접근 및 녹음 시작
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -120,7 +126,7 @@ const PracticeFooter = ({ projectId, currentSlide, limitTime }) => {
     if (!mediaRef.current.recorder) return;
     const { recorder, stream, chunks } = mediaRef.current;
 
-    recorder.stop();
+    // recorder.stop(); //api 연결 후 살리기
 
     recorder.onstop = async () => {
       const blob = new Blob(chunks, { type: "audio/webm" });
@@ -136,15 +142,18 @@ const PracticeFooter = ({ projectId, currentSlide, limitTime }) => {
 
       try {
         // 세션 종료 및 업로드
-        const res = await endPractice(sessionId, blob, finalTransitions);
-        console.log("업로드 완료:", res);
+        // const res = await endPractice(sessionId, blob, finalTransitions);
+        // console.log("업로드 완료:", res);
       } catch (err) {
         console.error("업로드 실패:", err);
       } finally {
         stream.getTracks().forEach((t) => t.stop());
         setStatus("ended");
+        if (onEnd) onEnd();
       }
     };
+
+    recorder.stop();
   };
 
   //슬라이드 변경 시
@@ -222,7 +231,12 @@ const PracticeFooter = ({ projectId, currentSlide, limitTime }) => {
         );
 
       default:
-        return null;
+        return (
+          <button className="PracticeFooter__btn-primary" onClick={handleStart}>
+            <img src={playIcon} alt="start" />
+            시작
+          </button>
+        );
     }
   };
 

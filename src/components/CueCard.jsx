@@ -93,6 +93,7 @@ const CueCard = ({ keyword, value, onChange, showNonverbal = true }) => {
         suppressContentEditableWarning
         onInput={handleInput}
         onClick={(e) => e.stopPropagation()}
+        onKeyDown={(e) => e.stopPropagation()}
         onCompositionStart={handleCompositionStart}
         onCompositionEnd={handleCompositionEnd}
       />

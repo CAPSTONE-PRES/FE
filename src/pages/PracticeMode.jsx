@@ -1,17 +1,23 @@
 import PresentationHeader from "../components/PresentationHeader";
 import { getProjectInfo } from "../api/projectApi";
 import "../styles/PracticeMode.css";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { useLoading } from "../contexts/LoadingContext";
 import { getSlides } from "../api/fileApi";
 import PracticeFooter from "../components/PracticeFooter";
+import qnaImg from "../assets/SVG_Practice/qna.svg";
 
 const PracticeMode = () => {
+  const nav = useNavigate();
   const params = useParams();
   const [projectInfo, setProjectInfo] = useState(null);
   const [slides, setSlides] = useState([]);
   const [currnetIndex, setCurrentIndex] = useState(0);
+  const [step, setStep] = useState(1);
+  const { showLoading, hideLoading } = useLoading();
 
+  //프로젝트 정보 불러오기
   useEffect(() => {
     const fetchProject = async () => {
       try {
@@ -52,6 +58,13 @@ const PracticeMode = () => {
   const { projectId, projectTitle, workspaceName, limitTime } = projectInfo;
   console.log("limitTime:", limitTime);
 
+  const handleFeedbackClick = async () => {
+    showLoading("발표 피드백 중");
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    hideLoading();
+    nav("/feedback");
+  };
+
   return (
     <div className="PracticeMode">
       <div className="PracticeMode__header">
@@ -61,25 +74,53 @@ const PracticeMode = () => {
           title={projectTitle}
           mode="practice"
         />
-        <div className="PracticeMode__slide">
-          {slides.length > 0 ? (
-            <img
-              src={slides[currnetIndex]}
-              alt={`slide-${currnetIndex + 1}`}
-              className="PracticeMode__image"
-            />
-          ) : (
-            <div className="PracticeMode__image-loading" />
-          )}
-        </div>
-        <div className="PracticeMode__footer">
-          <PracticeFooter
-            projectId={projectId}
-            currentSlide={currnetIndex + 1}
-            limitTime={limitTime}
-          />
-        </div>
       </div>
+      {step === 1 && (
+        <>
+          <div className="PracticeMode__slide">
+            {slides.length > 0 ? (
+              <img
+                src={slides[currnetIndex]}
+                alt={`slide-${currnetIndex + 1}`}
+                className="PracticeMode__image"
+              />
+            ) : (
+              <div className="PracticeMode__image-loading" />
+            )}
+          </div>
+          <div className="PracticeMode__footer">
+            <PracticeFooter
+              projectId={projectId}
+              currentSlide={currnetIndex + 1}
+              limitTime={limitTime}
+              onEnd={() => setStep(2)}
+            />
+          </div>
+        </>
+      )}
+
+      {step === 2 && (
+        <div className="PracticeMode__step2">
+          <h3>발표 후 받을 수 있는 예상 질문에 답변해보시겠어요?</h3>
+          <img src={qnaImg} alt="" />
+          <div className="PracticeMode__step2-footer">
+            <button className="PracticeMode__step2-btn">
+              <span
+                className="PracticeMode__gradient-text"
+                onClick={handleFeedbackClick}
+              >
+                피드백 받기
+              </span>
+            </button>
+            <button
+              className="PracticeMode__step2-btn primary"
+              onClick={() => setStep(3)}
+            >
+              답변 연습하기
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
