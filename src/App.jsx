@@ -17,12 +17,17 @@ import user2 from "./assets/SVG_Main/user/user2.svg";
 import user3 from "./assets/SVG_Main/user/user3.svg";
 import user4 from "./assets/SVG_Main/user/user4.svg";
 
+
 import NewPresentation from "./pages/NewPresentation";
 import { mapClasses } from "./util/mapClasses";
 import { mapPresentations } from "./util/mapPresentations";
 import { mapUser } from "./util/mapUser";
 import { LoadingProvider } from "./contexts/LoadingContext";
 import PracticeMode from "./pages/PracticeMode";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import ResetPassword from "./pages/ResetPassword";
+import MobileCueCard from "./pages/MobileCueCard";
 
 export const DataContext = createContext();
 export const DataDispatchContext = createContext();
