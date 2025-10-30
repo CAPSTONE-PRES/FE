@@ -14,6 +14,8 @@ const PracticeMode = () => {
   const [slides, setSlides] = useState([]);
   const [currnetIndex, setCurrentIndex] = useState(0);
 
+  
+
   useEffect(() => {
     const fetchProject = async () => {
       try {

@@ -14,6 +14,7 @@ const TextInput = ({
   errorText,
   helperText,
   helperAlign = "right",
+  readOnly = false,
 }) => {
   const inputClass = ["text-input", className];
   if (error) inputClass.push("text-input--error");
@@ -34,6 +35,7 @@ const TextInput = ({
         onChange={onChange}
         placeholder={placeholder}
         autoComplete="off"
+        readOnly={readOnly}
       />
       {error && (typeof error === "string" || errorText) ? (
         <div className="input-error">{typeof error === "string" ? error : errorText}</div>
