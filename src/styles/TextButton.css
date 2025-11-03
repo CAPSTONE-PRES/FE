@@ -1,0 +1,29 @@
+.TextButton {
+  padding: 10px 16px;
+  border-radius: 20px;
+  border: 2px solid transparent;
+  background: linear-gradient(#fff, #fff) padding-box,
+    linear-gradient(to top, #94bbdd 0%, #c2f5df 100%) border-box;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.TextButton__label {
+  display: inline-block;
+  background: linear-gradient(to top, #94bbdd 0%, #c2f5df 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+.TextButton:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.TextButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

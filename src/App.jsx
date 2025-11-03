@@ -17,7 +17,6 @@ import user2 from "./assets/SVG_Main/user/user2.svg";
 import user3 from "./assets/SVG_Main/user/user3.svg";
 import user4 from "./assets/SVG_Main/user/user4.svg";
 
-
 import NewPresentation from "./pages/NewPresentation";
 import { mapClasses } from "./util/mapClasses";
 import { mapPresentations } from "./util/mapPresentations";
@@ -263,7 +262,10 @@ function App() {
             <Route path="/storage" element={<Storage />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/feedback" element={<Feedback />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
             <Route path="*" element={<Notfound />} />
+            <Route path="/mobile-cuecard/:id" element={<MobileCueCard />} />
           </Routes>
         </DataDispatchContext.Provider>
       </DataContext.Provider>
