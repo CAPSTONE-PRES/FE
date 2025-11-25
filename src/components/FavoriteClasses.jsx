@@ -3,22 +3,32 @@ import right_Arrow from "../assets/SVG_Main/right_Arrow.svg";
 import FavClassCard from "./FavClassCard";
 import { getIsEmpty } from "../util/get-is-empty";
 import { DataContext } from "../App";
-import { useContext } from "react";
+import { useEffect, useState, useContext } from "react";
 import { Link } from "react-router-dom";
+import { getFavWorkspaces } from "../api/workspaceApi";
 
 const FavoriteClasses = ({ type }) => {
-  const { classes, favoriteClassIds } = useContext(DataContext);
+  const { favoriteIds } = useContext(DataContext);
+  const [favoriteClasses, setFavoriteClasses] = useState([]);
 
-  const favoriteClasses = favoriteClassIds
-    .map((id) => classes[id])
-    .filter(Boolean);
+  // const favoriteClasses = favoriteClassIds
+  //   .map((id) => classes[id])
+  //   .filter(Boolean);
 
-  const emptyMessage = getIsEmpty(classes) ? (
-    <>
-      만들어진 워크스페이스가 없어요! <br />
-      워크스페이스를 만들고 발표자료를 관리해보세요.
-    </>
-  ) : (
+  useEffect(() => {
+    const fetchFavorites = async () => {
+      try {
+        const data = await getFavWorkspaces();
+        setFavoriteClasses(data);
+      } catch (err) {
+        console.error("즐겨찾는 클래스 불러오기 실패: ", err);
+      }
+    };
+
+    fetchFavorites();
+  }, [favoriteIds]);
+
+  const emptyMessage = (
     <>
       이번 학기 발표 수업을 즐겨찾는 수업으로 <br /> 등록하면 빠르게 찾을 수
       있어요.
@@ -37,12 +47,12 @@ const FavoriteClasses = ({ type }) => {
         ) : null}
       </section>
       <section className="fav-class_list">
-        {getIsEmpty(favoriteClassIds) ? (
+        {getIsEmpty(favoriteClasses) ? (
           <div className="fav-empty-message">{emptyMessage}</div>
         ) : (
           <div className="fav-list-wrapper">
-            {favoriteClasses.map((c) => (
-              <FavClassCard key={c.id} {...c} />
+            {favoriteClasses.map((w) => (
+              <FavClassCard key={w.workspaceId} {...w} />
             ))}
           </div>
         )}

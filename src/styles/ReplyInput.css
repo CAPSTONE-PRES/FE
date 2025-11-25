@@ -1,0 +1,19 @@
+.ReplyInput {
+  width: 100%;
+}
+
+.ReplyInput textarea {
+  width: 100%;
+  border: none;
+  outline: none;
+  padding: 5px 8px;
+  box-sizing: border-box;
+  border-radius: 4px;
+  background: #f5f7f9;
+  resize: none;
+
+  color: #6d758f;
+  font-family: "NotoSans";
+  font-size: 10px;
+  line-height: normal;
+}

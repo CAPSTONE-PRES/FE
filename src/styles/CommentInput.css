@@ -1,14 +1,59 @@
-.CommentInput textarea {
+.CommentInput {
+  display: flex;
+  width: 260px;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 4px 4px 4px 8px;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 8px;
+
+  border-radius: 6px;
+  background: #fff;
+  /* Pres/200 */
+  box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.12);
+}
+
+.CommentInput__content {
+  display: flex;
+  width: 80%;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
   border: none;
   outline: none;
-  padding: 5px 8px;
-  box-sizing: border-box;
-  border-radius: 4px;
-  background: #f5f7f9;
   resize: none;
 
-  color: #6d758f;
-  font-family: "NotoSans";
+  color: var(--Pres-black-1, #2e2e2e);
+  font-feature-settings: "liga" off, "clig" off;
+  font-family: "Noto Sans KR";
   font-size: 10px;
+  font-style: normal;
+  font-weight: 500;
   line-height: normal;
+}
+.CommentInput__contentplaceholder {
+  color: #5a5a5b;
+}
+
+.CommentInput__submit {
+  display: flex;
+  width: 24px;
+  height: 24px;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+
+  border: none;
+  border-radius: 12px;
+  background: var(--Pres-gray-3, #c9ced6);
+}
+.CommentInput__submit.active {
+  background: var(--Pres-green-1, #5d8daa);
+  cursor: pointer;
+}
+
+.CommentInput__submit img {
+  width: 16px;
+  height: 16px;
 }

@@ -67,6 +67,18 @@
 .PracticeFooter__btn-mic {
   border: none;
   background-color: transparent;
+  cursor: pointer;
+}
+
+.PracticeFooter__btn-qr {
+  position: relative;
+}
+
+.PracticeFooter__qr-modal-wrapper {
+  position: absolute;
+  bottom: 72px;
+  right: 0;
+  z-index: 1000;
 }
 
 .PracticeFooter__btn-mic {

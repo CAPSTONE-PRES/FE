@@ -8,17 +8,27 @@ import powerIcon from "../assets/SVG_Practice/Power.svg";
 import qrIcon from "../assets/SVG_Practice/qrIcon.svg";
 import { useState, useRef, useEffect } from "react";
 import { startPractice, endPractice } from "../api/practiceApi";
+import QRModal from "./QRModal";
+import useOutsideClick from "../hooks/useOutsideClick";
 
-const PracticeFooter = ({ projectId, currentSlide, limitTime, onEnd }) => {
+const PracticeFooter = ({
+  projectId,
+  currentSlide,
+  limitTime,
+  onEnd,
+  qrSlug,
+}) => {
   const [status, setStatus] = useState("ready"); // ready | running | paused
   const [sessionId, setSessionId] = useState(null);
   const [slideTransitions, setSlideTransitions] = useState([]);
   const [activeSlide, setActiveSlide] = useState(null);
+  const [showQR, setShowQR] = useState(false);
   const mediaRef = useRef({ recorder: null, stream: null, chunks: [] });
   const startTimeRef = useRef(null);
-  // const [remainingTime, setRemainingTime] = useState(0); // 남은시간(초 단위)
   const [remainingTime, setRemainingTime] = useState(600000);
   const timerRef = useRef(null);
+
+  useOutsideClick(".PracticeFooter__qr-modal-wrapper", () => setShowQR(false));
 
   /**
   //limitTime 초로 변환
@@ -70,11 +80,11 @@ const PracticeFooter = ({ projectId, currentSlide, limitTime, onEnd }) => {
   const handleStart = async () => {
     try {
       //세션 생성 요청
-      // // const res = await startPractice(projectId);
-      // console.log("세션 시작:", res);
+      const res = await startPractice(projectId);
+      console.log("세션 시작:", res);
 
-      // const newSessionId = res.sessionId || res.id || res;
-      // setSessionId(newSessionId);
+      const newSessionId = res.sessionId || res.id || res;
+      setSessionId(newSessionId);
 
       //마이크 접근 및 녹음 시작
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -126,8 +136,6 @@ const PracticeFooter = ({ projectId, currentSlide, limitTime, onEnd }) => {
     if (!mediaRef.current.recorder) return;
     const { recorder, stream, chunks } = mediaRef.current;
 
-    // recorder.stop(); //api 연결 후 살리기
-
     recorder.onstop = async () => {
       const blob = new Blob(chunks, { type: "audio/webm" });
       console.log("Blob 생성 완료:", blob);
@@ -142,14 +150,15 @@ const PracticeFooter = ({ projectId, currentSlide, limitTime, onEnd }) => {
 
       try {
         // 세션 종료 및 업로드
-        // const res = await endPractice(sessionId, blob, finalTransitions);
-        // console.log("업로드 완료:", res);
+        const res = await endPractice(sessionId, blob, finalTransitions);
+        console.log("업로드 완료:", res);
       } catch (err) {
         console.error("업로드 실패:", err);
       } finally {
         stream.getTracks().forEach((t) => t.stop());
         setStatus("ended");
-        if (onEnd) onEnd();
+
+        if (onEnd) onEnd({ blob, slideTransitions: finalTransitions });
       }
     };
 
@@ -257,8 +266,21 @@ const PracticeFooter = ({ projectId, currentSlide, limitTime, onEnd }) => {
 
       <img src={line} />
 
-      <button className="PracticeFooter__btn-qr">
+      <button
+        className="PracticeFooter__btn-qr"
+        onClick={(e) => {
+          e.stopPropagation();
+          setShowQR(!showQR);
+        }}
+      >
         <img src={qrIcon} alt="qr" />
+
+        {/* QR모달 */}
+        {showQR && (
+          <div className="PracticeFooter__qr-modal-wrapper">
+            <QRModal qrSlug={qrSlug} />
+          </div>
+        )}
       </button>
     </div>
   );

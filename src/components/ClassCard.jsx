@@ -7,27 +7,25 @@ import { useContext } from "react";
 import { DataContext } from "../App";
 
 const ClassCard = ({
-  id,
-  name,
-  times,
-  isTeamProject,
-  teamMembers,
+  workspaceId,
+  workspaceName,
+  workspaceTimeList,
+  workspaceMemberList,
+  workspaceOwnerName,
+  workspaceOwnerProfileUrl,
+  isOwner,
   upComingDate,
-  owner,
 }) => {
   const { currentUser } = useContext(DataContext);
-  const isOwner = owner.id === currentUser.id;
   const nav = useNavigate();
 
-  // const members = isOwner
-  //   ? [owner, ...teamMembers]
-  //   : [currentUser, owner, ...teamMembers];
+  const isTeamProject = (workspaceMemberList?.length ?? 0) > 1;
 
   return (
     <div
       className="ClassCard"
       onClick={() => {
-        nav(`/class/${id}`);
+        nav(`/class/${workspaceId}`);
       }}
     >
       <div className="class-card_thumb">
@@ -39,14 +37,14 @@ const ClassCard = ({
 
       <div className="class-card_header">
         <div>
-          <h4 className="class-title">{name}</h4>
+          <h4 className="class-title">{workspaceName}</h4>
           <ul className="class-times">
-            {times.map((time, idx) => (
-              <li key={`${id}-${idx}`}>{time}</li>
+            {workspaceTimeList.map((time, idx) => (
+              <li key={`${workspaceId}-${idx}`}>{time}</li>
             ))}
           </ul>
         </div>
-        <FavoriteButton id={id} />
+        <FavoriteButton workspaceId={workspaceId} />
       </div>
 
       <div className="class-card_info">
@@ -64,7 +62,7 @@ const ClassCard = ({
           <span className="class-card_label">팀원정보</span>
           <div className="avatars">
             <AvatarGroup
-              members={isTeamProject ? teamMembers : []}
+              members={isTeamProject ? workspaceMemberList : []}
               spacing={-18}
             />
           </div>
@@ -78,12 +76,11 @@ const ClassCard = ({
             e.stopPropagation();
             nav("/newPresentation", {
               state: {
-                id,
-                name,
-                times,
-                isTeamProject,
-                teamMembers,
-                owner,
+                workspaceId,
+                workspaceName,
+                workspaceTimeList,
+                workspaceMemberList,
+                workspaceOwnerName,
               },
             });
           }}

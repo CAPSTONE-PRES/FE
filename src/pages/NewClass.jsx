@@ -11,8 +11,6 @@ import Step3Invite from "../components/Step3Invite";
 import BackButton from "../components/BackButton";
 
 const NewClass = () => {
-  const { onCreateClass } = useContext(DataDispatchContext);
-  const { currentUser } = useContext(DataContext);
   const [step, setStep] = useState(1);
   const [projectType, setProjectType] = useState("");
   const [name, setName] = useState("");
@@ -252,14 +250,14 @@ const NewClass = () => {
       const newClassId = res.data.workspaceId;
 
       //TODO: 최종 연결 후엔 삭제
-      onCreateClass(
-        newClassId,
-        name,
-        formatTimeSlots(),
-        // new Date().getTime(),
-        projectType === "팀",
-        [...teamMembers, currentUser]
-      );
+      // onCreateClass(
+      //   newClassId,
+      //   name,
+      //   formatTimeSlots(),
+      //   // new Date().getTime(),
+      //   projectType === "팀",
+      //   [...teamMembers, currentUser]
+      // );
 
       nav(`/class/${newClassId}`);
 

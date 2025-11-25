@@ -7,14 +7,34 @@ import presIconOff from "../assets/SVG_Presentation/presIconOff.svg";
 import helpIcon from "../assets/SVG_Presentation/caption 1.svg";
 import { useState } from "react";
 
-const LeftNav = () => {
+const LeftNav = ({ openedMenu, setOpenedMenu }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   const navItems = [
-    { id: 1, icon: allOpen, label: "전체보기" },
-    { id: 2, icon: questionIcon, label: "예상질문" },
-    { id: 3, icon: download, label: "다운로드" },
-    { id: 4, icon: presIcon, label: "피드백보기" },
+    {
+      id: 1,
+      icon: allOpen,
+      label: "전체보기",
+      onClick: () => setOpenedMenu("slides"),
+    },
+    {
+      id: 2,
+      icon: questionIcon,
+      label: "예상질문",
+      onClick: () => setOpenedMenu("question"),
+    },
+    {
+      id: 3,
+      icon: download,
+      label: "다운로드",
+      onClick: () => setOpenedMenu("export"),
+    },
+    {
+      id: 4,
+      icon: presIcon,
+      label: "피드백보기",
+      onClick: () => setOpenedMenu("feedback"),
+    },
   ];
 
   return (
@@ -25,7 +45,12 @@ const LeftNav = () => {
     >
       <div className="LeftNav__top">
         {navItems.map((item) => (
-          <button key={item.id} className="LeftNav__item" title={item.label}>
+          <button
+            key={item.id}
+            className="LeftNav__item"
+            title={item.label}
+            onClick={item.onClick}
+          >
             <img src={item.icon} />
             {isHovered && <span className="LeftNav__label">{item.label}</span>}
           </button>

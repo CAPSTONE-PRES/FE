@@ -1,0 +1,32 @@
+.QRModal {
+  width: 245px;
+  height: 267px;
+  flex-shrink: 0;
+
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(26, 26, 26, 0.95);
+  padding: 13px;
+  box-sizing: border-box;
+}
+
+.QRModal__title {
+  margin: 0;
+  color: #fff;
+  font-family: "NotoSans";
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  text-align: left;
+  margin-bottom: 15px;
+}
+
+.QRModal__box {
+  width: 165px;
+  height: 165px;
+  margin: 0 auto;
+
+  border-radius: 8px;
+  border: 13px solid rgba(255, 255, 255, 0.2);
+}

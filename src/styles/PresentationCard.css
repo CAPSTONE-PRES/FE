@@ -84,6 +84,11 @@
   line-height: normal;
 }
 
+.presenter-avatar {
+  width: 16px;
+  height: 16px;
+}
+
 .time-ago {
   color: #a9a9a9;
   font-size: 12px;

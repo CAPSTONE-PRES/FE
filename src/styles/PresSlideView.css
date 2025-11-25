@@ -26,7 +26,8 @@
   width: 100%;
   padding: 20px 16px;
   box-sizing: border-box;
-  overflow: scroll;
+  overflow-x: auto;
+  overflow-y: hidden;
   gap: 8px;
   margin-top: 10px;
 
@@ -34,6 +35,7 @@
   border: 5px solid #fff;
   background: rgba(242, 243, 247, 0.7);
   box-shadow: 0 4px 10px 0 rgba(190, 213, 249, 0.25);
+  scrollbar-color: #bcbcbc transparent;
 }
 
 .PresSlideView__thumbnail {

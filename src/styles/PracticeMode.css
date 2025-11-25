@@ -72,3 +72,128 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
+
+.PracticeMode__step3 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 auto;
+  margin-top: 100px;
+}
+
+.PracticeMode__step3-question {
+  display: flex;
+  gap: 25px;
+  align-items: flex-start;
+  padding: 20px 15px;
+  box-sizing: border-box;
+  width: 1120px;
+}
+
+.PracticeMode__step3-question span {
+  color: #fff;
+  font-family: "GothicA1";
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  background: linear-gradient(180deg, #79cdfa 0%, #88afe9 100%);
+  border-radius: 50%;
+  padding: 10px 15px 12px 14px;
+  box-sizing: border-box;
+}
+
+.PracticeMode__step3-question p {
+  color: #4b5f77;
+  font-family: "GothicA1";
+  font-size: 32px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  margin: 0;
+}
+
+.PracticeMode__step3-record {
+  margin-top: 203px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+
+  color: #5e6c76;
+  font-family: "GothicA1";
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}
+
+.PracticeMode__step3-record-btn {
+  padding: 27px 30px;
+  border: none;
+  border-radius: 67px;
+  background: #f2f3f7;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+}
+
+.PracticeMode__step3-result {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+  align-items: flex-end;
+}
+
+.PracticeMode__step3-resultText {
+  margin-top: 50px;
+  width: 1121px;
+  height: 272px;
+  padding: 46px 37px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  overflow-y: auto;
+
+  border-radius: 8px;
+  border: 3px solid #eef0f6;
+  background: linear-gradient(
+    180deg,
+    rgba(233, 237, 246, 0.4) 0%,
+    rgba(233, 237, 246, 0.06) 100%
+  );
+}
+.PracticeMode__step3-resultText p {
+  color: #2e2e2e;
+  font-feature-settings: "liga" off, "clig" off;
+  font-family: "NotoSans";
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 150%; /* 27px */
+}
+
+.PracticeMode__step3-submit {
+  display: flex;
+  padding: 30px 50px;
+  height: 54px;
+  box-sizing: border-box;
+  justify-content: center;
+  align-items: center;
+  gap: 13px;
+  flex-shrink: 0;
+
+  border: none;
+  border-radius: 67px;
+  background: #f2f3f7;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.15);
+
+  font-family: "GothicA1";
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  cursor: pointer;
+}

@@ -1,62 +1,79 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import "../styles/Classes.css";
 import SortToggle from "./SortToggle";
 import ClassCard from "./ClassCard";
 import { DataContext } from "../App";
 import { getIsEmpty } from "../util/get-is-empty";
+import { getWorkspaceList } from "../api/workspaceApi";
+import { getProjectList } from "../api/projectApi";
 
 const Classes = () => {
-  const { classes, presentations } = useContext(DataContext);
+  //   const { classes, presentations } = useContext(DataContext);
+  const [workspaces, setWorkspaces] = useState([]);
   const [sortBy, setSortBy] = useState("date");
   const [filterBy, setFilterBy] = useState("all");
-  console.log(classes);
 
   const SORT_OPRIONS = [
     { key: "date", label: "최근방문" },
     { key: "title", label: "제목순" },
   ];
 
+  useEffect(() => {
+    const fetchWorkspaces = async () => {
+      try {
+        const typeMap = { date: 1, title: 2 };
+        const type = typeMap[sortBy] ?? 1;
+        const data = await getWorkspaceList(type);
+        setWorkspaces(data);
+      } catch (err) {
+        console.error("워크스페이스 불러오기 실패:", err);
+      }
+    };
+
+    fetchWorkspaces();
+  }, [sortBy]);
+
   function onChangeFilterBy(e) {
     setFilterBy(e.target.value);
   }
 
   //다가오는 발표
-  function getUpcomingDate(classId) {
-    if (getIsEmpty(presentations)) return null;
-    else
-      return Object.values(presentations)
-        .filter((p) => p.classId === classId && new Date(p.date) >= new Date())
-        .toSorted((a, b) => +new Date(a.date) - +new Date(b.date))[0]?.date;
-  }
+  // function getUpcomingDate(classId) {
+  //   if (getIsEmpty(presentations)) return null;
+  //   else
+  //     return Object.values(presentations)
+  //       .filter((p) => p.classId === classId && new Date(p.date) >= new Date())
+  //       .toSorted((a, b) => +new Date(a.date) - +new Date(b.date))[0]?.date;
+  // }
 
-  //클래스 정렬
-  function getSortedClasses() {
-    if (sortBy === "date") {
-      // return Object.values(classes).toSorted(
-      //   (a, b) => +new Date(b.lastVisited) - +new Date(a.lastVisited)
-      // );
-      return Object.values(classes);
-    } else {
-      return Object.values(classes).toSorted((a, b) =>
-        a.name.localeCompare(b.name)
-      );
-    }
-  }
+  // //클래스 정렬
+  // function getSortedClasses() {
+  //   if (sortBy === "date") {
+  //     // return Object.values(classes).toSorted(
+  //     //   (a, b) => +new Date(b.lastVisited) - +new Date(a.lastVisited)
+  //     // );
+  //     return Object.values(classes);
+  //   } else {
+  //     return Object.values(classes).toSorted((a, b) =>
+  //       a.name.localeCompare(b.name)
+  //     );
+  //   }
+  // }
 
-  const sortedClasses = getSortedClasses();
+  // const sortedClasses = getSortedClasses();
 
   //정렬된 클래스 필터링
-  function getFilteredClasses() {
+  function getFilteredWorkspaces() {
     if (filterBy === "shared") {
-      return sortedClasses.filter((c) => c.isTeamProject);
+      return workspaces.filter((w) => w.workspaceMemberList?.length > 1);
     } else if (filterBy === "private") {
-      return sortedClasses.filter((c) => !c.isTeamProject);
+      return workspaces.filter((w) => w.workspaceMemberList?.length <= 1);
     } else {
-      return sortedClasses;
+      return workspaces;
     }
   }
 
-  const filteredClasses = getFilteredClasses();
+  const filteredWorkspaces = getFilteredWorkspaces();
 
   return (
     <div className="Classes">
@@ -77,7 +94,7 @@ const Classes = () => {
             <option value="private">개인 워크스페이스</option>
           </select>
         </div>
-        {getIsEmpty(filteredClasses) ? (
+        {getIsEmpty(filteredWorkspaces) ? (
           <div className="class-empty-message">
             {" "}
             만들어진 워크스페이스가 없어요!
@@ -86,12 +103,8 @@ const Classes = () => {
           </div>
         ) : (
           <div className="class-list-wrapper">
-            {filteredClasses.map((c) => (
-              <ClassCard
-                key={c.id}
-                upComingDate={getUpcomingDate(c.id) ?? null}
-                {...c}
-              />
+            {filteredWorkspaces.map((w) => (
+              <ClassCard key={w.workspaceId} upComingDate={null} {...w} />
             ))}
           </div>
         )}

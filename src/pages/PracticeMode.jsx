@@ -2,23 +2,40 @@ import PresentationHeader from "../components/PresentationHeader";
 import { getProjectInfo } from "../api/projectApi";
 import "../styles/PracticeMode.css";
 import { useNavigate, useParams } from "react-router-dom";
-import { useState, useEffect } from "react";
-import { useLoading } from "../contexts/LoadingContext";
-import { getSlides } from "../api/fileApi";
+import { useState, useEffect, useRef } from "react";
+import { getQrInfo, getSlides } from "../api/fileApi";
+import { analyseAudio } from "../api/analyseApi";
 import PracticeFooter from "../components/PracticeFooter";
 import qnaImg from "../assets/SVG_Practice/qna.svg";
+import micIcon from "../assets/SVG_Practice/mic_qna.svg";
+import checkIcon from "../assets/SVG_Practice/checkIcon.svg";
 import LoadingScreen from "../components/LoadingScreen";
+import {
+  getQuestion,
+  uploadAnswer,
+  compareQnaAnswer,
+} from "../api/practiceApi";
 
 const PracticeMode = () => {
   const nav = useNavigate();
   const params = useParams();
   const [projectInfo, setProjectInfo] = useState(null);
+  const [audioData, setAudioData] = useState(null);
   const [slides, setSlides] = useState([]);
-  const [currnetIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [step, setStep] = useState(1);
-  // const { showLoading, hideLoading } = useLoading();
+
   const [isLoading, setIsLoading] = useState(false);
   const [loadingText, setLoadingText] = useState("");
+
+  const [question, setQuestion] = useState(null); //{questionId, questionBody}
+  const [recording, setRecording] = useState(false);
+  const [qnaAudioData, setQnaAudioData] = useState(null); // Q&A용 녹음 데이터
+  const [sttResult, setSttResult] = useState(""); // STT 결과 텍스트
+  const recorderRef = useRef(null);
+  const streamRef = useRef(null);
+
+  const [qrInfo, setQrInfo] = useState({});
 
   //프로젝트 정보 불러오기
   useEffect(() => {
@@ -30,8 +47,12 @@ const PracticeMode = () => {
 
         if (project.fileIds && project.fileIds.length > 0) {
           const fileId = project.fileIds[0];
+
           const imageList = await getSlides(fileId);
           setSlides(imageList);
+
+          const qr = await getQrInfo(fileId);
+          setQrInfo(qr);
         }
       } catch (err) {
         console.error("프로젝트 정보 불러오기 실패:", err);
@@ -54,22 +75,160 @@ const PracticeMode = () => {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [slides]);
 
+  //발표 피드백
+  const handleAutoFeedback = async (data) => {
+    if (!projectInfo) return;
+
+    setLoadingText("발표 피드백 중");
+    setIsLoading(true);
+
+    try {
+      const { blob, slideTransitions } = data;
+      const result = await analyseAudio(
+        projectInfo.projectId,
+        slideTransitions,
+        blob
+      );
+      console.log("분석 성공! 분석 결과:", result);
+
+      // 분석 완료 후 결과 sessionId 저장하고 step2로 이동
+      const sessionId = result.sessionId;
+      setAudioData({ sessionId, result });
+      setStep(2);
+    } catch (err) {
+      console.error("음성 분석 실패:", err);
+      alert("음성 분석 실패");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // const handleFeedbackClick = async () => {
+  //   if (!projectInfo) return;
+
+  //   setLoadingText("발표 피드백 중");
+  //   setIsLoading(true);
+
+  //   try {
+  //     const { blob, slideTransitions } = audioData;
+
+  //     const result = await analyseAudio(projectId, slideTransitions, blob);
+  //     console.log("분석 성공! 분석 결과:", result);
+  //     const sessionId = result.sessionId;
+  //     nav(`/feedback/${sessionId}`);
+  //   } catch (err) {
+  //     console.error("음성 분석 실패:", err);
+  //     alert("음성 분석 실패");
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
+  //질문 조회 api 호출
+  useEffect(() => {
+    if (step !== 3) return;
+    if (!audioData?.sessionId) return;
+
+    const fetchQnaQuestion = async () => {
+      try {
+        const data = await getQuestion(audioData.sessionId);
+        setQuestion(data);
+        // 질문 바뀌면 이전 답변/녹음 상태 초기화도 해주는 게 안전
+        setQnaAudioData(null);
+        setSttResult("");
+        setRecording(false);
+      } catch (err) {
+        if (err.response?.status === 204) {
+          nav(`/feedback/${audioData.sessionId}`);
+          return;
+        }
+        console.error("QNA 질문 조회 실패:", err);
+      }
+    };
+
+    fetchQnaQuestion();
+  }, [step, audioData?.sessionId, nav]);
+
+  //질의응답 녹음 시작
+  const startQnaRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const recorder = new MediaRecorder(stream);
+
+      streamRef.current = stream;
+      recorderRef.current = recorder;
+
+      const chunks = [];
+      recorder.ondataavailable = (e) => chunks.push(e.data);
+
+      recorder.onstop = async () => {
+        const blob = new Blob(chunks, { type: "audio/wavm" });
+        setQnaAudioData(blob);
+
+        setSttResult("음성 인식 중...");
+
+        try {
+          const answer = await uploadAnswer(
+            audioData.sessionId,
+            question.questionId,
+            blob
+          );
+          setSttResult(answer.sttText);
+          console.log("stt 성공:", answer);
+        } catch (err) {
+          console.error("STT 실패:", err);
+          setSttResult("인식 실패");
+        }
+      };
+
+      recorder.start();
+      setRecording(true);
+    } catch (err) {
+      console.error("녹음 시작 실패:", err);
+    }
+  };
+
+  //qna 종료 버튼
+  const stopQnaRecording = () => {
+    if (recorderRef.current && recorderRef.current.state !== "inactive") {
+      recorderRef.current.stop();
+    }
+
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((t) => t.stop());
+    }
+
+    setRecording(false);
+  };
+
+  //질의응답 피드백
+  const handleQnaCompare = async () => {
+    if (!qnaAudioData) return;
+
+    setLoadingText("질의응답 피드백 중...");
+    setIsLoading(true);
+
+    try {
+      const result = await compareQnaAnswer(
+        audioData.sessionId,
+        question.questionId
+      );
+      console.log("QnA 분석 결과:", result);
+
+      nav(`/feedback/${audioData.sessionId}`);
+    } catch (err) {
+      console.error("QnA 피드백 실패:", err);
+      alert("질의응답 피드백 요청 실패");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   if (!projectInfo) {
     return <div className="PracticeMode"></div>;
   }
-
   const { projectId, projectTitle, workspaceName, limitTime } = projectInfo;
   console.log("limitTime:", limitTime);
-
-  const handleFeedbackClick = async () => {
-    // showLoading("발표 피드백 중");
-    setLoadingText("발표 피드백 중");
-    setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 8000));
-    // hideLoading();
-    setIsLoading(false);
-    nav("/feedback");
-  };
 
   return (
     <div className="PracticeMode">
@@ -90,8 +249,8 @@ const PracticeMode = () => {
               <div className="PracticeMode__slide">
                 {slides.length > 0 ? (
                   <img
-                    src={slides[currnetIndex]}
-                    alt={`slide-${currnetIndex + 1}`}
+                    src={slides[currentIndex]}
+                    alt={`slide-${currentIndex + 1}`}
                     className="PracticeMode__image"
                   />
                 ) : (
@@ -101,9 +260,10 @@ const PracticeMode = () => {
               <div className="PracticeMode__footer">
                 <PracticeFooter
                   projectId={projectId}
-                  currentSlide={currnetIndex + 1}
+                  currentSlide={currentIndex + 1}
                   limitTime={limitTime}
-                  onEnd={() => setStep(2)}
+                  onEnd={handleAutoFeedback}
+                  qrSlug={qrInfo[currentIndex + 1]}
                 />
               </div>
             </>
@@ -116,7 +276,7 @@ const PracticeMode = () => {
               <div className="PracticeMode__step2-footer">
                 <button
                   className="PracticeMode__step2-btn"
-                  onClick={() => handleFeedbackClick()}
+                  onClick={() => nav(`/feedback/${audioData.sessionId}`)}
                 >
                   <span className="PracticeMode__gradient-text">
                     피드백 받기
@@ -129,6 +289,44 @@ const PracticeMode = () => {
                   답변 연습하기
                 </button>
               </div>
+            </div>
+          )}
+
+          {step === 3 && question && (
+            <div className="PracticeMode__step3">
+              <div className="PracticeMode__step3-question">
+                <span>Q</span>
+                <p>{question.questionBody}</p>
+              </div>
+
+              {!qnaAudioData && (
+                <div className="PracticeMode__step3-record">
+                  <button
+                    className="PracticeMode__step3-record-btn"
+                    onClick={recording ? stopQnaRecording : startQnaRecording}
+                  >
+                    <img src={micIcon} />
+                  </button>
+                  {recording ? "종료" : "답변하기"}
+                </div>
+              )}
+
+              {qnaAudioData && (
+                <div className="PracticeMode__step3-result">
+                  <div className="PracticeMode__step3-resultText">
+                    <p>{sttResult}</p>
+                  </div>
+                  <button
+                    className="PracticeMode__step3-submit"
+                    onClick={handleQnaCompare}
+                  >
+                    <img src={checkIcon} />
+                    <span className="PracticeMode__gradient-text">
+                      답변 완료
+                    </span>
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </>

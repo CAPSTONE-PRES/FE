@@ -23,10 +23,10 @@ const AvatarGroup = ({
     <div className={`AvatarGroup ${border ? "" : "no-border"}`}>
       {getVisibleMembers().map((member, index) => (
         <span
-          key={member.id}
+          key={member.memberId}
           className="avatar"
           style={{
-            backgroundImage: `url(${member.avatar})`,
+            backgroundImage: `url(${member.memberProfileUrl})`,
             marginLeft: index == 0 ? 0 : `${spacing}px`,
           }}
         />
@@ -36,7 +36,7 @@ const AvatarGroup = ({
         <span
           className="avatar-more"
           style={{
-            backgroundImage: `url(${members[max - 1].avatar})`,
+            backgroundImage: `url(${members[max - 1].memberProfileUrl})`,
             marginLeft: `${spacing}px`,
           }}
         >

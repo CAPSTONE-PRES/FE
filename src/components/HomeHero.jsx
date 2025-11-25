@@ -4,36 +4,20 @@ import UpcomingItem from "./UpcomingItem";
 import notice_Button from "../assets/SVG_Main/notice_Button.svg";
 import { getIsEmpty } from "../util/get-is-empty";
 import { getStringedDate } from "../util/get-stringed-date";
-import { useContext, useState, useMemo } from "react";
+import { useContext, useState, useMemo, useEffect } from "react";
 import { DataContext } from "../App";
 import HomeCalendar from "./calendars/HomeCalendar";
 import { useNavigate } from "react-router-dom";
+import { getAllProjects, getProjectsByDate } from "../api/projectApi";
+import { getIsoDateString } from "../util/getIsoDateString";
 
 const today = new Date();
 const isSameDay = (a, b) => getStringedDate(a) === getStringedDate(b);
 
-//다가오는 발표 오름차순 정렬
-function getUpcomingPresentations(presentations) {
-  const startOfToday = new Date(
-    today.getFullYear(),
-    today.getMonth(),
-    today.getDate()
-  );
-
-  return Object.values(presentations)
-    .filter((p) => new Date(p.date) >= startOfToday)
-    .toSorted((a, b) => +new Date(a.date) - +new Date(b.date));
-}
-
-//dday 카드 발표
-function getNearestUpcoming(presentations) {
-  return getUpcomingPresentations(presentations)[0] || null;
-}
-
 //dday 계산
 function daysUntil(targetISO) {
   const target = new Date(targetISO);
-  const today = new Date();
+  const now = new Date();
 
   const startOfTarget = new Date(
     target.getFullYear(),
@@ -41,63 +25,94 @@ function daysUntil(targetISO) {
     target.getDate()
   );
   const startOfToday = new Date(
-    today.getFullYear(),
-    today.getMonth(),
-    today.getDate()
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate()
   );
 
   const MS_PER_DAY = 24 * 60 * 60 * 1000;
   return Math.ceil((startOfTarget - startOfToday) / MS_PER_DAY);
 }
 
-//날짜 선택X -> 다가오는 발표 2개(일주일 이내)
-function getUpcomingTwo(presentations) {
-  return getUpcomingPresentations(presentations)
-    .filter(
-      (p) =>
-        new Date(p.date) <=
-        new Date(today.getFullYear(), today.getMonth(), today.getDate() + 7)
-    )
-    .slice(0, 2);
-}
-
-//선택 날짜의 발표
-function getDailyTwo(presentations, selectedDate) {
-  return Object.values(presentations).filter((p) =>
-    isSameDay(new Date(p.date), selectedDate)
-  );
-}
-
 const HomeHero = () => {
   const nav = useNavigate();
-  const { classes, presentations } = useContext(DataContext);
+  const { currentUser } = useContext(DataContext);
+  // const { classes, presentations } = useContext(DataContext);
+
+  const [allProjects, setAllProjects] = useState([]);
+  const [dailyProjects, setDailyProjects] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
 
-  const { currentUser } = useContext(DataContext);
+  //전체 프로젝트 불러오기
+  useEffect(() => {
+    const fetchAllProjects = async () => {
+      try {
+        const data = await getAllProjects();
+        setAllProjects(data);
+      } catch (err) {
+        console.error("전체 프로젝트 불러오기 실패:", err);
+      }
+    };
+    fetchAllProjects();
+  }, []);
 
-  const isEmpty = getIsEmpty(presentations) || getIsEmpty(classes);
-  const nearestUpcoming = !isEmpty ? getNearestUpcoming(presentations) : null;
+  //선택한 날짜의 프로젝트 가져오기
+  useEffect(() => {
+    if (!selectedDate) {
+      setDailyProjects([]);
+      return;
+    }
 
+    const fetchDaily = async () => {
+      try {
+        const data = await getProjectsByDate(getIsoDateString(selectedDate));
+        setDailyProjects(data);
+      } catch (err) {
+        console.error("데일리 프로젝트 불러오기 실패:".err);
+      }
+    };
+
+    fetchDaily();
+  }, [selectedDate]);
+
+  //가장 가까운 발표 찾기
+  const nearestUpcoming = useMemo(() => {
+    if (!allProjects.length) return null;
+    const todayStart = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate()
+    );
+    const upcoming = allProjects
+      .filter((p) => new Date(p.date) >= todayStart)
+      .sort((a, b) => new Date(a.date) - new Date(b.date));
+    return upcoming[0] || null;
+  }, [allProjects]);
+
+  //다가오는 발표
   const upcomingTwo = useMemo(() => {
-    if (isEmpty) return [];
-    if (selectedDate) return getDailyTwo(presentations, selectedDate);
-    return getUpcomingTwo(presentations);
-  }, [isEmpty, presentations, selectedDate]);
+    if (selectedDate) return dailyProjects;
+
+    const oneWeekLater = new Date(today);
+    oneWeekLater.setDate(today.getDate() + 7);
+    return allProjects
+      .filter(
+        (p) => new Date(p.date) >= today && new Date(p.date) <= oneWeekLater
+      )
+      .slice(0, 2);
+  }, [allProjects, dailyProjects, selectedDate]);
 
   //발표가 있는 날짜
   const eventDates = useMemo(() => {
-    if (isEmpty) return new Set();
-    return new Set(
-      Object.values(presentations).map((p) => getStringedDate(new Date(p.date)))
-    );
-  }, [isEmpty, presentations]);
+    return new Set(allProjects.map((p) => getStringedDate(new Date(p.date))));
+  }, [allProjects]);
 
   return (
     <div className="HomeHero">
       <section className="hero-top">
         <div className="hero-greeting">
           <h2>
-            <span>{currentUser.name}</span> 님,
+            <span>{currentUser.username}</span> 님,
             <br />
             이번에는 A+ 받아보세요
           </h2>
@@ -128,9 +143,9 @@ const HomeHero = () => {
               |
               <span className="dday-subject">
                 {" "}
-                {classes[nearestUpcoming.classId].name}{" "}
+                {nearestUpcoming.workspaceName}{" "}
               </span>
-              {nearestUpcoming.title}
+              {nearestUpcoming.projectTitle}
             </p>
           ) : (
             <p>강의별로 자료를 관리하고 발표연습을 통해 완성도를 높여보세요</p>
@@ -143,7 +158,7 @@ const HomeHero = () => {
               type="button"
               onClick={() =>
                 nearestUpcoming
-                  ? nav(`/practice/${nearestUpcoming.id}`)
+                  ? nav(`/practice/${nearestUpcoming.projectId}`)
                   : nav("/newClass")
               }
             >
@@ -159,9 +174,11 @@ const HomeHero = () => {
               <div className="upcoming-wrapper">
                 {upcomingTwo.map((p) => (
                   <UpcomingItem
-                    key={p.id}
-                    classBadge={classes[p.classId].name}
-                    {...p}
+                    key={p.projectId}
+                    id={p.projectId}
+                    classBadge={p.workspaceName}
+                    title={p.projectTitle}
+                    date={p.date}
                   />
                 ))}
               </div>

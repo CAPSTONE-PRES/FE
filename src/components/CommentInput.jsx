@@ -1,12 +1,14 @@
 import { useState, useRef, useEffect } from "react";
 import "../styles/CommentInput.css";
+import submitIcon from "../assets/SVG_Presentation/submitIcon.svg";
+import submitIcon_disabled from "../assets/SVG_Presentation/submitIcon_disabled.svg";
 
 const CommentInput = ({ placeholder, onSubmit }) => {
   const [value, setValue] = useState("");
-  const textareaRef = useRef(null);
+  const inputRef = useRef(null);
 
   useEffect(() => {
-    const textarea = textareaRef.current;
+    const textarea = inputRef.current;
     if (textarea) {
       textarea.style.height = "auto";
       textarea.style.height = `${textarea.scrollHeight}px`;
@@ -22,15 +24,13 @@ const CommentInput = ({ placeholder, onSubmit }) => {
       if (!trimmed) return;
       onSubmit?.(trimmed);
       setValue("");
-      textareaRef.current.focus();
     }
   };
-
   return (
     <div className="CommentInput">
       <textarea
-        ref={textareaRef}
-        onClick={(e) => e.stopPropagation()}
+        className="CommentInput__content"
+        ref={inputRef}
         value={value}
         onChange={(e) => setValue(e.target.value)}
         placeholder={placeholder}
@@ -38,6 +38,17 @@ const CommentInput = ({ placeholder, onSubmit }) => {
         autoFocus={true}
         onKeyDown={handleKeyDown}
       />
+      <button
+        className={`CommentInput__submit ${value.trim() ? "active" : ""}`}
+        disabled={!value.trim()}
+        onClick={() => {
+          const trimmed = value.trim();
+          if (!trimmed) return;
+          onSubmit?.(trimmed);
+        }}
+      >
+        <img src={value.trim() ? submitIcon : submitIcon_disabled} />
+      </button>
     </div>
   );
 };

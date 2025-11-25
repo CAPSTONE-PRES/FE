@@ -4,6 +4,8 @@
 
 .calendar-wrap.modal {
   padding: 0 2px;
+  width: 242px;
+  box-shadow: none;
 }
 
 .calendar-wrap.modal .react-calendar {

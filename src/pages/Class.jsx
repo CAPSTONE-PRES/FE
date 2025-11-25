@@ -3,8 +3,7 @@ import backIcon from "../assets/SVG_NewClass/back.svg";
 import api from "../api";
 import selectArrow from "../assets/SVG_ClassHome/select-arrow.svg";
 import { useNavigate, useParams } from "react-router-dom";
-import { useContext, useState } from "react";
-import { DataContext } from "../App";
+import { useEffect, useState } from "react";
 import Header from "../components/Header";
 import NewButton from "../components/NewButton";
 import AvatarGroup from "../components/AvatarGroup";
@@ -12,28 +11,42 @@ import Presentations from "../components/Presentations";
 import BackButton from "../components/BackButton";
 import TeamMemberListModal from "../components/TeamMemberListModal";
 import useOutsideClick from "../hooks/useOutsideClick";
+import { getWorkspaceInfo, deleteWorkspace } from "../api/workspaceApi";
 
 const Class = () => {
   const nav = useNavigate();
-  const params = useParams();
-  console.log(params.id);
+  const { id: workspaceId } = useParams();
+
+  const [workspaceInfo, setWorkspaceInfo] = useState(null);
   const [isPresenterModalOpen, setIsPresenterModalOpen] = useState(false);
-  const { classes, currentUser, loading } = useContext(DataContext);
-  console.log(classes);
+
   useOutsideClick(".Class_member-info", () => setIsPresenterModalOpen(false));
 
-  const classData = classes[params.id];
-  if (loading || !classData) {
-    return <div>Loading..</div>;
-  }
+  useEffect(() => {
+    const fetchWorkspace = async () => {
+      try {
+        const data = await getWorkspaceInfo(workspaceId);
+        setWorkspaceInfo(data);
+        console.log("워크스페이스 정보:", data);
+      } catch (err) {
+        console.error("워크스페이스 정보 불러오기 실패:", err);
+      }
+    };
+    fetchWorkspace();
+  }, []);
 
-  const { id, name, times, isTeamProject, owner, teamMembers } = classData;
+  if (!workspaceInfo) return <div></div>;
 
-  const isOwner = owner.id === currentUser.id;
+  const {
+    workspaceName,
+    workspaceTimeList,
+    workspaceOwnerName,
+    workspaceOwnerProfileUrl,
+    workspaceMemberList,
+    isOwner,
+  } = workspaceInfo;
 
-  // const members = isOwner
-  //   ? [owner, ...teamMembers]
-  //   : [currentUser, owner, ...teamMembers];
+  const isTeamProject = (workspaceMemberList?.length ?? 0) > 1;
 
   return (
     <div className="Class">
@@ -46,22 +59,22 @@ const Class = () => {
             }}
           />
           <div className="Class_info">
-            <h3 className="Class_name">{name}</h3>
+            <h3 className="Class_name">{workspaceName}</h3>
             <div className="Class_times">
-              {times.map((time, idx) => (
-                <li key={`${id}-${idx}`}>{time}</li>
+              {workspaceTimeList.map((time, idx) => (
+                <li key={`${workspaceId}-${idx}`}>{time}</li>
               ))}
             </div>
             <div className="Class_team-info">
               <div className="Class_owner-info">
                 <span className="Class_team-label">OWNER</span>
-                <img src={owner.avatar} />
-                <p>{owner.name}</p>
+                <img src={workspaceOwnerProfileUrl} />
+                <p>{workspaceOwnerName}</p>
               </div>
               {isTeamProject && (
                 <div className="Class_member-info">
                   <span className="Class_team-label">TEAM</span>
-                  <AvatarGroup members={teamMembers} spacing={-10} />
+                  <AvatarGroup members={workspaceMemberList} spacing={-10} />
                   <img
                     src={selectArrow}
                     className="Class_select"
@@ -71,7 +84,7 @@ const Class = () => {
                   />
                   {isPresenterModalOpen && (
                     <TeamMemberListModal
-                      teamMembers={teamMembers}
+                      teamMembers={workspaceMemberList}
                       variant="class"
                     />
                   )}
@@ -83,24 +96,22 @@ const Class = () => {
             <NewButton
               text={"발표자료 추가하기"}
               link={"/newPresentation"}
-              state={{ ...classes[id] }}
+              state={{ workspaceId, workspaceMemberList, workspaceName }}
             />
           </div>
         </div>
       </div>
       <div className="Class_presentations">
-        <Presentations context="class" classId={id} />
+        <Presentations context="class" workspaceId={workspaceId} />
       </div>
       {/* 임시 삭제 버튼(state 반영X) */}
       <button
         onClick={async () => {
           try {
-            const res = await api.delete(`/workspace/${id}/delete`);
-            console.log("응답: ", res.data);
-
+            await deleteWorkspace(workspaceId);
             nav("/classHome");
           } catch (err) {
-            console.log("요청 실패: ", err);
+            console.log("클래스 삭제 실패: ", err);
           }
         }}
       >

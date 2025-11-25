@@ -12,6 +12,7 @@
   border-radius: 8px;
   background: #fafcfe;
   box-sizing: border-box;
+  cursor: pointer;
 }
 
 .UpcomingItem::before {

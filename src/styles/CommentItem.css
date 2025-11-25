@@ -1,6 +1,7 @@
 .CommentItem {
-  width: auto;
+  width: 100%;
   padding: 12px 8px;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -39,6 +40,7 @@
   font-family: "NotoSans";
   font-size: 12px;
   line-height: normal;
+  font-weight: 500;
 }
 .CommentItem__author img {
   width: 16px;
@@ -57,18 +59,21 @@
   font-family: "NotoSans";
   font-size: 10px;
   line-height: normal;
+  font-weight: 500;
 }
 
 .CommentItem__action {
   border: none;
   background-color: transparent;
   padding: 0;
+  cursor: pointer;
 }
 
 .CommentItem__target {
   color: #86b4c8;
   font-family: "NotoSans";
   font-size: 10px;
+  font-weight: 500;
   line-height: normal;
   text-decoration-line: underline;
   text-decoration-style: solid;
@@ -80,10 +85,33 @@
 
 .CommentItem__content {
   margin: 0;
+  width: 100%;
+  max-width: 100%;
   color: #333;
   font-family: "NotoSans";
   font-size: 12px;
   line-height: normal;
+  font-weight: 500;
+
+  overflow-wrap: break-word; /* 긴 단어 줄바꿈 */
+  word-break: break-word; /* 영문 포함 줄바꿈 */
+  white-space: pre-wrap; /* 엔터/공백 유지 + 자동 줄바꿈 */
+  box-sizing: border-box;
+}
+
+.CommentItem__edit-input {
+  margin: 0;
+  color: #333;
+  font-family: "NotoSans";
+  font-size: 12px;
+  line-height: normal;
+  font-weight: 500;
+
+  width: 100%;
+  border: none;
+  outline: none;
+  resize: none;
+  background: transparent;
 }
 
 .CommentItem__replies {

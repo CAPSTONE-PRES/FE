@@ -6,7 +6,7 @@
   max-width: 375px;
   width: 100%;
   margin: 0 auto;
-  min-height: 812px; /* allow page to grow beyond baseline height */
+  /* min-height: 812px; allow page to grow beyond baseline height */
 }
 
 /* Header */

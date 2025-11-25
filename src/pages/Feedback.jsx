@@ -3,6 +3,7 @@ import Header from "../components/Header";
 import { useState, useRef, useEffect, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getFeedback } from "../api/feedbackApi";
+import { mockFeedbackData } from "../mockFeedbackData";
 import backgroundWave from "../assets/SVG_ Feedback/background-wave.svg";
 import backgroundLine from "../assets/SVG_ Feedback/background-line.svg";
 import backgroundChart from "../assets/SVG_ Feedback/background-chart.svg";
@@ -13,51 +14,17 @@ import iconChevron from "../assets/SVG_ Feedback/icon-chevron.svg";
 
 const Feedback = () => {
   const { sessionId } = useParams();
+  console.log("sessionId:", sessionId);
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("page");
-  const [expandedCards, setExpandedCards] = useState({
-    1: true,
-    2: true,
-    3: true,
-    4: true,
-    5: true,
-    6: true,
-    7: true,
-  });
+  const [expandedCards, setExpandedCards] = useState({});
   const [expandedRecommendedAnswer, setExpandedRecommendedAnswer] =
     useState(false);
 
   // 기본값 설정 (API 호출 실패 시 사용)
-  const defaultFeedbackData = useMemo(
-    () => ({
-      grade: "B",
-      totalScore: 81,
-      spmScore: 45,
-      repeatScore: 75,
-      fillerScore: 88,
-      silenceScore: 88,
-      totalSilenceDuration: 272, // 4분 32초
-      qnaComparison: {
-        comparisonId: 0,
-        questionId: 0,
-        question:
-          "타당성 분석에서는 1차 연구를 먼저 하고 나서 2차 연구도 꼭 해야 하나요? 두 방법은 순차적으로 진행되는 필수 관계인가요?",
-        idealAnswer:
-          "1차 연구와 2차 연구는 반드시 순차적으로 진행할 필요는 없습니다. 상황과 목적에 따라 유연하게 선택하거나 병행할 수 있습니다. 일반적으로는 2차 연구를 통해 시장과 경쟁 상황을 파악한 뒤, 1차 연구로 고객의 구체적인 반응을 확인하는 방식을 사용합니다. 반대로 아이디어 검증이 우선일 경우 1차 연구를 먼저 수행하고, 이후 2차 연구로 데이터를 보완하기도 합니다. 핵심은 연구의 순서보다 목적에 맞는 방법을 활용해 실질적인 의사결정에 도움이 되도록 하는 것입니다.",
-        userAnswer:
-          "1차 연구와 2차 연구는 필수적인 순차 관계는 아니며, 상황과 목적에 따라 유연하게 선택하거나 병행할 수 있는데요, 일반적으로는 2차 연구를 먼저 해서 시장과 경쟁 상황을 파악하고, 그 후 1차 연구로 고객 반응을 구체적으로 확인하는 경우가 많습니다. 하지만 아이디어 검증을 위해 1차 연구를 먼저 하고, 이후 2차 연구로 데이터를 보완하는 방식도 가능합니다. 중요한 건 순서보다 목적에 맞게 분석 방법을 활용해 실질적인 의사결정에 도움을 주는 것입니다.",
-        similarity: 0.85,
-        keywordRecall: 0.75,
-        coverage: 0.8,
-        feedback:
-          "기존 문장은 한 문장 안에 여러 개념이 한꺼번에 들어 있어서 읽는 사람이 중간에 문맥을 따라가기 어려웠어요. 개선 문장은 문장을 짧게 나누어 구조화했어요. 문장이 좀 더 자연스럽고 구어체에 가까워져 '보고서'나 '발표용 원고'에 더 적합한 어조로 변했어요.",
-        missingKeywords: ["유연성", "병행"],
-      },
-    }),
-    []
-  );
+  const defaultFeedbackData = useMemo(() => mockFeedbackData, []);
 
-  const [feedbackData, setFeedbackData] = useState(defaultFeedbackData);
+  const [feedbackData, setFeedbackData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const containerRef = useRef(null);
@@ -250,8 +217,8 @@ const Feedback = () => {
     spmScore,
     fillerScore,
     repeatScore,
-    silenceScore,
-    totalSilenceDuration,
+    accuracyScore,
+    totalDurationSeconds,
     qnaComparison,
   } = feedbackData;
 
@@ -343,8 +310,8 @@ const Feedback = () => {
             <div className="presentation-time">
               <span className="time-label">총 발표 시간 : </span>
               <span className="time-value">
-                {totalSilenceDuration
-                  ? formatTime(totalSilenceDuration)
+                {totalDurationSeconds
+                  ? formatTime(totalDurationSeconds)
                   : "4분 32초"}
               </span>
             </div>
@@ -380,8 +347,8 @@ const Feedback = () => {
                   <span className="score-value">{fillerScore || 0}점</span>
                 </div>
                 <div className="score-item">
-                  <span className="score-label">침묵</span>
-                  <span className="score-value">{silenceScore || 0}점</span>
+                  <span className="score-label">발표 정확도</span>
+                  <span className="score-value">{accuracyScore || 0}점</span>
                 </div>
               </div>
             </div>
@@ -397,31 +364,31 @@ const Feedback = () => {
                     <div className="record-bar-container">
                       <div
                         className="record-bar current-bar"
-                        style={{ width: "81%" }}
+                        style={{ width: `${totalScore}%` }}
                       ></div>
-                      <span className="record-score">81점</span>
+                      <span className="record-score">{totalScore}점</span>
                     </div>
                   </div>
-                  <div className="record-item">
-                    <span className="record-date">06/05</span>
-                    <div className="record-bar-container">
-                      <div
-                        className="record-bar"
-                        style={{ width: "58%" }}
-                      ></div>
-                      <span className="record-score">58점</span>
-                    </div>
-                  </div>
-                  <div className="record-item">
-                    <span className="record-date">06/05</span>
-                    <div className="record-bar-container">
-                      <div
-                        className="record-bar"
-                        style={{ width: "64%" }}
-                      ></div>
-                      <span className="record-score">64점</span>
-                    </div>
-                  </div>
+                  {/* 최근 연습 기록 (history) */}
+                  {feedbackData.history?.slice(0, 2).map((h, idx) => {
+                    const date = new Date(h.practicedAt);
+                    const month = String(date.getMonth() + 1).padStart(2, "0");
+                    const day = String(date.getDate()).padStart(2, "0");
+                    const formattedDate = `${month}/${day}`;
+
+                    return (
+                      <div key={idx} className="record-item">
+                        <span className="record-date">{formattedDate}</span>
+                        <div className="record-bar-container">
+                          <div
+                            className="record-bar"
+                            style={{ width: `${h.totalScore}%` }}
+                          ></div>
+                          <span className="record-score">{h.totalScore}점</span>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             </div>
@@ -454,15 +421,264 @@ const Feedback = () => {
             </div>
             <div className="feedback-content-area" ref={scrollRef}>
               {activeTab === "page" ? (
-                /* TODO: 페이지별 피드백 데이터는 현재 API 응답에 포함되어 있지 않습니다.
-                 * 별도의 API가 필요하거나, 세션 피드백 API 응답에 페이지별 정보가 추가될 수 있습니다.
-                 * 현재는 하드코딩된 데이터를 표시합니다.
-                 */
                 <div className="page-feedback">
                   <div className="timeline-container" ref={containerRef}>
                     <div className="timeline-line" ref={lineRef}></div>
 
-                    <div className="timeline-item" data-page="1">
+                    {feedbackData.slideFeedbacks.map((slide) => {
+                      const page = slide.slideNumber;
+                      const isExpanded = expandedCards[page];
+
+                      const issues = slide.issues || [];
+                      const hasFeedback = issues.length > 0;
+
+                      const timeText = formatTime(slide.timestampSeconds || 0);
+
+                      //아이콘 매핑
+                      const iconMap = {
+                        SPEED: "/src/assets/SVG_ Feedback/icon-type-speed.svg",
+                        FILLER:
+                          "/src/assets/SVG_ Feedback/icon-type-hesitate.svg",
+                        REPETITION:
+                          "/src/assets/SVG_ Feedback/icon-type-repeat.svg",
+                        ACCURACY: "/src/assets/SVG_ Feedback/icon-type-aim.svg",
+                        SILENCE:
+                          "/src/assets/SVG_ Feedback/icon-type-hesitate.svg",
+                      };
+
+                      // 이슈명 매핑
+                      const labelMap = {
+                        SPEED: "발표 속도",
+                        FILLER: "말의 망설임",
+                        REPETITION: "반복되는 어휘",
+                        ACCURACY: "발표 정확도",
+                        SILENCE: "공백 발생",
+                      };
+
+                      // 이슈별 tagCountText 생성 함수
+                      const getTagCountText = (issue) => {
+                        switch (issue.issueType) {
+                          case "FILLER":
+                            return Object.entries(issue.fillerDetail || {})
+                              .map(([word, count]) => `${word}: ${count}회`)
+                              .join(", ");
+
+                          case "REPETITION": {
+                            if (typeof issue.repeatDetail === "string") {
+                              return `${issue.repeatCount}회 : ${issue.repeatDetail}`;
+                            }
+
+                            const entries = Object.entries(
+                              issue.repeatDetail || {}
+                            );
+                            if (entries.length === 0) return "0회";
+
+                            const formatted = entries
+                              .map(([word, count]) => `${word}: ${count}회`)
+                              .join(",");
+                            return formatted;
+                          }
+
+                          case "ACCURACY":
+                            return `오류 ${issue.errorCount}회`;
+
+                          case "SILENCE":
+                            return `침묵 ${
+                              issue.silenceCount
+                            }회 / ${issue.totalSilenceDuration?.toFixed(1)}초`;
+
+                          case "SPEED":
+                            return "속도 빠름";
+
+                          default:
+                            return "";
+                        }
+                      };
+
+                      // 텍스트 강조: 반복 / 필러만 강조
+                      const getHighlightSource = () => {
+                        const fillerIssue = issues.find(
+                          (i) => i.issueType === "FILLER"
+                        );
+                        const repeatIssue = issues.find(
+                          (i) => i.issueType === "REPETITION"
+                        );
+
+                        if (fillerIssue) return getTagCountText(fillerIssue);
+                        if (repeatIssue) return getTagCountText(repeatIssue);
+                        return "";
+                      };
+
+                      const highlightSource = getHighlightSource();
+
+                      return (
+                        <div
+                          key={page}
+                          className="timeline-item"
+                          data-page={page}
+                        >
+                          {/* ----------------- 타임라인 점 ----------------- */}
+                          <div
+                            className={`timeline-node ${
+                              hasFeedback ? "has-feedback" : ""
+                            }`}
+                          >
+                            {hasFeedback && (
+                              <img
+                                src={iconNode}
+                                alt="피드백"
+                                style={{ width: "100%", height: "100%" }}
+                              />
+                            )}
+                          </div>
+
+                          {/* ----------------- 썸네일 ----------------- */}
+                          <div
+                            className="thumbnail-box"
+                            style={{
+                              backgroundImage: `url("${slide.thumbnailUrl}")`,
+                            }}
+                          >
+                            {/* <div className="thumbnail-placeholder">
+                              {!slide.thumbnailUrl && (
+                                <img
+                                  // src={slide.thumbnailUrl}
+                                  alt={`${page}번 슬라이드`}
+                                  className="thumbnail-image"
+                                />
+                              )}
+                            </div> */}
+                          </div>
+
+                          {/* ----------------- 카드 ----------------- */}
+                          <div className="feedback-card">
+                            {/* header */}
+                            <div className="card-header">
+                              <div className="page-info">
+                                <span className="page-number">{page}p</span>
+                                {/* 여러 개의 아이콘 표시 */}
+                                <div className="tag-icon">
+                                  {issues.map((i) => (
+                                    <img
+                                      key={i.issueType}
+                                      src={iconMap[i.issueType]}
+                                      alt={i.issueType}
+                                    />
+                                  ))}
+                                </div>
+                              </div>
+
+                              <div className="time-info">
+                                <span className="timestamp">{timeText}</span>
+                                <span
+                                  className={`expand-icon ${
+                                    isExpanded ? "expanded" : ""
+                                  }`}
+                                  onClick={() => toggleCard(page)}
+                                >
+                                  <img
+                                    src={iconChevron}
+                                    style={{ width: "14px" }}
+                                  />
+                                </span>
+                              </div>
+                            </div>
+
+                            {isExpanded && (
+                              <div className="content-divider"></div>
+                            )}
+
+                            {/* ----------------- 콘텐츠 ----------------- */}
+                            {isExpanded && (
+                              <div className="card-content">
+                                {/* stt 텍스트 */}
+                                <p>
+                                  {highlightSource
+                                    ? renderHighlightedText(
+                                        slide.slideText,
+                                        highlightSource
+                                      )
+                                    : slide.slideText}
+                                </p>
+
+                                {/* 이슈 전체 렌더링 */}
+                                {issues.map((issue, idx) => (
+                                  <div key={idx} className="feedback-details">
+                                    {/* 라벨 + 카운트 */}
+                                    <div className="feedback-tag">
+                                      <span className="tag-label">
+                                        {labelMap[issue.issueType]}
+                                      </span>
+                                      <span className="tag-count">
+                                        {getTagCountText(issue)}
+                                      </span>
+                                    </div>
+
+                                    {/* 그래프(speed 전용) */}
+                                    {issue.issueType === "SPEED" ? (
+                                      <div className="feedback-comment">
+                                        <p>{issue.comment}</p>
+
+                                        <div className="speed-comparison">
+                                          <div className="speed-item">
+                                            <span className="speed-label user">
+                                              사용자 속도
+                                            </span>
+                                            <div className="speed-bar-container">
+                                              <div
+                                                className="speed-bar user-speed"
+                                                style={{
+                                                  width: `${Math.max(
+                                                    0,
+                                                    Math.min(
+                                                      100,
+                                                      (issue.spmUser /
+                                                        issue.spmAverage) *
+                                                        50
+                                                    )
+                                                  )}%`,
+                                                }}
+                                              ></div>
+                                              <span className="speed-value">
+                                                SPM: {issue.spmUser}
+                                              </span>
+                                            </div>
+                                          </div>
+
+                                          <div className="speed-item">
+                                            <span className="speed-label">
+                                              평균 속도
+                                            </span>
+                                            <div className="speed-bar-container">
+                                              <div
+                                                className="speed-bar average-speed"
+                                                style={{
+                                                  width: "50%",
+                                                }}
+                                              ></div>
+                                              <span className="speed-value">
+                                                SPM: {issue.spmAverage}
+                                              </span>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    ) : (
+                                      // 일반 코멘트
+                                      <div className="feedback-comment">
+                                        <p>{issue.comment}</p>
+                                      </div>
+                                    )}
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+
+                    {/* <div className="timeline-item" data-page="1">
                       <div className="timeline-node"></div>
                       <div className="thumbnail-box">
                         <div className="thumbnail-placeholder">PPT 썸네일</div>
@@ -886,7 +1102,7 @@ const Feedback = () => {
                           </div>
                         )}
                       </div>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               ) : (

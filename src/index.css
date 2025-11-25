@@ -105,8 +105,10 @@
   src: url("/fonts/NotoSansKR-Black.ttf");
   font-weight: 900;
 }
+html,
 body {
   margin: 0;
+  max-width: 100%;
 }
 
 #root {

@@ -5,7 +5,7 @@ const PresSlideView = ({ slides, currentIndex, setCurrentIndex }) => {
   //키 입력으로 슬라이드 전환
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key === "ArrowRight" || e.key === " ") {
+      if (e.key === "ArrowRight") {
         setCurrentIndex((prev) => Math.min(prev + 1, slides.length - 1));
       } else if (e.key === "ArrowLeft") {
         setCurrentIndex((prev) => Math.max(prev - 1, 0));
@@ -36,7 +36,7 @@ const PresSlideView = ({ slides, currentIndex, setCurrentIndex }) => {
       <div className="PresSlideView__slide-thumbnails">
         {slides.map((slide, idx) => (
           <div
-            key={slide.slideNumber}
+            key={idx}
             className={`PresSlideView__thumbnail ${
               idx === currentIndex ? "active" : ""
             }`}
@@ -44,7 +44,7 @@ const PresSlideView = ({ slides, currentIndex, setCurrentIndex }) => {
           >
             <img
               src={slide}
-              alt={`썸네일 ${slide.slideNumber}`}
+              alt={`썸네일 ${idx + 1}`}
               className="PresSlideView__thumbnail-img"
             />
           </div>

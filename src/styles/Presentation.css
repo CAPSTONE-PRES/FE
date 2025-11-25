@@ -56,12 +56,23 @@
   background: #fff;
   box-shadow: -2px 0 4px 0 rgba(0, 0, 0, 0.1);
   overflow: visible;
+  scrollbar-color: #bcbcbc transparent;
 }
 
 .Presentation__review {
   transition: all 0.3s ease;
   background: linear-gradient(0deg, #e9f0f4 0%, #f9fbfc 100%);
   padding: 32px 8px 0 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 64px;
+}
+.Presentation__review h3 {
+  margin: 0;
+  color: #000;
+  font-family: "GothicA1";
+  font-weight: 700;
+  font-size: 16px;
 }
 
 /*플로팅 액션 바*/
@@ -83,6 +94,8 @@
 /*버전 토글*/
 .Presentation__version-toggle {
   display: flex;
+  height: 48px;
+  align-items: center;
   gap: 8px;
 }
 
@@ -275,4 +288,30 @@
   font-size: 12px;
   line-height: 156.008%; /* 18.721px */
   letter-spacing: -0.24px;
+}
+
+.Presentation__unchecked-members {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.Presentation__all-checked {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--Pres-blue-5, #f2f7fb);
+  padding: 4px 8px;
+  border-radius: var(--3, 15px);
+
+  color: var(--Pres-green-1, #5d8daa);
+  font-family: "NotoSans";
+  font-weight: 500;
+  font-size: 10px;
+  font-style: normal;
+  line-height: normal;
+}
+.Presentation__all-checked img {
+  width: 16px;
+  height: 16px;
 }

@@ -1,9 +1,49 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import "../styles/CueCard.css";
+import ContextMenu from "./ContextMenu";
+import CommentInput from "./CommentInput";
+import { useContextMenu } from "../hooks/useContextMenu";
 
-const CueCard = ({ keyword, value, onChange, showNonverbal = true }) => {
+const CueCard = ({
+  cueId,
+  keyword,
+  value,
+  onChange,
+  onBlur,
+  onAddComment,
+  showNonverbal = true,
+}) => {
   const editorRef = useRef();
+  const commentRef = useRef(null);
+  const { isVisible, position, handleContextMenu, setIsVisible } =
+    useContextMenu();
+  const [selectionText, setSelectionText] = useState("");
+  const [inputVisible, setInputVisible] = useState(false);
+
   const isComposingRef = useRef(false);
+
+  //드래그+우클릭 -> 메뉴 표시
+  const handleRightClick = (e) => {
+    e.preventDefault();
+    const selection = window.getSelection();
+    const selectedText = selection.toString().trim();
+    if (!selectedText) return;
+
+    setSelectionText(selectedText);
+    handleContextMenu(e);
+  };
+
+  //CommentInput 표시
+  const handleAddCommentClick = () => {
+    setIsVisible(false);
+    setInputVisible(true);
+  };
+
+  //코멘트 submit
+  const handleSubmitComment = (content) => {
+    onAddComment?.(cueId, content, selectionText);
+    setInputVisible(false);
+  };
 
   // 커서 위치 저장,복원
   const saveSelection = () => {
@@ -41,6 +81,24 @@ const CueCard = ({ keyword, value, onChange, showNonverbal = true }) => {
       .replace(/<\/div>/g, "")
       .replace(/&nbsp;/g, " ");
   };
+
+  //입력창 외부 클릭 감지
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      // 클릭한 요소가 입력창 내부면 무시
+      if (commentRef.current && commentRef.current.contains(e.target)) return;
+      // 바깥 클릭이면 닫기
+      setInputVisible(false);
+    };
+
+    if (inputVisible) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [inputVisible]);
 
   //외부 value가 바뀌었을 때만 에디터 반영 (비제어 유지)
   useEffect(() => {
@@ -83,8 +141,13 @@ const CueCard = ({ keyword, value, onChange, showNonverbal = true }) => {
     handleInput(); // 조합 종료 시점에만 동기화
   };
 
+  const menuItems = useMemo(
+    () => [{ label: "댓글 추가", onClick: handleAddCommentClick }],
+    []
+  );
+
   return (
-    <div className="CueCard">
+    <div className="CueCard" onContextMenu={handleRightClick}>
       <h3 className="CueCard__keyword">{keyword}</h3>
       <div
         className="CueCard__editor"
@@ -92,11 +155,42 @@ const CueCard = ({ keyword, value, onChange, showNonverbal = true }) => {
         contentEditable
         suppressContentEditableWarning
         onInput={handleInput}
+        onBlur={() => {
+          const newText = htmlToText(editorRef.current.innerHTML);
+          onBlur?.(newText);
+        }}
         onClick={(e) => e.stopPropagation()}
         onKeyDown={(e) => e.stopPropagation()}
         onCompositionStart={handleCompositionStart}
         onCompositionEnd={handleCompositionEnd}
       />
+
+      {/* 우클릭 메뉴 */}
+      <ContextMenu
+        isVisible={isVisible}
+        position={position}
+        items={menuItems}
+        onClose={() => setIsVisible(false)}
+      />
+
+      {/* 댓글 입력창 */}
+      {inputVisible && (
+        <div
+          ref={commentRef}
+          className="CueCard__comment-input-wrapper"
+          style={{
+            position: "fixed",
+            top: position.y + 15,
+            left: position.x - 50,
+            zIndex: 9999,
+          }}
+        >
+          <CommentInput
+            placeholder="Comment..."
+            onSubmit={handleSubmitComment}
+          />
+        </div>
+      )}
     </div>
   );
 };

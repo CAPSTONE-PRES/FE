@@ -1,18 +1,14 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import "../styles/Presentations.css";
 import SortToggle from "./SortToggle";
 import PresentationCard from "./PresentationCard";
 import { getIsEmpty } from "../util/get-is-empty";
-import { DataContext } from "../App";
+import { getProjectList } from "../api/projectApi";
+import { getWorkspaceProjectList } from "../api/workspaceApi";
 
-const Presentations = ({ context = "home", classId }) => {
-  const [sortBy, setSortBy] = useState("title");
-  const { classes, presentations } = useContext(DataContext);
-
-  const filteredData =
-    context === "home"
-      ? presentations
-      : Object.values(presentations).filter((p) => p.classId === classId);
+const Presentations = ({ context = "home", workspaceId }) => {
+  const [sortBy, setSortBy] = useState("date");
+  const [presentations, setPresentations] = useState([]);
 
   const SORT_OPTIONS =
     context === "home"
@@ -26,25 +22,49 @@ const Presentations = ({ context = "home", classId }) => {
           { key: "title", label: "제목순" },
         ];
 
-  function getSortedData(presentations) {
-    const list = Object.values(presentations);
+  useEffect(() => {
+    const fetchPresentations = async () => {
+      try {
+        const typeMap = { date: 1, title: 2, presentationDate: 3 };
+        const type = typeMap[sortBy] ?? 1;
 
-    if (sortBy === "date") {
-      return list
-        .filter((p) => p.lastVisited)
-        .toSorted(
-          (a, b) => +new Date(b.lastVisited) - +new Date(a.lastVisited)
-        );
-    } else if (sortBy === "presentationDate") {
-      return list
-        .filter((p) => p.date)
-        .toSorted((a, b) => +new Date(b.date) - +new Date(a.date));
-    } else {
-      return list.toSorted((a, b) => a.title.localeCompare(b.title));
-    }
-  }
+        let data = [];
 
-  const sortedData = getSortedData(filteredData);
+        if (context === "home") {
+          data = await getProjectList(type);
+        } else if (context === "class") {
+          data = await getWorkspaceProjectList(workspaceId, type);
+        }
+        console.log("프로젝트 리스트:", data);
+
+        setPresentations(data);
+      } catch (err) {
+        console.error("프로젝트 리스트 불러오기 실패: ", err);
+      }
+    };
+
+    fetchPresentations();
+  }, [context, sortBy, workspaceId]);
+
+  // function getSortedData(presentations) {
+  //   const list = Object.values(presentations);
+
+  //   if (sortBy === "date") {
+  //     return list
+  //       .filter((p) => p.lastVisited)
+  //       .toSorted(
+  //         (a, b) => +new Date(b.lastVisited) - +new Date(a.lastVisited)
+  //       );
+  //   } else if (sortBy === "presentationDate") {
+  //     return list
+  //       .filter((p) => p.date)
+  //       .toSorted((a, b) => +new Date(b.date) - +new Date(a.date));
+  //   } else {
+  //     return list.toSorted((a, b) => a.title.localeCompare(b.title));
+  //   }
+  // }
+
+  // const sortedData = getSortedData(filteredData);
 
   return (
     <div className="Presentations">
@@ -59,7 +79,7 @@ const Presentations = ({ context = "home", classId }) => {
           onChange={(next) => setSortBy(next)}
           options={SORT_OPTIONS}
         />
-        {getIsEmpty(sortedData) ? (
+        {getIsEmpty(presentations) ? (
           <div className="Presentations_empty-message">
             업로드 된 발표자료가 없어요!
             <br />
@@ -67,10 +87,10 @@ const Presentations = ({ context = "home", classId }) => {
           </div>
         ) : (
           <div className="Presentations_wrapper">
-            {sortedData.map((p) => (
+            {presentations.map((p) => (
               <PresentationCard
-                key={p.id}
-                name={classes[p.classId].name}
+                key={p.projectId}
+                workspaceName={p.workspaceName}
                 hasShadow={context === "class"}
                 showBadge={context === "home"}
                 {...p}

@@ -2,22 +2,15 @@ import "../styles/PresentationCard.css";
 import ellipse from "../assets/SVG_Main/ellipse.svg";
 import { getStringedDate } from "../util/get-stringed-date";
 import { useNavigate } from "react-router-dom";
-
-function getTimeAgo(lastVisited) {
-  let t = new Date(lastVisited);
-  let seconds = Math.floor((new Date() - t.getTime()) / 1000);
-  if (seconds > 86400) return getStringedDate(t);
-  if (seconds > 3600) return Math.floor(seconds / 3600) + "시간 전";
-  if (seconds > 60) return Math.floor(seconds / 60) + "분 전";
-  return "방금";
-}
+import getTimeAgo from "../util/get-time-ago";
 
 const PresentationCard = ({
-  name,
-  id,
-  title,
+  workspaceName,
+  projectId,
+  projectTitle,
   date,
-  presenter,
+  presenterName,
+  presenterProfileUrl,
   lastVisited,
   hasShadow = false,
   showBadge = true,
@@ -30,17 +23,17 @@ const PresentationCard = ({
     <div
       className={`PresentationCard ${hasShadow ? "with-shadow" : ""}`}
       onClick={() => {
-        nav(`/presentation/${id}`, {
-          state: { name, title },
+        nav(`/presentation/${projectId}`, {
+          state: { workspaceName, projectTitle },
         });
       }}
     >
       <div className="presentation-card_thumb">
-        {showBadge && <span className="badge">{name}</span>}
+        {showBadge && <span className="badge">{workspaceName}</span>}
       </div>
 
       <div className="presentation-card_info">
-        <h4 className="title">{title}</h4>
+        <h4 className="title">{projectTitle}</h4>
 
         <div className="meta">
           <div className="meta-left">
@@ -51,8 +44,8 @@ const PresentationCard = ({
 
             <div className="meta-item">
               <span className="meta-item_label">발표자</span>{" "}
-              <img src={ellipse} />
-              <span className="presenter">{presenter}</span>
+              <img src={presenterProfileUrl} className="presenter-avatar" />
+              <span className="presenter">{presenterName}</span>
             </div>
           </div>
 

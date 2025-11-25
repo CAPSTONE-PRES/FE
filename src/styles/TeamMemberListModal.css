@@ -28,6 +28,8 @@
 }
 
 .TeamMemberListModal.pres {
-  width: 50%;
-  top: 50px;
+  padding: 25px;
+  width: auto;
+  top: 40px;
+  right: 0;
 }
