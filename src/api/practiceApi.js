@@ -48,3 +48,9 @@ export const compareQnaAnswer = async (sessionId, questionId) => {
   );
   return res.data;
 };
+
+//qna 피드백 조회
+export const getQnaFeedback = async (sessionId) => {
+  const res = await api.get(`/practice/${sessionId}/qna/feedback`);
+  return res.data;
+};

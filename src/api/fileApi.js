@@ -68,3 +68,13 @@ export const generateQnA = async (fileId) => {
     console.error("qna 생성 실패: ", err);
   }
 };
+
+export const getSavedQnA = async (fileId) => {
+  try {
+    const res = await api.get(`/files/qna/${fileId}`);
+    console.log("예상질문 불러오기 완료:", res.data);
+    return res.data;
+  } catch (err) {
+    console.error("예상질문 불러오기 실패:", err);
+  }
+};

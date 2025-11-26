@@ -11,6 +11,7 @@ import iconRetry from "../assets/SVG_ Feedback/icon-retry.svg";
 import iconThumbsUp from "../assets/SVG_ Feedback/icon-thumbs-up.svg";
 import iconNode from "../assets/SVG_ Feedback/icon-node.svg";
 import iconChevron from "../assets/SVG_ Feedback/icon-chevron.svg";
+import { getQnaFeedback } from "../api/practiceApi";
 
 const Feedback = () => {
   const { sessionId } = useParams();
@@ -25,6 +26,7 @@ const Feedback = () => {
   const defaultFeedbackData = useMemo(() => mockFeedbackData, []);
 
   const [feedbackData, setFeedbackData] = useState(null);
+  const [qnaFeedbackData, setQnaFeedbackData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const containerRef = useRef(null);
@@ -44,8 +46,15 @@ const Feedback = () => {
       try {
         setLoading(true);
         setError(null);
-        const data = await getFeedback(sessionId);
-        setFeedbackData(data);
+
+        //발표 피드백 데이터 가져오기
+        const feedback = await getFeedback(sessionId);
+        setFeedbackData(feedback);
+
+        //qna 피드백 데이터 가져오기
+        const qnaFeedback = await getQnaFeedback(sessionId);
+        setQnaFeedbackData(qnaFeedback);
+        console.log("qna 피드백 조회 성공: ", qnaFeedback);
       } catch (err) {
         console.error("피드백 조회 실패:", err);
         // API 호출 실패 시 기본값 사용
@@ -216,10 +225,10 @@ const Feedback = () => {
     totalScore,
     spmScore,
     fillerScore,
+    silenceScore,
     repeatScore,
     accuracyScore,
     totalDurationSeconds,
-    qnaComparison,
   } = feedbackData;
 
   // 발표 시간 포맷팅 (totalSilenceDuration을 이용해 계산하는 것이 좋지만, API에서 제공되지 않으면 기본값 사용)
@@ -231,14 +240,32 @@ const Feedback = () => {
 
   // 피드백 메시지 생성 (등급과 점수에 따라)
   const getFeedbackMessage = () => {
-    if (spmScore < 50) {
-      return ["말하기 속도를 조금 더", "천천히 하면 좋겠어요!"];
-    } else if (fillerScore < 50) {
-      return ["불필요한 추임새를 줄여", "더 매끄러운 발표를 만들어보세요!"];
-    } else if (repeatScore < 50) {
-      return ["반복되는 표현을 줄이고", "다양한 어휘를 사용해보세요!"];
-    } else {
-      return ["좋은 발표였어요!", "계속 노력해보세요."];
+    const scores = {
+      SPEED: spmScore,
+      FILLER: (fillerScore + silenceScore) / 2,
+      REPETITION: repeatScore,
+      ACCURACY: accuracyScore,
+    };
+
+    const lowestType = Object.entries(scores).reduce((min, cur) =>
+      cur[1] < min[1] ? cur : min
+    )[0];
+
+    switch (lowestType) {
+      case "SPEED":
+        return ["말하기 속도를 조절하여", "전달력을 높여 보세요!"];
+
+      case "FILLER":
+        return ["말의 망설임을 줄여", "더 자연스러운 발표를 만들어보세요!"];
+
+      case "REPETITION":
+        return ["반복되는 표현을 줄이고", "다양한 어휘를 사용해보세요!"];
+
+      case "ACCURACY":
+        return ["발표 정확도를 높이면", "발표 완성도가 더 올라갈 거예요!"];
+
+      default:
+        return ["좋은 발표였어요!", "계속 노력해보세요."];
     }
   };
 
@@ -292,12 +319,12 @@ const Feedback = () => {
             <div className="grade-container">
               <div className="grade-circle">
                 <div className="grade-inner-circle">
-                  <span className="grade-letter">{grade || "B"}</span>
+                  <span className="grade-letter">{grade}</span>
                 </div>
               </div>
               <div className="total-score-oval">
                 <span className="total-score-label">총점:</span>
-                <span className="total-score-number">{totalScore || 0}</span>
+                <span className="total-score-number">{totalScore}</span>
               </div>
             </div>
           </div>
@@ -310,9 +337,7 @@ const Feedback = () => {
             <div className="presentation-time">
               <span className="time-label">총 발표 시간 : </span>
               <span className="time-value">
-                {totalDurationSeconds
-                  ? formatTime(totalDurationSeconds)
-                  : "4분 32초"}
+                {totalDurationSeconds && formatTime(totalDurationSeconds)}
               </span>
             </div>
             <button
@@ -344,7 +369,9 @@ const Feedback = () => {
                 </div>
                 <div className="score-item">
                   <span className="score-label">말의 망설임</span>
-                  <span className="score-value">{fillerScore || 0}점</span>
+                  <span className="score-value">
+                    {(fillerScore + silenceScore) / 2 || 0}점
+                  </span>
                 </div>
                 <div className="score-item">
                   <span className="score-label">발표 정확도</span>
@@ -449,7 +476,7 @@ const Feedback = () => {
                       // 이슈명 매핑
                       const labelMap = {
                         SPEED: "발표 속도",
-                        FILLER: "말의 망설임",
+                        FILLER: "추임새 발생",
                         REPETITION: "반복되는 어휘",
                         ACCURACY: "발표 정확도",
                         SILENCE: "공백 발생",
@@ -464,31 +491,37 @@ const Feedback = () => {
                               .join(", ");
 
                           case "REPETITION": {
-                            if (typeof issue.repeatDetail === "string") {
-                              return `${issue.repeatCount}회 : ${issue.repeatDetail}`;
-                            }
+                            // if (typeof issue.repeatDetail === "string") {
+                            //   return `${issue.repeatCount}회 : ${issue.repeatDetail}`;
+                            // }
 
-                            const entries = Object.entries(
-                              issue.repeatDetail || {}
-                            );
-                            if (entries.length === 0) return "0회";
+                            // const entries = Object.entries(
+                            //   issue.repeatDetail || {}
+                            // );
+                            // if (entries.length === 0) return "0회";
 
-                            const formatted = entries
+                            // const formatted = entries
+                            //   .map(([word, count]) => `${word}: ${count}회`)
+                            //   .join(", ");
+                            // return formatted;
+                            return Object.entries(issue.repeatDetail || {})
                               .map(([word, count]) => `${word}: ${count}회`)
-                              .join(",");
-                            return formatted;
+                              .join(", ");
                           }
 
-                          case "ACCURACY":
-                            return `오류 ${issue.errorCount}회`;
+                          case "ACCURACY": {
+                            const percent = (issue.similarity * 100).toFixed(1);
+                            return `정확도 ${percent}`;
+                          }
 
                           case "SILENCE":
-                            return `침묵 ${
-                              issue.silenceCount
-                            }회 / ${issue.totalSilenceDuration?.toFixed(1)}초`;
+                            return `침묵 ${issue.silenceCount}회`;
 
-                          case "SPEED":
-                            return "속도 빠름";
+                          case "SPEED": {
+                            if (issue.spmUser < 330) return "속도 느림";
+                            if (issue.spmUser > 370) return "속도 빠름";
+                            return "속도 적정";
+                          }
 
                           default:
                             return "";
@@ -677,449 +710,23 @@ const Feedback = () => {
                         </div>
                       );
                     })}
-
-                    {/* <div className="timeline-item" data-page="1">
-                      <div className="timeline-node"></div>
-                      <div className="thumbnail-box">
-                        <div className="thumbnail-placeholder">PPT 썸네일</div>
-                      </div>
-                      <div className="feedback-card">
-                        <div className="card-header">
-                          <span className="page-number">1p</span>
-                          <div className="time-info">
-                            <span className="timestamp">00:06:23</span>
-                            <span
-                              className={`expand-icon ${
-                                expandedCards[1] ? "expanded" : ""
-                              }`}
-                              onClick={() => toggleCard(1)}
-                            >
-                              <img
-                                src={iconChevron}
-                                alt="toggle"
-                                style={{ width: "14px", height: "8px" }}
-                              />
-                            </span>
-                          </div>
-                        </div>
-                        {expandedCards[1] && (
-                          <div className="content-divider"></div>
-                        )}
-                        {expandedCards[1] && (
-                          <div className="card-content">
-                            <p>
-                              안녕하세요 저는 타당성 분석에 대해 발표할
-                              디지털미디어학과 김슈니 입니다.
-                            </p>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="timeline-item" data-page="2">
-                      <div className="timeline-node has-feedback">
-                        <img
-                          src={iconNode}
-                          alt="피드백"
-                          style={{ width: "100%", height: "100%" }}
-                        />
-                      </div>
-                      <div className="thumbnail-box">
-                        <div className="thumbnail-placeholder">PPT 썸네일</div>
-                      </div>
-                      <div className="feedback-card">
-                        <div className="card-header">
-                          <div className="page-info">
-                            <span className="page-number">2p</span>
-                            <div className="tag-icon">
-                              <img
-                                src="/src/assets/SVG_ Feedback/icon-type-hesitate.svg"
-                                alt="말의 망설임"
-                              />
-                            </div>
-                          </div>
-                          <div className="time-info">
-                            <span className="timestamp">00:26:23</span>
-                            <span
-                              className={`expand-icon ${
-                                expandedCards[2] ? "expanded" : ""
-                              }`}
-                              onClick={() => toggleCard(2)}
-                            >
-                              <img
-                                src={iconChevron}
-                                alt="toggle"
-                                style={{ width: "14px", height: "8px" }}
-                              />
-                            </span>
-                          </div>
-                        </div>
-                        {expandedCards[2] && (
-                          <div className="content-divider"></div>
-                        )}
-                        {expandedCards[2] && (
-                          <div className="card-content">
-                            <p>
-                              {renderHighlightedText(
-                                "타당성 분석은 일반적으로 네 가지 구성 요소를 중심으로 진행됩니다. 시장성, 기술성, 재무성, 조직 역량이 바로 그 네 가지입니다. 이 중 하나라도 기준에 미치지 못하면, 뭐지 아이디어를 폐기하거나 전면 수정해야 할 수 있습니다. 따라서 분석은 단순한 평가가 아니라, 음 실행 여부를 결정하는 핵심 기준입니다.",
-                                "음: 1회, 뭐지: 1회"
-                              )}
-                            </p>
-
-                            <div className="feedback-details">
-                              <div className="feedback-tag">
-                                <span className="tag-label">말의 망설임</span>
-                                <span className="tag-count">
-                                  음: 1회, 뭐지: 1회
-                                </span>
-                              </div>
-                              <div className="feedback-comment">
-                                <p>
-                                  불필요한 추임새가 잦아 발표 흐름이 끊기는
-                                  느낌이 들었어요. 발표 전에 내용을 더 숙지 하면
-                                  줄일 수 있을 거예요.
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="timeline-item" data-page="3">
-                      <div className="timeline-node has-feedback">
-                        <img
-                          src={iconNode}
-                          alt="피드백"
-                          style={{ width: "100%", height: "100%" }}
-                        />
-                      </div>
-                      <div className="thumbnail-box">
-                        <div className="thumbnail-placeholder">PPT 썸네일</div>
-                      </div>
-                      <div className="feedback-card">
-                        <div className="card-header">
-                          <div className="page-info">
-                            <span className="page-number">3p</span>
-                            <div className="tag-icon">
-                              <img
-                                src="/src/assets/SVG_ Feedback/icon-type-speed.svg"
-                                alt="발표 속도"
-                              />
-                            </div>
-                          </div>
-                          <div className="time-info">
-                            <span className="timestamp">00:57:10</span>
-                            <span
-                              className={`expand-icon ${
-                                expandedCards[3] ? "expanded" : ""
-                              }`}
-                              onClick={() => toggleCard(3)}
-                            >
-                              <img
-                                src={iconChevron}
-                                alt="toggle"
-                                style={{ width: "14px", height: "8px" }}
-                              />
-                            </span>
-                          </div>
-                        </div>
-                        {expandedCards[3] && (
-                          <div className="content-divider"></div>
-                        )}
-                        {expandedCards[3] && (
-                          <div className="card-content">
-                            <p>
-                              타당성 분석의 방법은 두 가지가 있습니다. 1차
-                              연구와 2차 연구로 나뉘어져 있는데요, 1차 연구는
-                              분석을 진행하는 사람이나 팀이 직접 수집하는
-                              연구입니다. 잠재 고객가의 대화, 업계 전문가로부터
-                              피드백, 포커스 그룹 수행, 설문조사 실시로
-                              진행합니다.
-                            </p>
-
-                            <div className="feedback-details">
-                              <div className="feedback-tag">
-                                <span className="tag-label">발표 속도</span>
-                                <span className="tag-count">속도 빠름</span>
-                              </div>
-                              <div className="feedback-comment">
-                                <p>
-                                  조금 빠르게 말하는 경향이 있어 중요한 부분이
-                                  잘 들리지 않았어요. 핵심 내용에서는 속도를
-                                  천천히 조절해보면 좋아요.
-                                </p>
-                                <div className="speed-comparison">
-                                  <div className="speed-item">
-                                    <span className="speed-label">
-                                      사용자 속도
-                                    </span>
-                                    <div className="speed-bar-container">
-                                      <div
-                                        className="speed-bar user-speed"
-                                        style={{ width: "75%" }}
-                                      ></div>
-                                      <span className="speed-value">
-                                        SPM: 306 음절
-                                      </span>
-                                    </div>
-                                  </div>
-                                  <div className="speed-item">
-                                    <span className="speed-label">
-                                      평균 속도
-                                    </span>
-                                    <div className="speed-bar-container">
-                                      <div
-                                        className="speed-bar average-speed"
-                                        style={{ width: "60%" }}
-                                      ></div>
-                                      <span className="speed-value">
-                                        SPM: 290 음절
-                                      </span>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="timeline-item" data-page="4">
-                      <div className="timeline-node"></div>
-                      <div className="thumbnail-box">
-                        <div className="thumbnail-placeholder">PPT 썸네일</div>
-                      </div>
-                      <div className="feedback-card">
-                        <div className="card-header">
-                          <span className="page-number">4p</span>
-                          <div className="time-info">
-                            <span className="timestamp">01:06:47</span>
-                            <span
-                              className={`expand-icon ${
-                                expandedCards[4] ? "expanded" : ""
-                              }`}
-                              onClick={() => toggleCard(4)}
-                            >
-                              <img
-                                src={iconChevron}
-                                alt="toggle"
-                                style={{ width: "14px", height: "8px" }}
-                              />
-                            </span>
-                          </div>
-                        </div>
-                        {expandedCards[4] && (
-                          <div className="content-divider"></div>
-                        )}
-                        {expandedCards[4] && (
-                          <div className="card-content">
-                            <p>
-                              이상으로 타당성 분석에 대한 발표를 모두
-                              마치겠습니다. 감사합니다.
-                            </p>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="timeline-item" data-page="5">
-                      <div className="timeline-node has-feedback">
-                        <img
-                          src={iconNode}
-                          alt="피드백"
-                          style={{ width: "100%", height: "100%" }}
-                        />
-                      </div>
-                      <div className="thumbnail-box">
-                        <div className="thumbnail-placeholder">PPT 썸네일</div>
-                      </div>
-                      <div className="feedback-card">
-                        <div className="card-header">
-                          <div className="page-info">
-                            <span className="page-number">5p</span>
-                            <div className="tag-icon">
-                              <img
-                                src="/src/assets/SVG_ Feedback/icon-type-repeat.svg"
-                                alt="반복되는 어휘"
-                              />
-                            </div>
-                          </div>
-                          <div className="time-info">
-                            <span className="timestamp">01:26:30</span>
-                            <span
-                              className={`expand-icon ${
-                                expandedCards[5] ? "expanded" : ""
-                              }`}
-                              onClick={() => toggleCard(5)}
-                            >
-                              <img
-                                src={iconChevron}
-                                alt="toggle"
-                                style={{ width: "14px", height: "8px" }}
-                              />
-                            </span>
-                          </div>
-                        </div>
-                        {expandedCards[5] && (
-                          <div className="content-divider"></div>
-                        )}
-                        {expandedCards[5] && (
-                          <div className="card-content">
-                            <p>
-                              {renderHighlightedText(
-                                "타당성 분석은 다음과 같은 장점을 제공합니다. 첫째, 사업의 성공 가능성을 객관적으로 판단할 수 있습니다. 둘째, 투자자의 신뢰를 확보할 수 있어 자금 유치에 유리합니다. 그 다음에 셋째, 내부 의사결정 시 리스크를 최소화하는 데 도움이 됩니다. 그러니까 이처럼 타당성 분석은 약간 단순한 검토를 넘어 사업 실행의 필수 조건이라 할 수 있습니다.",
-                                "3회 : 그 다음에, 그러니까, 약간"
-                              )}
-                            </p>
-
-                            <div className="feedback-details">
-                              <div className="feedback-tag">
-                                <span className="tag-label">반복되는 어휘</span>
-                                <span className="tag-count">
-                                  3회 : 그 다음에, 그러니까, 약간
-                                </span>
-                              </div>
-                              <div className="feedback-comment">
-                                <p>
-                                  같은 표현이 반복되어 전달력이 다소 떨어질 수
-                                  있어요. 다양한 표현을 사용해보는 연습이 필요해
-                                  보여요.
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="timeline-item" data-page="6">
-                      <div className="timeline-node has-feedback">
-                        <img
-                          src={iconNode}
-                          alt="피드백"
-                          style={{ width: "100%", height: "100%" }}
-                        />
-                      </div>
-                      <div className="thumbnail-box">
-                        <div className="thumbnail-placeholder">PPT 썸네일</div>
-                      </div>
-                      <div className="feedback-card">
-                        <div className="card-header">
-                          <div className="page-info">
-                            <span className="page-number">6p</span>
-                            <div className="tag-icon">
-                              <img
-                                src="/src/assets/SVG_ Feedback/icon-type-aim.svg"
-                                alt="발표 정확도"
-                              />
-                            </div>
-                          </div>
-                          <div className="time-info">
-                            <span className="timestamp">01:59:06</span>
-                            <span
-                              className={`expand-icon ${
-                                expandedCards[6] ? "expanded" : ""
-                              }`}
-                              onClick={() => toggleCard(6)}
-                            >
-                              <img
-                                src={iconChevron}
-                                alt="toggle"
-                                style={{ width: "14px", height: "8px" }}
-                              />
-                            </span>
-                          </div>
-                        </div>
-                        {expandedCards[6] && (
-                          <div className="content-divider"></div>
-                        )}
-                        {expandedCards[6] && (
-                          <div className="card-content">
-                            <p>
-                              타당성 분석은 네가지 구성요소를 중심으로
-                              진행됩니다. 시장성, 기술성, 특이성, 조직역량
-                              네가지입니다. 기준에 미치지 못하는 요소가 있다면
-                              해당 아이디어를 폐기하거나 전부 바꿔야합니다. 고로
-                              해당 네가지 요소는 단순평가가 아닌 실행 여부를
-                              결정하는 중요한 기준이 됩니다.
-                            </p>
-
-                            <div className="feedback-details">
-                              <div className="feedback-tag">
-                                <span className="tag-label">발표 정확도</span>
-                                <span className="tag-count">
-                                  오류 부분 : 2회
-                                </span>
-                              </div>
-                              <div className="feedback-comment">
-                                <p>
-                                  내용의 정확도가 다소 부족해 전달에 혼란이 있을
-                                  수 있어요. 발표 전에 정보를 다시 한 번
-                                  점검해보면 좋겠어요.
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="timeline-item" data-page="7">
-                      <div className="timeline-node"></div>
-                      <div className="thumbnail-box">
-                        <div className="thumbnail-placeholder">PPT 썸네일</div>
-                      </div>
-                      <div className="feedback-card">
-                        <div className="card-header">
-                          <span className="page-number">7p</span>
-                          <div className="time-info">
-                            <span className="timestamp">02:11:02</span>
-                            <span
-                              className={`expand-icon ${
-                                expandedCards[7] ? "expanded" : ""
-                              }`}
-                              onClick={() => toggleCard(7)}
-                            >
-                              <img
-                                src={iconChevron}
-                                alt="toggle"
-                                style={{ width: "14px", height: "8px" }}
-                              />
-                            </span>
-                          </div>
-                        </div>
-                        {expandedCards[7] && (
-                          <div className="content-divider"></div>
-                        )}
-                        {expandedCards[7] && (
-                          <div className="card-content">
-                            <p>
-                              이상으로 타당성 분석에 대한 발표를 모두
-                              마치겠습니다. 감사합니다.
-                            </p>
-                          </div>
-                        )}
-                      </div>
-                    </div> */}
                   </div>
                 </div>
               ) : (
                 <div className="qa-feedback">
-                  {qnaComparison ? (
+                  {qnaFeedbackData ? (
                     <>
                       <div className="qa-question">
                         <span className="question-prefix">Q.</span>
                         <p className="question-text">
-                          {qnaComparison.question}
+                          {qnaFeedbackData.question}
                         </p>
                       </div>
 
                       <div className="qa-user-answer">
                         <h3 className="answer-label">내가 한 답변</h3>
                         <div className="answer-box">
-                          <p>{qnaComparison.userAnswer}</p>
+                          <p>{qnaFeedbackData.userAnswer}</p>
                         </div>
                       </div>
 
@@ -1154,12 +761,12 @@ const Feedback = () => {
                         </div>
                         {expandedRecommendedAnswer && (
                           <div className="recommended-content">
-                            <p>{qnaComparison.idealAnswer}</p>
+                            <p>{qnaFeedbackData.idealAnswer}</p>
                           </div>
                         )}
                       </div>
 
-                      {qnaComparison.feedback && (
+                      {qnaFeedbackData.feedback && (
                         <div className="improvement-section">
                           <h3 className="improvement-title">
                             내 답변 개선점을 자세히 설명해드릴게요!
@@ -1169,16 +776,18 @@ const Feedback = () => {
                             <h4 className="improvement-card-title">피드백</h4>
                             <div className="improvement-content">
                               <p className="improvement-description">
-                                {qnaComparison.feedback}
+                                {qnaFeedbackData.feedback}
                               </p>
 
-                              {qnaComparison.missingKeywords &&
-                                qnaComparison.missingKeywords.length > 0 && (
+                              {qnaFeedbackData.missingKeywords &&
+                                qnaFeedbackData.missingKeywords.length > 0 && (
                                   <div className="improvement-highlight">
                                     <span className="highlight-icon">👉</span>
                                     <span>
                                       누락된 키워드:{" "}
-                                      {qnaComparison.missingKeywords.join(", ")}
+                                      {qnaFeedbackData.missingKeywords.join(
+                                        ", "
+                                      )}
                                     </span>
                                   </div>
                                 )}
@@ -1186,18 +795,21 @@ const Feedback = () => {
                               <div className="improvement-result">
                                 <span>
                                   유사도:{" "}
-                                  {(qnaComparison.similarity * 100).toFixed(1)}%
-                                </span>
-                                <span>
-                                  키워드 재현율:{" "}
-                                  {(qnaComparison.keywordRecall * 100).toFixed(
+                                  {(qnaFeedbackData.similarity * 100).toFixed(
                                     1
                                   )}
                                   %
                                 </span>
                                 <span>
+                                  키워드 재현율:{" "}
+                                  {(
+                                    qnaFeedbackData.keywordRecall * 100
+                                  ).toFixed(1)}
+                                  %
+                                </span>
+                                <span>
                                   커버리지:{" "}
-                                  {(qnaComparison.coverage * 100).toFixed(1)}%
+                                  {(qnaFeedbackData.coverage * 100).toFixed(1)}%
                                 </span>
                               </div>
                             </div>

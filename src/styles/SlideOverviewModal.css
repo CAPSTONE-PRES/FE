@@ -1,0 +1,35 @@
+.SlideOverviewModal__grid {
+  width: 100%;
+  max-width: 872px;
+  /* height: 540px; */
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 72px 24px;
+}
+
+.SlideOverviewModal__slide {
+  width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.SlideOverviewModal__card {
+  width: 200px;
+  border-radius: 3px;
+  box-shadow: 0 0 5.7px 0 rgba(108, 108, 108, 0.15);
+  cursor: pointer;
+}
+.SlideOverviewModal__card.active {
+  border: 2px solid #517686;
+}
+
+.SlideOverviewModal__index {
+  color: #2e4f6d;
+  font-feature-settings: "liga" off, "clig" off;
+  font-family: "NotoSans";
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+}

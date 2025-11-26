@@ -7,7 +7,7 @@
   padding: 12px 12px 12px 25px;
   box-sizing: border-box;
   position: relatived;
-  z-index: 10;
+  z-index: 1000;
 
   border-radius: 0 0 10px 0;
   background: #fff;

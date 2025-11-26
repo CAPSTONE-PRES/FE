@@ -1,0 +1,54 @@
+.QuestionModal__Container {
+  display: flex;
+  flex-direction: column;
+  font-family: "NotoSans";
+  gap: 18px;
+}
+
+.QuestionModal__info,
+.QuestionModal__item {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.QuestionModal__info {
+  color: #517686;
+  text-align: center;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 150%; /* 21px */
+  padding: 7px 0;
+}
+
+.QuestionModal__list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.QuestionModal__item {
+  padding: 16px;
+  align-self: stretch;
+  border-radius: 30px;
+  background: #fff;
+  box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.07);
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.QuestionModal__item img {
+  width: 22px;
+  height: 22px;
+}
+
+.QuestionModal__item p {
+  color: #5a5a5b;
+  font-family: "Noto Sans KR";
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 24px; /* 150% */
+  margin: 0;
+}

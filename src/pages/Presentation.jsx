@@ -12,12 +12,11 @@ import LeftNav from "../components/LeftNav";
 import CommentList from "../components/CommentList";
 import PresSlideView from "../components/PresSlideView";
 import { getProjectInfo } from "../api/projectApi";
-import { getCueCards, getSlides } from "../api/fileApi";
+import { getCueCards, getSavedQnA, getSlides } from "../api/fileApi";
 import {
   getCheckStatus,
   getUncheckedMembers,
   toggleCueCheck,
-  updateCueCard,
   updateCueCardById,
 } from "../api/cueApi";
 import {
@@ -28,6 +27,7 @@ import {
   updateComment,
 } from "../api/commentApi";
 import SlideOverviewModal from "../components/SlideOverviewModal";
+import QuestionModal from "../components/QuestionModal";
 
 const Presentation = () => {
   //pid: params.id
@@ -56,6 +56,7 @@ const Presentation = () => {
 
   //modal
   const [openedMenu, setOpenedMenu] = useState(null);
+  const [qnaData, setQnaData] = useState(null);
 
   //초기 데이터 불러오기
   useEffect(() => {
@@ -82,6 +83,10 @@ const Presentation = () => {
           const checked = {};
           checkStatus?.checkedCueIds?.forEach((id) => (checked[id] = true));
           setCheckedCues(checked);
+
+          //예상질문 불러오기
+          const qna = await getSavedQnA(fileId);
+          setQnaData(qna);
         }
         console.log("프로젝트 정보:", project);
       } catch (err) {
@@ -561,7 +566,18 @@ const Presentation = () => {
       </div>
 
       {/* 모달 렌더링 */}
-      {/* <SlideOverviewModal isOpen={openedMenu === "slides"} /> */}
+      <SlideOverviewModal
+        isOpen={openedMenu === "slides"}
+        onClose={() => setOpenedMenu(null)}
+        slides={slides}
+        currentIndex={currentIndex}
+        setCurrentIndex={setCurrentIndex}
+      />
+      <QuestionModal
+        isOpen={openedMenu === "question"}
+        onClose={() => setOpenedMenu(null)}
+        qna={qnaData}
+      />
     </div>
   );
 };
