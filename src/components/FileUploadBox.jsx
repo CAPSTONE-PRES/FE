@@ -30,8 +30,8 @@ const FileUploadBox = ({
       alert(`허용되지 않는 파일 형식입니다.(${fileTypes})`);
       return false;
     }
-    if (file.size > 100 * 1024 * 1024) {
-      alert("파일 크기는 100MB를 초과할 수 없습니다.");
+    if (file.size > 30 * 1024 * 1024) {
+      alert("파일 크기는 30MB를 초과할 수 없습니다.");
       return false;
     }
     return true;

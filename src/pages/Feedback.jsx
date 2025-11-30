@@ -1,22 +1,28 @@
 import "../styles/Feedback.css";
 import Header from "../components/Header";
 import { useState, useRef, useEffect, useMemo } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { getFeedback } from "../api/feedbackApi";
 import { mockFeedbackData } from "../mockFeedbackData";
-import backgroundWave from "../assets/SVG_ Feedback/background-wave.svg";
-import backgroundLine from "../assets/SVG_ Feedback/background-line.svg";
-import backgroundChart from "../assets/SVG_ Feedback/background-chart.svg";
-import iconRetry from "../assets/SVG_ Feedback/icon-retry.svg";
-import iconThumbsUp from "../assets/SVG_ Feedback/icon-thumbs-up.svg";
-import iconNode from "../assets/SVG_ Feedback/icon-node.svg";
-import iconChevron from "../assets/SVG_ Feedback/icon-chevron.svg";
+import backgroundWave from "../assets/SVG_Feedback/background-wave.svg";
+import backgroundLine from "../assets/SVG_Feedback/background-line.svg";
+import backgroundChart from "../assets/SVG_Feedback/background-chart.svg";
+import iconRetry from "../assets/SVG_Feedback/icon-retry.svg";
+import iconThumbsUp from "../assets/SVG_Feedback/icon-thumbs-up.svg";
+import iconNode from "../assets/SVG_Feedback/icon-node.svg";
+import iconChevron from "../assets/SVG_Feedback/icon-chevron.svg";
+import iconSpeed from "../assets/SVG_Feedback/icon-type-speed.svg";
+import iconRepeat from "../assets/SVG_Feedback/icon-type-repeat.svg";
+import iconHesitate from "../assets/SVG_Feedback/icon-type-hesitate.svg";
+import iconAim from "../assets/SVG_Feedback/icon-type-aim.svg";
 import { getQnaFeedback } from "../api/practiceApi";
 
 const Feedback = () => {
   const { sessionId } = useParams();
   console.log("sessionId:", sessionId);
   const navigate = useNavigate();
+  const location = useLocation();
+  console.log("로케이션state:", location.state);
   const [activeTab, setActiveTab] = useState("page");
   const [expandedCards, setExpandedCards] = useState({});
   const [expandedRecommendedAnswer, setExpandedRecommendedAnswer] =
@@ -141,52 +147,33 @@ const Feedback = () => {
   const highlightKeywords = (text, tagCountText) => {
     if (!tagCountText || !text) return text;
 
-    // tag-count 텍스트에서 어휘 추출
+    //콤마 기준으로 나누기
+    const pairs = tagCountText.split(",").map((p) => p.trim());
+
+    //키워드만 추출
     const keywords = [];
-
-    // 콜론(:) 뒤의 전체 텍스트 가져오기
-    const colonMatch = tagCountText.match(/:\s*(.+)/);
-    if (colonMatch) {
-      const afterColon = colonMatch[1].trim();
-      // 콤마로 구분된 각 어휘 추출
-      const commaSeparated = afterColon
-        .split(",")
-        .map((s) => s.trim())
-        .filter((s) => {
-          // "N회" 패턴 제외
-          return s && !s.match(/^\d+회$/);
-        });
-      keywords.push(...commaSeparated);
-    }
-
-    if (!colonMatch || tagCountText.split(":").length > 2) {
-      const parts = tagCountText.split(",").map((part) => part.trim());
-      parts.forEach((part) => {
-        if (part.includes(":")) {
-          const keyword = part.split(":")[0].trim();
-          if (keyword && !keyword.match(/^\d+회$/)) {
-            keywords.push(keyword);
-          }
-        }
-      });
-    }
+    pairs.forEach((pair) => {
+      const [word, count] = pair.split(":").map((s) => s.trim());
+      if (word && !word.match(/^\d+회$/)) {
+        keywords.push(word);
+      }
+    });
 
     // 중복 제거
-    const uniqueKeywords = [
-      ...new Set(keywords.filter((k) => k && k.length > 0)),
-    ];
-
+    const uniqueKeywords = [...new Set(keywords.filter((k) => k.length > 0))];
     if (uniqueKeywords.length === 0) return text;
 
-    // 텍스트에서 키워드를 찾아서 빨간색으로 강조
-    // 긴 키워드부터 처리하여 부분 매칭 방지
+    //긴 단어부터 처리
     const sortedKeywords = uniqueKeywords.sort((a, b) => b.length - a.length);
     let highlightedText = text;
 
+    //특수문자 이스케이프 후 강조
     sortedKeywords.forEach((keyword) => {
-      // 정규식으로 키워드 찾기 (특수문자 이스케이프)
       const escapedKeyword = keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-      const regex = new RegExp(`(${escapedKeyword})`, "gi");
+      const regex = new RegExp(
+        `(?<![가-힣a-zA-Z0-9])(${escapedKeyword})(?![가-힣a-zA-Z0-9])`,
+        "gi"
+      );
       highlightedText = highlightedText.replace(
         regex,
         '<span style="color: #FF0000; font-weight: 500;">$1</span>'
@@ -333,6 +320,7 @@ const Feedback = () => {
             <div className="feedback-message">
               <div>{feedbackMessage[0]}</div>
               <div>{feedbackMessage[1]}</div>
+              {/* <div>{feedbackData.overallFeedback}</div> */}
             </div>
             <div className="presentation-time">
               <span className="time-label">총 발표 시간 : </span>
@@ -463,12 +451,10 @@ const Feedback = () => {
 
                       //아이콘 매핑
                       const iconMap = {
-                        SPEED: "/src/assets/SVG_ Feedback/icon-type-speed.svg",
-                        FILLER:
-                          "/src/assets/SVG_ Feedback/icon-type-hesitate.svg",
-                        REPETITION:
-                          "/src/assets/SVG_ Feedback/icon-type-repeat.svg",
-                        ACCURACY: "/src/assets/SVG_ Feedback/icon-type-aim.svg",
+                        SPEED: iconSpeed,
+                        FILLER: iconHesitate,
+                        REPETITION: iconRepeat,
+                        ACCURACY: iconAim,
                         SILENCE:
                           "/src/assets/SVG_ Feedback/icon-type-hesitate.svg",
                       };
@@ -511,7 +497,7 @@ const Feedback = () => {
 
                           case "ACCURACY": {
                             const percent = (issue.similarity * 100).toFixed(1);
-                            return `정확도 ${percent}`;
+                            return `정확도 ${percent}%`;
                           }
 
                           case "SILENCE":
@@ -537,9 +523,15 @@ const Feedback = () => {
                           (i) => i.issueType === "REPETITION"
                         );
 
-                        if (fillerIssue) return getTagCountText(fillerIssue);
-                        if (repeatIssue) return getTagCountText(repeatIssue);
-                        return "";
+                        let parts = [];
+
+                        if (fillerIssue) {
+                          parts.push(getTagCountText(fillerIssue));
+                        }
+                        if (repeatIssue)
+                          parts.push(getTagCountText(repeatIssue));
+
+                        return parts.join(", ");
                       };
 
                       const highlightSource = getHighlightSource();
@@ -772,48 +764,60 @@ const Feedback = () => {
                             내 답변 개선점을 자세히 설명해드릴게요!
                           </h3>
 
-                          <div className="improvement-card">
-                            <h4 className="improvement-card-title">피드백</h4>
-                            <div className="improvement-content">
-                              <p className="improvement-description">
-                                {qnaFeedbackData.feedback}
-                              </p>
+                          {qnaFeedbackData.feedback.map((feedback, index) => (
+                            <div className="improvement-card" key={index}>
+                              <h4 className="improvement-card-title">{`${
+                                index + 1
+                              }. ${feedback.title}`}</h4>
+                              <div className="improvement-content">
+                                <p className="improvement-description">
+                                  {feedback.content}
+                                </p>
+                                <p className="improvement-description">
+                                  <span className="highlight-icon">👉</span>
+                                  {` ${feedback.improvement}`}
+                                </p>
 
-                              {qnaFeedbackData.missingKeywords &&
-                                qnaFeedbackData.missingKeywords.length > 0 && (
-                                  <div className="improvement-highlight">
-                                    <span className="highlight-icon">👉</span>
-                                    <span>
-                                      누락된 키워드:{" "}
-                                      {qnaFeedbackData.missingKeywords.join(
-                                        ", "
-                                      )}
-                                    </span>
-                                  </div>
-                                )}
-
-                              <div className="improvement-result">
-                                <span>
-                                  유사도:{" "}
-                                  {(qnaFeedbackData.similarity * 100).toFixed(
-                                    1
+                                {/* {qnaFeedbackData.missingKeywords &&
+                                  qnaFeedbackData.missingKeywords.length >
+                                    0 && (
+                                    <div className="improvement-highlight">
+                                      <span className="highlight-icon">👉</span>
+                                      <span>
+                                        누락된 키워드:{" "}
+                                        {qnaFeedbackData.missingKeywords.join(
+                                          ", "
+                                        )}
+                                      </span>
+                                    </div>
                                   )}
-                                  %
-                                </span>
-                                <span>
-                                  키워드 재현율:{" "}
-                                  {(
-                                    qnaFeedbackData.keywordRecall * 100
-                                  ).toFixed(1)}
-                                  %
-                                </span>
-                                <span>
-                                  커버리지:{" "}
-                                  {(qnaFeedbackData.coverage * 100).toFixed(1)}%
-                                </span>
+
+                                <div className="improvement-result">
+                                  <span>
+                                    유사도:{" "}
+                                    {(qnaFeedbackData.similarity * 100).toFixed(
+                                      1
+                                    )}
+                                    %
+                                  </span>
+                                  <span>
+                                    키워드 재현율:{" "}
+                                    {(
+                                      qnaFeedbackData.keywordRecall * 100
+                                    ).toFixed(1)}
+                                    %
+                                  </span>
+                                  <span>
+                                    커버리지:{" "}
+                                    {(qnaFeedbackData.coverage * 100).toFixed(
+                                      1
+                                    )}
+                                    %
+                                  </span>
+                                </div> */}
                               </div>
                             </div>
-                          </div>
+                          ))}
                         </div>
                       )}
                     </>

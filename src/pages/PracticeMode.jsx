@@ -139,7 +139,9 @@ const PracticeMode = () => {
         setRecording(false);
       } catch (err) {
         if (err.response?.status === 204) {
-          nav(`/feedback/${audioData.sessionId}`);
+          nav(`/feedback/${audioData.sessionId}`, {
+            state: { projectId },
+          });
           return;
         }
         console.error("QNA 질문 조회 실패:", err);
@@ -215,7 +217,9 @@ const PracticeMode = () => {
       );
       console.log("QnA 분석 결과:", result);
 
-      nav(`/feedback/${audioData.sessionId}`);
+      nav(`/feedback/${audioData.sessionId}`, {
+        state: { projectId },
+      });
     } catch (err) {
       console.error("QnA 피드백 실패:", err);
       alert("질의응답 피드백 요청 실패");
@@ -276,7 +280,11 @@ const PracticeMode = () => {
               <div className="PracticeMode__step2-footer">
                 <button
                   className="PracticeMode__step2-btn"
-                  onClick={() => nav(`/feedback/${audioData.sessionId}`)}
+                  onClick={() =>
+                    nav(`/feedback/${audioData.sessionId}`, {
+                      state: { projectId },
+                    })
+                  }
                 >
                   <span className="PracticeMode__gradient-text">
                     피드백 받기

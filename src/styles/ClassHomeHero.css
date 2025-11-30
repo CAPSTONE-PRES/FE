@@ -1,6 +1,7 @@
 .hero-actions {
   display: flex;
-  gap: 535px;
+  /* gap: 535px; */
+  justify-content: space-between;
 
   margin: 82px 120px 0px 120px;
 }

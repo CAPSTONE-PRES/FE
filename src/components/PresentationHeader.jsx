@@ -32,7 +32,7 @@ const PresentationHeader = ({
         {mode === "splitView" ? (
           <>
             {" "}
-            {/* <button
+            <button
               onClick={async () => {
                 try {
                   await deleteProject(id);
@@ -43,7 +43,7 @@ const PresentationHeader = ({
               }}
             >
               삭제
-            </button> */}
+            </button>
             <button
               className="header_btn-outline"
               onClick={() => nav(`/class/${workspaceId}`)}

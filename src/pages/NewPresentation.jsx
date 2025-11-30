@@ -104,26 +104,26 @@ const NewPresentation = () => {
       console.log("파일 업로드 성공: ", uploadedFileId);
 
       //[옵션]자료조사 파일 업로드
-      let optFileId = null;
-      if (optionFile) {
-        const optForm = new FormData();
-        optForm.append("file", optionFile);
-        const optUploadRes = await api.post(
-          `/files/upload?uploaderId=${currentUser.id}&projectId=${projectId}`,
-          optForm,
-          {
-            headers: { "Content-Type": "multipart/form-data" },
-          }
-        );
-        optFileId = optUploadRes.data.fileId;
-        console.log("옵션 파일 업로드 성공: ", optFileId);
-      }
+      // let optFileId = null;
+      // if (optionFile) {
+      //   const optForm = new FormData();
+      //   optForm.append("file", optionFile);
+      //   const optUploadRes = await api.post(
+      //     `/files/upload?uploaderId=${currentUser.id}&projectId=${projectId}`,
+      //     optForm,
+      //     {
+      //       headers: { "Content-Type": "multipart/form-data" },
+      //     }
+      //   );
+      //   optFileId = optUploadRes.data.fileId;
+      //   console.log("옵션 파일 업로드 성공: ", optFileId);
+      // }
 
       //3. 파일에서 텍스트 추출
       await extractText(uploadedFileId);
-      if (optFileId) {
-        await extractText(optFileId);
-      }
+      // if (optFileId) {
+      //   await extractText(optFileId);
+      // }
 
       //4. 큐카드 생성
       const cueRes = await generateCue(uploadedFileId);
@@ -288,7 +288,7 @@ const NewPresentation = () => {
           <section className="np-upload">
             <FileUploadBox
               title="발표 자료 업로드"
-              fileTypes="pdf/ppt"
+              fileTypes="pdf/pptx"
               subText="발표자료 파일을 드래그 앤 드롭하세요!"
               file={file}
               setFile={setFile}
@@ -303,7 +303,7 @@ const NewPresentation = () => {
               setFile={setOptionFile}
             />
             <p className="upload-limit">
-              *파일 1개당 최대 첨부용량은 100MB입니다.
+              *파일 1개당 최대 첨부용량은 30MB입니다.
             </p>
           </section>
 
