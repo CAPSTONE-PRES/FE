@@ -1,9 +1,11 @@
 .hero-actions {
   display: flex;
   /* gap: 535px; */
+  width: 100%;
+  max-width: 1200px;
   justify-content: space-between;
 
-  margin: 82px 120px 0px 120px;
+  margin: 82px auto 0px auto;
 }
 
 .hero-fav-classes {

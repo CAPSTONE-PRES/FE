@@ -128,27 +128,29 @@ const MobileCueCard = () => {
 
   return (
     <div className="MobileCueCard">
-      {/* Header with title */}
-      <div className="MobileCueCard__header">
-        <h1 className="MobileCueCard__title">{projectTitle}</h1>
-        <button
-          className="MobileCueCard__menu"
-          onClick={() => setIsMenuOpen(true)}
-        >
-          <img src={iconDots} alt="menu" />
-        </button>
-      </div>
-
-      {/* Progress bar */}
-      <div className="MobileCueCard__progress-container">
-        <div className="MobileCueCard__progress-bar">
-          <div
-            className="MobileCueCard__progress-fill"
-            style={{ width: `${progress}%` }}
-          />
+      <div className="MobileCueCard__top">
+        {/* Header with title */}
+        <div className="MobileCueCard__header">
+          <h1 className="MobileCueCard__title">{projectTitle}</h1>
+          <button
+            className="MobileCueCard__menu"
+            onClick={() => setIsMenuOpen(true)}
+          >
+            <img src={iconDots} alt="menu" />
+          </button>
         </div>
-        <div className="MobileCueCard__page-number">
-          {slideNumber} / {totalSlides}
+
+        {/* Progress bar */}
+        <div className="MobileCueCard__progress-container">
+          <div className="MobileCueCard__progress-bar">
+            <div
+              className="MobileCueCard__progress-fill"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+          <div className="MobileCueCard__page-number">
+            {slideNumber} / {totalSlides}
+          </div>
         </div>
       </div>
 

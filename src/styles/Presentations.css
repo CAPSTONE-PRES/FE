@@ -1,5 +1,8 @@
 .Presentations {
+  max-width: 1200px;
+  width: 100%;
   background-color: transparent;
+  margin: 0 auto;
 }
 
 .Presentations_title {

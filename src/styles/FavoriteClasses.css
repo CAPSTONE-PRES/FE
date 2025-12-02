@@ -1,5 +1,7 @@
 .FavoriteClasses {
-  margin: 0px 120px 119px 120px;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0px auto 119px auto;
 }
 
 .fav-class_title {

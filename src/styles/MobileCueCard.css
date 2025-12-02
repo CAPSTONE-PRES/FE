@@ -3,10 +3,38 @@
   background: linear-gradient(180deg, #fff 0%, #e9f0f4 80%, #d5e3f9 100%);
   display: flex;
   flex-direction: column;
-  max-width: 375px;
+  /* max-width: 375px; */
   width: 100%;
   margin: 0 auto;
+  font-family: "NotoSans";
   /* min-height: 812px; allow page to grow beyond baseline height */
+}
+
+.MobileCueCard__top {
+  position: fixed;
+  z-index: 100;
+  width: 100%;
+  top: 0;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 8px 34px;
+  box-sizing: border-box;
+}
+
+.MobileCueCard__top::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -20px; /* top 영역 아래로 표시 */
+  width: 100%;
+  height: 20px;
+
+  /* 아래로 갈수록 투명해지는 fade-out */
+  background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0));
+
+  pointer-events: none; /* 클릭 막지 않음 */
 }
 
 /* Header */
@@ -14,9 +42,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 8px 16px;
-  background-color: #fff;
-  position: relative;
 }
 
 .MobileCueCard__title {
@@ -26,7 +51,7 @@
   line-height: 24px; /* 150% */
   letter-spacing: -0.32px;
   color: #383843;
-  margin: 4;
+  margin: 4px 0 0 0;
 }
 
 .MobileCueCard__menu {
@@ -53,7 +78,9 @@
 
 /* Progress bar */
 .MobileCueCard__progress-container {
-  padding: 12px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .MobileCueCard__progress-bar {
@@ -62,7 +89,6 @@
   background-color: #e5e8f1;
   border-radius: 4px;
   overflow: hidden;
-  margin-bottom: 8px;
 }
 
 .MobileCueCard__progress-fill {
@@ -81,8 +107,12 @@
 /* Content */
 .MobileCueCard__content {
   flex: 1;
-  padding: 20px;
+  padding: 24px 34px;
+  margin-top: 92px;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 44px;
 }
 
 .MobileCueCard__cue-wrapper {
@@ -98,7 +128,6 @@
   border-radius: 12px;
   padding: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  margin: 32px 0;
 }
 
 /* Next page preview */
@@ -116,6 +145,10 @@
 
 /* Navigation */
 .MobileCueCard__navigation {
+  position: fixed;
+  bottom: 0;
+  height: 80px;
+  align-items: flex-end;
   display: flex;
   justify-content: center;
   gap: 12px;
@@ -340,7 +373,7 @@
   height: 100%;
   background: linear-gradient(90deg, #79cdfa 0%, #568de0 100%);
   border-radius: 4px;
-  animation: loading 2s ease-in-out;
+  animation: loading 0.2s ease-in-out;
 }
 
 @keyframes loading {

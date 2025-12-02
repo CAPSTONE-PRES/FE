@@ -1,5 +1,8 @@
 .Classes {
+  width: 100%;
+  max-width: 1200px;
   padding: 114px 120px 129px 120px;
+  margin: 0 auto;
 }
 .classes_title h3 {
   color: #2e2e2e;

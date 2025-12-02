@@ -1,15 +1,17 @@
 .HomeHero {
   font-family: "GothicA1";
+  width: 100%;
+  max-width: 1200px;
+  margin: 102px auto 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 34px;
 }
 
 .hero-top {
   display: flex;
   height: 96px;
   justify-content: space-between;
-  margin-top: 102px;
-  margin-left: 116px;
-  margin-right: 123px;
-  margin-bottom: 34px;
 }
 
 .hero-greeting h2 {
@@ -31,8 +33,6 @@
 .hero-bottom {
   display: flex;
   justify-content: space-between;
-  margin-left: 116px;
-  margin-right: 123px;
 }
 
 .hero-dday {

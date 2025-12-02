@@ -20,6 +20,7 @@ import Signup from "./pages/Signup";
 import ResetPassword from "./pages/ResetPassword";
 import MobileCueCard from "./pages/MobileCueCard";
 import { getFavWorkspaces } from "./api/workspaceApi";
+import DesktopLayout from "./layouts/DesktopLayout";
 
 export const DataContext = createContext();
 export const DataDispatchContext = createContext();
@@ -108,19 +109,110 @@ function App() {
           value={{ onCreateClass, onCreatePresentation }}
         > */}
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/class/:id" element={<Class />} />
-          <Route path="/classHome" element={<ClassHome />} />
-          <Route path="/newClass" element={<NewClass />} />
-          <Route path="/presentation/:id" element={<Presentation />} />
-          <Route path="/practice/:id" element={<PracticeMode />} />
-          <Route path="/newPresentation" element={<NewPresentation />} />
-          <Route path="/storage" element={<Storage />} />
-          <Route path="/settings" element={<Settings />} />
-          <Route path="/feedback/:sessionId" element={<Feedback />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="*" element={<Notfound />} />
+          <Route
+            path="/"
+            element={
+              <DesktopLayout>
+                <Home />
+              </DesktopLayout>
+            }
+          />
+          <Route
+            path="/class/:id"
+            element={
+              <DesktopLayout>
+                <Class />
+              </DesktopLayout>
+            }
+          />
+          <Route
+            path="/classHome"
+            element={
+              <DesktopLayout>
+                <ClassHome />
+              </DesktopLayout>
+            }
+          />
+          <Route
+            path="/newClass"
+            element={
+              <DesktopLayout>
+                <NewClass />
+              </DesktopLayout>
+            }
+          />
+          <Route
+            path="/presentation/:id"
+            element={
+              <DesktopLayout>
+                <Presentation />
+              </DesktopLayout>
+            }
+          />
+          <Route
+            path="/practice/:id"
+            element={
+              <DesktopLayout>
+                <PracticeMode />
+              </DesktopLayout>
+            }
+          />
+          <Route
+            path="/newPresentation"
+            element={
+              <DesktopLayout>
+                <NewPresentation />
+              </DesktopLayout>
+            }
+          />
+          <Route
+            path="/storage"
+            element={
+              <DesktopLayout>
+                <Storage />
+              </DesktopLayout>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <DesktopLayout>
+                <Settings />
+              </DesktopLayout>
+            }
+          />
+          <Route
+            path="/feedback/:sessionId"
+            element={
+              <DesktopLayout>
+                <Feedback />
+              </DesktopLayout>
+            }
+          />
+          <Route
+            path="/login"
+            element={
+              <DesktopLayout>
+                <Login />
+              </DesktopLayout>
+            }
+          />
+          <Route
+            path="/signup"
+            element={
+              <DesktopLayout>
+                <Signup />
+              </DesktopLayout>
+            }
+          />
+          <Route
+            path="*"
+            element={
+              <DesktopLayout>
+                <Notfound />
+              </DesktopLayout>
+            }
+          />
           <Route path="/mobile-cuecard/:slug" element={<MobileCueCard />} />
         </Routes>
         {/* </DataDispatchContext.Provider> */}

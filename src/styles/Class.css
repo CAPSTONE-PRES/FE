@@ -17,7 +17,9 @@
 }
 
 .Class_hero-inner {
-  margin: 45px 120px 54px 27px;
+  max-width: 1200px;
+  width: 100%;
+  margin: 45px auto 54px auto;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;

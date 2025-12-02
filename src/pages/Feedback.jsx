@@ -143,33 +143,34 @@ const Feedback = () => {
     };
   }, [activeTab, expandedCards]);
 
+  /*----------이전코드------------------- */
+
   // tag-count 텍스트 속 어휘 추출 및 텍스트 강조 함수
   const highlightKeywords = (text, tagCountText) => {
     if (!tagCountText || !text) return text;
 
     //콤마 기준으로 나누기
     const pairs = tagCountText.split(",").map((p) => p.trim());
+    let keywords = [];
 
     //키워드만 추출
-    const keywords = [];
     pairs.forEach((pair) => {
-      const [word, count] = pair.split(":").map((s) => s.trim());
+      const [word] = pair.split(":").map((s) => s.trim());
       if (word && !word.match(/^\d+회$/)) {
         keywords.push(word);
       }
     });
 
-    // 중복 제거
-    const uniqueKeywords = [...new Set(keywords.filter((k) => k.length > 0))];
-    if (uniqueKeywords.length === 0) return text;
+    // 중복 제거 & 긴 단어 우선
+    const uniqueKeywords = [...new Set(keywords)].sort(
+      (a, b) => b.length - a.length
+    );
 
-    //긴 단어부터 처리
-    const sortedKeywords = uniqueKeywords.sort((a, b) => b.length - a.length);
     let highlightedText = text;
-
     //특수문자 이스케이프 후 강조
-    sortedKeywords.forEach((keyword) => {
+    uniqueKeywords.forEach((keyword) => {
       const escapedKeyword = keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
       const regex = new RegExp(
         `(?<![가-힣a-zA-Z0-9])(${escapedKeyword})(?![가-힣a-zA-Z0-9])`,
         "gi"
@@ -186,6 +187,74 @@ const Feedback = () => {
   const renderHighlightedText = (text, tagCountText) => {
     const highlighted = highlightKeywords(text, tagCountText);
     return <span dangerouslySetInnerHTML={{ __html: highlighted }} />;
+  };
+  /*------------------------ */
+
+  const mergeOffsets = (offsets) => {
+    if (offsets.length === 0) return [];
+
+    //begin 기준 정렬
+    offsets.sort((a, b) => a.begin - b.begin);
+
+    const merged = [offsets[0]];
+
+    for (let i = 1; i < offsets.length; i++) {
+      const last = merged[merged.length - 1];
+      const current = offsets[i];
+
+      if (current.begin <= last.end) {
+        //겹치면 end 확장
+        last.end = Math.max(last.end, current.end);
+      } else {
+        merged.push(current);
+      }
+    }
+
+    return merged;
+  };
+
+  //offset 기반 하이라이팅
+  const highlightByOffsets = (text, issues) => {
+    if (!issues || !text) return text;
+
+    const allOffsets = issues
+      .filter(
+        (i) =>
+          i.offsets &&
+          Array.isArray(i.offsets) &&
+          ["FILLER", "REPETITION"].includes(i.issueType)
+      )
+      .flatMap((i) =>
+        i.offsets.map((off) => ({ begin: off.begin, end: off.end }))
+      );
+
+    if (allOffsets.length === 0) return text;
+
+    let mergedOffsets = mergeOffsets(allOffsets);
+
+    let result = "";
+    let currentIndex = 0;
+
+    mergedOffsets.forEach((off) => {
+      const { begin, end } = off;
+
+      if (begin < currentIndex) return;
+
+      //일반 텍스트
+      result += text.slice(currentIndex, begin);
+
+      //강조 영역
+      result += `<span style="color:#FF0000; font-weight:600;">${text.slice(
+        begin,
+        end
+      )}</span>`;
+
+      currentIndex = end;
+    });
+
+    //남은 텍스트 추가
+    result += text.slice(currentIndex);
+    return result;
   };
 
   // 로딩 상태
@@ -318,9 +387,9 @@ const Feedback = () => {
 
           <div className="feedback-right">
             <div className="feedback-message">
-              <div>{feedbackMessage[0]}</div>
-              <div>{feedbackMessage[1]}</div>
-              {/* <div>{feedbackData.overallFeedback}</div> */}
+              {/* <div>{feedbackMessage[0]}</div>
+              <div>{feedbackMessage[1]}</div> */}
+              <div>{feedbackData.overallFeedback}</div>
             </div>
             <div className="presentation-time">
               <span className="time-label">총 발표 시간 : </span>
@@ -455,8 +524,7 @@ const Feedback = () => {
                         FILLER: iconHesitate,
                         REPETITION: iconRepeat,
                         ACCURACY: iconAim,
-                        SILENCE:
-                          "/src/assets/SVG_ Feedback/icon-type-hesitate.svg",
+                        SILENCE: iconHesitate,
                       };
 
                       // 이슈명 매핑
@@ -617,14 +685,22 @@ const Feedback = () => {
                             {isExpanded && (
                               <div className="card-content">
                                 {/* stt 텍스트 */}
-                                <p>
+                                {/* <p>
                                   {highlightSource
                                     ? renderHighlightedText(
                                         slide.slideText,
                                         highlightSource
                                       )
                                     : slide.slideText}
-                                </p>
+                                </p> */}
+                                <p
+                                  dangerouslySetInnerHTML={{
+                                    __html: highlightByOffsets(
+                                      slide.slideText,
+                                      slide.issues
+                                    ),
+                                  }}
+                                />
 
                                 {/* 이슈 전체 렌더링 */}
                                 {issues.map((issue, idx) => (
