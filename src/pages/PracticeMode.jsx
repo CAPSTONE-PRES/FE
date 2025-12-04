@@ -27,6 +27,9 @@ const PracticeMode = () => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [loadingText, setLoadingText] = useState("");
+  const [duration, setDuration] = useState(0);
+  const [isComplete, setIsComplete] = useState(false);
+  const [pendingAction, setPendingAction] = useState(null);
 
   const [question, setQuestion] = useState(null); //{questionId, questionBody}
   const [recording, setRecording] = useState(false);
@@ -80,7 +83,9 @@ const PracticeMode = () => {
     if (!projectInfo) return;
 
     setLoadingText("발표 피드백 중");
+    setDuration(85);
     setIsLoading(true);
+    setIsComplete(false);
 
     try {
       const { blob, slideTransitions } = data;
@@ -94,12 +99,15 @@ const PracticeMode = () => {
       // 분석 완료 후 결과 sessionId 저장하고 step2로 이동
       const sessionId = result.sessionId;
       setAudioData({ sessionId, result });
-      setStep(2);
+      setIsComplete(true);
+
+      setPendingAction({ type: "setStep" });
     } catch (err) {
       console.error("음성 분석 실패:", err);
       alert("음성 분석 실패");
-    } finally {
+
       setIsLoading(false);
+      setIsComplete(false);
     }
   };
 
@@ -208,7 +216,9 @@ const PracticeMode = () => {
     if (!qnaAudioData) return;
 
     setLoadingText("질의응답 피드백 중...");
+    setDuration(10);
     setIsLoading(true);
+    setIsComplete(false);
 
     try {
       const result = await compareQnaAnswer(
@@ -217,14 +227,19 @@ const PracticeMode = () => {
       );
       console.log("QnA 분석 결과:", result);
 
-      nav(`/feedback/${audioData.sessionId}`, {
-        state: { projectId },
+      setPendingAction({
+        type: "nav",
+        data: {
+          sessionId: audioData.sessionId,
+          projectId: projectId,
+        },
       });
+      setIsComplete(true);
     } catch (err) {
       console.error("QnA 피드백 실패:", err);
       alert("질의응답 피드백 요청 실패");
-    } finally {
       setIsLoading(false);
+      setIsComplete(false);
     }
   };
 
@@ -237,7 +252,25 @@ const PracticeMode = () => {
   return (
     <div className="PracticeMode">
       {isLoading ? (
-        <LoadingScreen text={loadingText} />
+        <LoadingScreen
+          text={loadingText}
+          duration={duration}
+          isComplete={isComplete}
+          onComplete={() => {
+            setIsLoading(false);
+            setIsComplete(false);
+
+            if (pendingAction) {
+              if (pendingAction.type === "setStep") {
+                setStep(2);
+              } else if (pendingAction.type === "nav") {
+                const { sessionId, projectId } = pendingAction.data;
+                nav(`/feedback/${sessionId}`, { state: { projectId } });
+              }
+              setPendingAction(null);
+            }
+          }}
+        />
       ) : (
         <>
           <div className="PracticeMode__header">

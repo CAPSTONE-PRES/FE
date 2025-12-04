@@ -10,7 +10,8 @@
 .CueCard__keyword {
   margin: 12px;
   color: #2e4f6d;
-  font-family: "NotoSans-Bold";
+  font-family: "NotoSans";
+  font-weight: 700;
   font-size: 18px;
   line-height: normal;
 }

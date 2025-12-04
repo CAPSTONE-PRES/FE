@@ -43,6 +43,7 @@
 
 .class-times {
   font-family: "NotoSans";
+  font-weight: 500;
   font-size: 14px;
   color: #a9a9a9;
   list-style: none;
@@ -61,6 +62,7 @@
 .class-card_label {
   color: #4b5f77;
   font-family: "NotoSans";
+  font-weight: 500;
   font-size: 14px;
   line-height: 200%;
   margin-bottom: 4px;
@@ -74,7 +76,8 @@
 .next-presentation-date,
 .next-presentation-none {
   color: #62728d;
-  font-family: "NotoSans-Bold";
+  font-family: "NotoSans";
+  font-weight: 700;
   font-size: 16px;
   line-height: 175%;
 }
@@ -98,7 +101,8 @@
   background-color: #4b5f77;
   cursor: pointer;
 
-  font-family: "NotoSans-Bold";
+  font-family: "NotoSans";
+  font-weight: 700;
   font-size: 16px;
   color: #fff;
   line-height: 140%;

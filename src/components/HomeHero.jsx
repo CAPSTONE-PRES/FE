@@ -8,7 +8,11 @@ import { useContext, useState, useMemo, useEffect } from "react";
 import { DataContext } from "../App";
 import HomeCalendar from "./calendars/HomeCalendar";
 import { useNavigate } from "react-router-dom";
-import { getAllProjects, getProjectsByDate } from "../api/projectApi";
+import {
+  getAllProjects,
+  getNextProject,
+  getProjectsByDate,
+} from "../api/projectApi";
 import { getIsoDateString } from "../util/getIsoDateString";
 
 const today = new Date();
@@ -42,6 +46,7 @@ const HomeHero = () => {
   const [allProjects, setAllProjects] = useState([]);
   const [dailyProjects, setDailyProjects] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
+  const [nearestUpcoming, setNearestUpcoming] = useState(null);
 
   //전체 프로젝트 불러오기
   useEffect(() => {
@@ -54,6 +59,20 @@ const HomeHero = () => {
       }
     };
     fetchAllProjects();
+  }, []);
+
+  //가장 가까운 발표 불러오기
+  useEffect(() => {
+    const fetchNext = async () => {
+      try {
+        const data = await getNextProject();
+        setNearestUpcoming(data);
+      } catch (err) {
+        console.error("nextProject 불러오기 실패:", err);
+      }
+    };
+
+    fetchNext();
   }, []);
 
   //선택한 날짜의 프로젝트 가져오기
@@ -76,18 +95,18 @@ const HomeHero = () => {
   }, [selectedDate]);
 
   //가장 가까운 발표 찾기
-  const nearestUpcoming = useMemo(() => {
-    if (!allProjects.length) return null;
-    const todayStart = new Date(
-      today.getFullYear(),
-      today.getMonth(),
-      today.getDate()
-    );
-    const upcoming = allProjects
-      .filter((p) => new Date(p.date) >= todayStart)
-      .sort((a, b) => new Date(a.date) - new Date(b.date));
-    return upcoming[0] || null;
-  }, [allProjects]);
+  // const nearestUpcoming = useMemo(() => {
+  //   if (!allProjects.length) return null;
+  //   const todayStart = new Date(
+  //     today.getFullYear(),
+  //     today.getMonth(),
+  //     today.getDate()
+  //   );
+  //   const upcoming = allProjects
+  //     .filter((p) => new Date(p.date) >= todayStart)
+  //     .sort((a, b) => new Date(a.date) - new Date(b.date));
+  //   return upcoming[0] || null;
+  // }, [allProjects]);
 
   //다가오는 발표
   const upcomingTwo = useMemo(() => {
@@ -151,7 +170,14 @@ const HomeHero = () => {
             <p>강의별로 자료를 관리하고 발표연습을 통해 완성도를 높여보세요</p>
           )}
           <div className="dday-foot">
-            {nearestUpcoming ? <div className="dday-thumb"></div> : null}
+            {nearestUpcoming ? (
+              <div
+                className="dday-thumb"
+                style={{
+                  backgroundImage: `url("${nearestUpcoming.thumbnail}")`,
+                }}
+              ></div>
+            ) : null}
 
             <button
               className="dday-button"

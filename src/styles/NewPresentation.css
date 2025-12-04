@@ -9,6 +9,7 @@
 .np-title h2 {
   color: #5e6c76;
   font-family: "GothicA1";
+  font-weight: 700;
   font-size: 24px;
   line-height: 40px; /* 166.667% */
   margin: 0;
@@ -22,6 +23,7 @@
 
   color: #2e2e2e;
   font-family: "GothicA1";
+  font-weight: 700;
   font-size: 32px;
   line-height: 40px; /* 125% */
 }
@@ -73,6 +75,7 @@ hr {
 .setting-label {
   color: #2e2e2e;
   font-family: "GothicA1";
+  font-weight: 700;
   font-size: 18px;
   letter-spacing: 1.44px;
   margin-right: 35px;
@@ -110,7 +113,8 @@ hr {
   background: #fff;
 
   color: #2e2e2e;
-  font-family: "NotoSans-Bold";
+  font-family: "NotoSans";
+  font-weight: 700;
   font-size: 16px;
   line-height: 1;
 }
@@ -245,6 +249,7 @@ hr {
   box-shadow: 0 1px 4px 0 rgba(25, 33, 61, 0.08);
 
   font-family: "GothicA1";
+  font-weight: 700;
   color: #707d9b;
   font-size: 18px;
 }

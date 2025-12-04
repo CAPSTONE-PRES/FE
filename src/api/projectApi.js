@@ -17,6 +17,11 @@ export const getAllProjects = async () => {
   return res.data;
 };
 
+export const getNextProject = async () => {
+  const res = await api.get("/projects/next");
+  return res.data;
+};
+
 export const getProjectsByDate = async (date) => {
   const res = await api.get("/projects/list/date", {
     params: { date },

@@ -104,7 +104,7 @@ const Classes = () => {
         ) : (
           <div className="class-list-wrapper">
             {filteredWorkspaces.map((w) => (
-              <ClassCard key={w.workspaceId} upComingDate={null} {...w} />
+              <ClassCard key={w.workspaceId} {...w} />
             ))}
           </div>
         )}

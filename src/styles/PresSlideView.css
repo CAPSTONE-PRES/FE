@@ -97,7 +97,8 @@
   box-sizing: border-box;
 
   color: #517686;
-  font-family: "NotoSans-Bold";
+  font-family: "NotoSans";
+  font-weight: 700;
   font-size: 14px;
   line-height: 140%; /* 19.6px */
 }

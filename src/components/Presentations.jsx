@@ -91,6 +91,7 @@ const Presentations = ({ context = "home", workspaceId }) => {
               <PresentationCard
                 key={p.projectId}
                 workspaceName={p.workspaceName}
+                projectThumbnail={p.projectThumbnail}
                 hasShadow={context === "class"}
                 showBadge={context === "home"}
                 {...p}

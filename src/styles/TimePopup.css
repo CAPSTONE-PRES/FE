@@ -21,6 +21,7 @@
 .time-section span {
   color: #4b5f77;
   font-family: "GothicA1";
+  font-weight: 700;
   font-size: 24px;
   line-height: 100%;
 }
@@ -44,7 +45,8 @@
   box-shadow: 0 1px 4px 0 rgba(25, 33, 61, 0.08);
 
   color: #4b5f77;
-  font-family: "NotoSans-Bold";
+  font-family: "NotoSans";
+  font-weight: 700;
   font-size: 12px;
   line-height: 1;
 }

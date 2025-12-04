@@ -8,6 +8,7 @@ const PresentationCard = ({
   workspaceName,
   projectId,
   projectTitle,
+  projectThumbnail,
   date,
   presenterName,
   presenterProfileUrl,
@@ -28,7 +29,12 @@ const PresentationCard = ({
         });
       }}
     >
-      <div className="presentation-card_thumb">
+      <div
+        className="presentation-card_thumb"
+        style={{
+          backgroundImage: `url("${projectThumbnail}")`,
+        }}
+      >
         {showBadge && <span className="badge">{workspaceName}</span>}
       </div>
 

@@ -427,7 +427,7 @@ const Feedback = () => {
                 <div className="score-item">
                   <span className="score-label">말의 망설임</span>
                   <span className="score-value">
-                    {(fillerScore + silenceScore) / 2 || 0}점
+                    {Math.round((fillerScore + silenceScore) / 2) || 0}점
                   </span>
                 </div>
                 <div className="score-item">

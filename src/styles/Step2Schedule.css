@@ -11,6 +11,7 @@
   width: 571px;
 
   font-family: "GothicA1";
+  font-weight: 700;
   font-size: 32px;
   line-height: 125%;
   color: #4b5f77;
@@ -32,7 +33,8 @@
   border-radius: 32px;
   background-color: #4b5f77;
 
-  font-family: "NotoSans-Bold";
+  font-family: "NotoSans";
+  font-weight: 700;
   color: #fff;
   font-size: 16px;
   line-height: 250%;

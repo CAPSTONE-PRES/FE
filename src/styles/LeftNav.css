@@ -52,7 +52,8 @@
 .LeftNav__label {
   color: rgba(75, 95, 119, 0.7);
   text-align: center;
-  font-family: "NotoSans-Bold";
+  font-family: "NotoSans";
+  font-weight: 700;
   font-size: 12px;
   line-height: normal;
   white-space: nowrap;

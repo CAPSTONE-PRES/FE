@@ -150,6 +150,10 @@ const Presentation = () => {
     setOpenMemberModal(null);
   }, [currentIndex, isDeepMode]);
 
+  useEffect(() => {
+    setSelectedCueId(null);
+  }, [currentIndex]);
+
   //슬라이드 변경 시 curIds로 코멘트 불러오기
   useEffect(() => {
     if (!cueData || !cueData.slides?.length) return;

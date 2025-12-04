@@ -30,6 +30,8 @@ const NewPresentation = () => {
   const [second, setSecond] = useState(0);
   const [file, setFile] = useState(null);
   const [optionFile, setOptionFile] = useState(null);
+  const [createdProjectId, setCreatedProjectId] = useState(null);
+
   const [isLoading, setIsLoading] = useState(false);
   const [loadingText, setLoadingText] = useState("");
   const [apiDone, setApiDone] = useState(false);
@@ -76,7 +78,7 @@ const NewPresentation = () => {
       const createBody = {
         title,
         dueDate: getIsoDateString(date), //dueDate?
-        limitTime: { minute: Number(minute), second: Number(second) },
+        limitedTime: { minute: Number(minute), second: Number(second) },
         presenterId: presenter.memberId ?? null,
         // fileIds: optFileId ? [uploadedFileId, optFileId] : [uploadedFileId],
       };
@@ -87,6 +89,8 @@ const NewPresentation = () => {
       );
       const { projectId } = createRes.data;
       console.log("프로젝트 생성 완료: ", projectId);
+
+      setCreatedProjectId(projectId);
 
       //2. 파일 업로드
       const formData = new FormData();
@@ -133,10 +137,6 @@ const NewPresentation = () => {
 
       //모든 api 완료 후
       setApiDone(true);
-      setLoadingText("완료");
-      setTimeout(() => {
-        nav(`/presentation/${projectId}`);
-      }, 400);
     } catch (err) {
       console.error("발표 생성 실패: ", err);
       setLoadingText("문제가 발생했습니다. 다시 시도해주세요.");
@@ -148,7 +148,14 @@ const NewPresentation = () => {
     <div className="NewPresentation">
       <Header />
       {isLoading ? (
-        <LoadingScreen text={loadingText} isComplete={apiDone} />
+        <LoadingScreen
+          text={loadingText}
+          duration={150}
+          isComplete={apiDone}
+          onComplete={() => {
+            nav(`/presentation/${createdProjectId}`);
+          }}
+        />
       ) : (
         <>
           <section className="np-header">

@@ -249,16 +249,6 @@ const NewClass = () => {
 
       const newClassId = res.data.workspaceId;
 
-      //TODO: 최종 연결 후엔 삭제
-      // onCreateClass(
-      //   newClassId,
-      //   name,
-      //   formatTimeSlots(),
-      //   // new Date().getTime(),
-      //   projectType === "팀",
-      //   [...teamMembers, currentUser]
-      // );
-
       nav(`/class/${newClassId}`);
 
       /*    name, times, lastVisited, isTeamProject, teamMembers */

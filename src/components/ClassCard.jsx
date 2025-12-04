@@ -14,6 +14,7 @@ const ClassCard = ({
   workspaceOwnerName,
   workspaceOwnerProfileUrl,
   isOwner,
+  thumbnailList,
   upComingDate,
 }) => {
   const { currentUser } = useContext(DataContext);
@@ -29,10 +30,26 @@ const ClassCard = ({
       }}
     >
       <div className="class-card_thumb">
-        <div className="thumbnail"></div>
-        <div className="thumbnail"></div>
-        <div className="thumbnail"></div>
-        <div className="thumbnail"></div>
+        {Array.from({ length: 4 }).map((_, idx) => {
+          const thumb = thumbnailList?.[idx];
+
+          return (
+            <div
+              key={idx}
+              className="thumbnail"
+              style={
+                thumb
+                  ? {
+                      backgroundImage: `url("${thumb}")`,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                      backgroundRepeat: "no-repeat",
+                    }
+                  : {}
+              }
+            ></div>
+          );
+        })}
       </div>
 
       <div className="class-card_header">

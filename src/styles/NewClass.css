@@ -34,7 +34,8 @@
   background: #f2f3f7;
   box-shadow: 0 1px 4px 0 rgba(25, 33, 61, 0.08);
 
-  font-family: "NotoSans-Bold";
+  font-family: "NotoSans";
+  font-weight: 700;
   font-size: 16px;
   color: #707d9b;
   line-height: 22px;

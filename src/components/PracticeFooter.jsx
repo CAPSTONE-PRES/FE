@@ -30,15 +30,14 @@ const PracticeFooter = ({
 
   useOutsideClick(".PracticeFooter__qr-modal-wrapper", () => setShowQR(false));
 
-  /**
   //limitTime 초로 변환
   useEffect(() => {
     if (limitTime) {
-      const totalSec = (limitTime.minute || 0) * 60 + (limitTime.second || 0);
-      setRemainingTime(totalSec);
+      const totalMs =
+        (limitTime.minute || 0) * 60 * 1000 + (limitTime.second || 0) * 1000;
+      setRemainingTime(totalMs);
     }
   }, [limitTime]);
-   */
 
   //타이머 시작/정지/리셋
   const startTimer = () => {
@@ -60,9 +59,10 @@ const PracticeFooter = ({
   const resetTimer = () => {
     setStatus("ready");
     clearInterval(timerRef.current);
-    setRemainingTime(600000);
-    // const totalSec = (limitTime.minute || 0) * 60 + (limitTime.second || 0);
-    // setRemainingTime(totalSec);
+    // setRemainingTime(600000);
+    const totalSec =
+      (limitTime.minute || 0) * 60 * 1000 + (limitTime.second || 0) * 1000;
+    setRemainingTime(totalSec);
   };
 
   // 남은 시간 → 00:00:00 포맷
@@ -268,7 +268,7 @@ const PracticeFooter = ({
 
       <button
         className="PracticeFooter__btn-qr"
-        onClick={(e) => {
+        onMouseDown={(e) => {
           e.stopPropagation();
           setShowQR(!showQR);
         }}

@@ -1,12 +1,6 @@
 import "../styles/TeamMember.css";
 
-const TeamMember = ({
-  memberName,
-  memberEmail,
-  memberProfileUrl,
-  onRemove,
-  onClick,
-}) => {
+const TeamMember = ({ name, email, avatar, onRemove, onClick }) => {
   return (
     <div
       className={`TeamMember ${onClick ? "clickable" : ""}`}
@@ -14,11 +8,11 @@ const TeamMember = ({
     >
       <span
         className="tm-avatar"
-        style={{ backgroundImage: `url(${memberProfileUrl})` }}
+        style={{ backgroundImage: `url(${avatar})` }}
       />
       <div className="tm-info">
-        <p className="tm-name">{memberName}</p>
-        <p className="tm-email">{memberEmail}</p>
+        <p className="tm-name">{name}</p>
+        <p className="tm-email">{email}</p>
       </div>
       {onRemove && (
         <button className="tm-remove-btn" onClick={onRemove}>

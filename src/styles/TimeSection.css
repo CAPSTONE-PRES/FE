@@ -25,6 +25,7 @@
   border: none;
   color: #2e2e2e;
   font-family: "NotoSans";
+  font-weight: 500;
   font-size: 14px;
   line-height: 1;
   background-color: transparent;
@@ -52,6 +53,7 @@
   background: #f2f3f7;
   color: #2e2e2e;
   font-family: "GothicA1";
+  font-weight: 700;
   font-size: 20px;
   line-height: 140%;
 }
@@ -64,6 +66,7 @@
 
   color: #2e2e2e;
   font-family: "GothicA1";
+  font-weight: 700;
   font-size: 20px;
   line-height: 140%;
   background-color: transparent;

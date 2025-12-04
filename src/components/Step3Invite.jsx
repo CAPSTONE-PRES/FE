@@ -64,6 +64,7 @@ const Step3Invite = ({ teamMembers, setTeamMembers }) => {
       };
       const res = await api.post("/workspace/user/validation", body);
       const found = res.data;
+      console.log("추가된 팀원:", found);
 
       if (!found || !found.email || found.email === currentUser.email) {
         setEmail("");
@@ -77,7 +78,7 @@ const Step3Invite = ({ teamMembers, setTeamMembers }) => {
         {
           name: found.name,
           email: found.email,
-          avatar: found.profileUrl || "/avatars/user2.svg",
+          avatar: found.profileUrl,
         },
       ]);
 

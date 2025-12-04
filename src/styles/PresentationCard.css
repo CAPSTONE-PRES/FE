@@ -15,6 +15,10 @@
   position: relative;
   width: 240px;
   height: 135px;
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .badge {

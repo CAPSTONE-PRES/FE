@@ -26,6 +26,7 @@
 }
 
 .PracticeFooter__btn-primary {
+  cursor: pointer;
   display: inline-flex;
   padding: 10px 40px;
   justify-content: center;
