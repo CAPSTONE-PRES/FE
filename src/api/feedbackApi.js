@@ -1,4 +1,4 @@
-import api from "./index";
+import { api } from "./api";
 
 /**
  * 연습 세션 피드백 조회 API

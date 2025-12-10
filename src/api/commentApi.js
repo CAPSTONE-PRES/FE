@@ -1,4 +1,4 @@
-import api from "./index";
+import { api } from "./api";
 
 //큐카드 단위 코멘트 조회
 export const getComments = async (cueId) => {

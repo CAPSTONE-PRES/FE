@@ -1,6 +1,6 @@
 // src/api/practiceApi.js
 import { formatMonth } from "react-calendar/dist/shared/dateFormatter.js";
-import api from "./index";
+import { api } from "./api";
 
 // 세션 시작 (session 생성)
 export const startPractice = async (projectId) => {

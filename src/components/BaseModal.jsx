@@ -6,6 +6,7 @@ const BaseModal = ({
   isOpen,
   onClose,
   header,
+  variant,
   children,
   width = "960px",
   height = "637px",
@@ -28,7 +29,9 @@ const BaseModal = ({
           <p>{header}</p>
           <button onClick={onClose}>닫기</button>
         </div>
-        <div className="BaseModal__body">{children}</div>
+        <div className={`BaseModal__body BaseModal__body--${variant}`}>
+          {children}
+        </div>
       </div>
     </div>
   );

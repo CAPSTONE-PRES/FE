@@ -1,6 +1,6 @@
 import "../styles/LeftNav.css";
 import allOpen from "../assets/SVG_Presentation/allOpen.svg";
-import download from "../assets/SVG_Presentation/Download.svg";
+import exportIcon from "../assets/SVG_Presentation/Export.svg";
 import questionIcon from "../assets/SVG_Presentation/analyze.svg";
 import presIcon from "../assets/SVG_Presentation/presIcon.svg";
 import presIconOff from "../assets/SVG_Presentation/presIconOff.svg";
@@ -25,13 +25,13 @@ const LeftNav = ({ openedMenu, setOpenedMenu }) => {
     },
     {
       id: 3,
-      icon: download,
+      icon: exportIcon,
       label: "다운로드",
       onClick: () => setOpenedMenu("export"),
     },
     {
       id: 4,
-      icon: presIcon,
+      icon: presIconOff, //비활성화
       label: "피드백보기",
       onClick: () => setOpenedMenu("feedback"),
     },
@@ -50,9 +50,16 @@ const LeftNav = ({ openedMenu, setOpenedMenu }) => {
             className="LeftNav__item"
             title={item.label}
             onClick={item.onClick}
+            disabled={item.id === 4}
           >
             <img src={item.icon} />
-            {isHovered && <span className="LeftNav__label">{item.label}</span>}
+            {isHovered && (
+              <span
+                className={`LeftNav__labe ${item.id === 4 ? "disabled" : ""}`}
+              >
+                {item.label}
+              </span>
+            )}
           </button>
         ))}
       </div>

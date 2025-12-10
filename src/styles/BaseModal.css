@@ -67,5 +67,16 @@
   overflow-y: auto;
   scrollbar-color: #bcbcbc transparent;
   background: linear-gradient(180deg, #f7f7f7 0%, #ebf5f7 80%, #dcf1f6 100%);
+}
+
+.BaseModal__body--export {
+  padding: 32px 24px;
+}
+
+.BaseModal__body--slides {
   padding: 40px 44px 9px 44px;
+}
+
+.BaseModal__body--question {
+  padding: 29px 44px;
 }

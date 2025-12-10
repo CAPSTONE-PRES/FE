@@ -23,10 +23,13 @@ const PracticeFooter = ({
   const [slideTransitions, setSlideTransitions] = useState([]);
   const [activeSlide, setActiveSlide] = useState(null);
   const [showQR, setShowQR] = useState(false);
+  const [remainingTime, setRemainingTime] = useState(600000);
+
   const mediaRef = useRef({ recorder: null, stream: null, chunks: [] });
   const startTimeRef = useRef(null);
-  const [remainingTime, setRemainingTime] = useState(600000);
   const timerRef = useRef(null);
+  const pausedTimeRef = useRef(0); // 누적 pause 시간
+  const pauseStartRef = useRef(null); // pause 시작 시각
 
   useOutsideClick(".PracticeFooter__qr-modal-wrapper", () => setShowQR(false));
 
@@ -56,13 +59,48 @@ const PracticeFooter = ({
 
   const pauseTimer = () => clearInterval(timerRef.current);
 
-  const resetTimer = () => {
-    setStatus("ready");
+  // const resetTimer = () => {
+  //   setStatus("ready");
+  //   clearInterval(timerRef.current);
+  //   // setRemainingTime(600000);
+  //   const totalSec =
+  //     (limitTime.minute || 0) * 60 * 1000 + (limitTime.second || 0) * 1000;
+  //   setRemainingTime(totalSec);
+  // };
+
+  const handleRestart = async () => {
+    console.log("Restart: 녹음 + 타이머 + 슬라이드 초기화");
+
     clearInterval(timerRef.current);
-    // setRemainingTime(600000);
-    const totalSec =
+
+    const { recorder, stream } = mediaRef.current;
+
+    try {
+      if (recorder && recorder.state !== "inactive") {
+        recorder.stop();
+      }
+    } catch (e) {
+      console.warn("recorder.stop() 중 오류:", e);
+    }
+
+    if (stream) {
+      stream.getTracks().forEach((t) => t.stop());
+    }
+
+    // recorder/stream/chunks/시간/슬라이드 초기화
+    mediaRef.current = { recorder: null, stream: null, chunks: [] };
+    pausedTimeRef.current = 0;
+    pauseStartRef.current = null;
+    startTimeRef.current = null;
+
+    setSlideTransitions([]);
+    setActiveSlide(null);
+
+    const totalMs =
       (limitTime.minute || 0) * 60 * 1000 + (limitTime.second || 0) * 1000;
-    setRemainingTime(totalSec);
+    setRemainingTime(totalMs);
+
+    setStatus("ready");
   };
 
   // 남은 시간 → 00:00:00 포맷
@@ -73,18 +111,24 @@ const PracticeFooter = ({
     return `${minutes}:${seconds}:${milliseconds}`;
   };
 
-  const getElapsedSec = () =>
-    ((Date.now() - startTimeRef.current) / 1000).toFixed(2);
+  const getElapsedSec = () => {
+    const raw = Date.now() - startTimeRef.current - pausedTimeRef.current;
+    return (raw / 1000).toFixed(2);
+  };
 
   //세션 시작
   const handleStart = async () => {
     try {
-      //세션 생성 요청
-      const res = await startPractice(projectId);
-      console.log("세션 시작:", res);
+      pausedTimeRef.current = 0;
+      pauseStartRef.current = null;
 
-      const newSessionId = res.sessionId || res.id || res;
-      setSessionId(newSessionId);
+      //세션 생성 요청
+      if (!sessionId) {
+        const res = await startPractice(projectId);
+        console.log("세션 시작:", res);
+        const newSessionId = res.sessionId;
+        setSessionId(newSessionId);
+      }
 
       //마이크 접근 및 녹음 시작
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -110,6 +154,8 @@ const PracticeFooter = ({
 
   //일시정지
   const handlePause = () => {
+    pauseStartRef.current = Date.now();
+
     pauseTimer();
     const { recorder } = mediaRef.current;
     if (recorder && recorder.state === "recording") {
@@ -121,6 +167,10 @@ const PracticeFooter = ({
 
   //재개
   const handleResume = () => {
+    // pause 기간 누적 기록
+    pausedTimeRef.current += Date.now() - pauseStartRef.current;
+    pauseStartRef.current = null;
+
     startTimer();
     const { recorder } = mediaRef.current;
     if (recorder && recorder.state === "paused") {
@@ -133,6 +183,12 @@ const PracticeFooter = ({
   //녹음 중지 및 업로드
   const handleStop = async () => {
     clearInterval(timerRef.current);
+
+    if (pauseStartRef.current) {
+      pausedTimeRef.current += Date.now() - pauseStartRef.current;
+      pauseStartRef.current = null;
+    }
+
     if (!mediaRef.current.recorder) return;
     const { recorder, stream, chunks } = mediaRef.current;
 
@@ -219,7 +275,7 @@ const PracticeFooter = ({
           <>
             <button
               className="PracticeFooter__btn-restart"
-              onClick={resetTimer}
+              onClick={handleRestart}
             >
               <img src={restartIcon} alt="restart" />
             </button>

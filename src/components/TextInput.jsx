@@ -14,6 +14,7 @@ const TextInput = ({
   errorText,
   helperText,
   helperAlign = "right",
+  autoComplete = "off",
 }) => {
   const inputClass = ["text-input", className];
   if (error) inputClass.push("text-input--error");
@@ -33,17 +34,23 @@ const TextInput = ({
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        autoComplete="off"
+        autoComplete={autoComplete}
       />
       {error && (typeof error === "string" || errorText) ? (
-        <div className="input-error">{typeof error === "string" ? error : errorText}</div>
+        <div className="input-error">
+          {typeof error === "string" ? error : errorText}
+        </div>
       ) : helperText ? (
-        <div className={["input-helper", helperAlign === "right" ? "right" : ""].filter(Boolean).join(" ")}>{helperText}</div>
+        <div
+          className={["input-helper", helperAlign === "right" ? "right" : ""]
+            .filter(Boolean)
+            .join(" ")}
+        >
+          {helperText}
+        </div>
       ) : null}
     </div>
   );
 };
 
 export default TextInput;
-
-

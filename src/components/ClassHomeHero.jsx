@@ -7,7 +7,7 @@ const ClassHomeHero = () => {
   return (
     <div className="ClassHomeHero">
       <div className="hero-actions">
-        <SearchBar type={"CLASS"} />
+        <SearchBar />
         <NewButton text={"클래스 생성하기"} link={"/newClass"} />
       </div>
       <div className="hero-fav-classes">

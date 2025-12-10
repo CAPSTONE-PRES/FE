@@ -1,4 +1,4 @@
-import api from "./index";
+import { api } from "./api";
 
 export const getWorkspaceList = async (type = 1) => {
   const res = await api.get("/workspace/list", { params: { type } });
@@ -31,5 +31,10 @@ export const toggleWorkspaceFavorite = async (workspaceId, status) => {
   const res = await api.patch(`/workspace/${workspaceId}/heart`, null, {
     params: { status },
   });
+  return res.data;
+};
+
+export const searchWorkspaces = async (keyword) => {
+  const res = await api.get("/workspace/search", { params: { keyword } });
   return res.data;
 };

@@ -1,4 +1,4 @@
-import api from "./index";
+import { api } from "./api";
 
 export const getProjectList = async (type = 1) => {
   const res = await api.get("/projects/list", {
@@ -31,5 +31,20 @@ export const getProjectsByDate = async (date) => {
 
 export const deleteProject = async (projectId) => {
   const res = await api.delete(`/projects/${projectId}/delete`);
+  return res.data;
+};
+
+export const searchProjects = async (title) => {
+  const res = await api.get("/projects/search", {
+    params: { title },
+  });
+  return res.data;
+};
+
+export const createProject = async (workspaceId, createBody) => {
+  const res = await api.post(
+    `/workspace/${workspaceId}/projects/create`,
+    createBody
+  );
   return res.data;
 };

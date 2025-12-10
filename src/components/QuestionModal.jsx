@@ -7,7 +7,12 @@ const QuestionModal = ({ isOpen, onClose, qna }) => {
   if (!qna) return null;
 
   return (
-    <BaseModal isOpen={isOpen} onClose={onClose} header="예상 질문">
+    <BaseModal
+      isOpen={isOpen}
+      onClose={onClose}
+      header="예상 질문"
+      variant="question"
+    >
       <div className="QuestionModal__Container">
         <div className="QuestionModal__info">
           <img src={volumeIcon} />

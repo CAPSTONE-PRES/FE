@@ -28,6 +28,7 @@ import {
 } from "../api/commentApi";
 import SlideOverviewModal from "../components/SlideOverviewModal";
 import QuestionModal from "../components/QuestionModal";
+import ExportModal from "../components/ExportModal";
 
 const Presentation = () => {
   //pid: params.id
@@ -360,7 +361,8 @@ const Presentation = () => {
     return <div className="Presentation"></div>;
   }
 
-  const { projectId, projectTitle, workspaceName, workspaceId } = projectInfo;
+  const { projectId, projectTitle, workspaceName, workspaceId, fileIds } =
+    projectInfo;
 
   return (
     <div className="Presentation">
@@ -581,6 +583,12 @@ const Presentation = () => {
         isOpen={openedMenu === "question"}
         onClose={() => setOpenedMenu(null)}
         qna={qnaData}
+      />
+      <ExportModal
+        isOpen={openedMenu === "export"}
+        onClose={() => setOpenedMenu(null)}
+        projectTitle={projectTitle}
+        fileId={fileIds?.[0]}
       />
     </div>
   );

@@ -13,7 +13,7 @@
 }
 
 .LoginCard {
-    height: 518px;
+  /* height: 518px; */
   width: 424px;
   background: #ffffff;
   border-radius: 20px;
@@ -22,6 +22,9 @@
   margin-right: 54px;
   display: flex;
   align-items: center;
+}
+.LoginCard.info {
+  padding: 80px 118px 50px 118px;
 }
 
 .LoginCard__inner {
@@ -45,7 +48,7 @@
 
 .login-subtitle {
   margin: 0;
-  color: #7A7A7A;
+  color: #7a7a7a;
   font-size: 16px;
   font-weight: 500;
 }
@@ -112,14 +115,13 @@
   text-align: center;
   margin-top: 40px;
   padding: 10px;
-  color: #7A7A7A;
+  color: #7a7a7a;
   font-size: 14px;
 }
 
 .signup-cta .link {
-  color: #2E2E2E;
+  color: #2e2e2e;
   font-weight: 700;
   text-decoration: underline;
   margin-left: 4px;
 }
-

@@ -137,7 +137,7 @@ const HomeHero = () => {
           </h2>
         </div>
         <div className="hero-search">
-          <SearchBar type={"PRESENTATION"} />
+          <SearchBar />
         </div>
       </section>
       <section className="hero-bottom">

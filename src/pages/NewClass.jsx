@@ -1,10 +1,9 @@
 import "../styles/NewClass.css";
 import Header from "../components/Header";
 import { useEffect, useState, useContext } from "react";
-import api from "../api";
+import { api } from "../api/api";
 import backIcon from "../assets/SVG_NewClass/back.svg";
 import { useNavigate } from "react-router-dom";
-import { DataContext, DataDispatchContext } from "../App";
 import Step1SelectType from "../components/Step1SelectType";
 import Step2Schedule from "../components/Step2Schedule";
 import Step3Invite from "../components/Step3Invite";

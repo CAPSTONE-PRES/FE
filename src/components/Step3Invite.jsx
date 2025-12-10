@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import "../styles/Step3Invite.css";
 import TeamMember from "../components/TeamMember";
-import api from "../api";
+import { api } from "../api/api";
 import { flushSync } from "react-dom";
 import { DataContext } from "../App";
 

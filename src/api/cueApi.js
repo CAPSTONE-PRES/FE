@@ -1,4 +1,4 @@
-import api from "./index";
+import { api } from "./api";
 
 /**
  * 큐카드 내용 업데이트(fileId, slideNumber, sectionNumber 기준)

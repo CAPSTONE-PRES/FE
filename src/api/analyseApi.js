@@ -1,4 +1,4 @@
-import api from "./index";
+import { api } from "./api";
 
 /**
  * 음성 분석 요청 API

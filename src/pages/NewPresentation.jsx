@@ -4,17 +4,23 @@ import Header from "../components/Header";
 import BackButton from "../components/BackButton";
 import { getStringedDate } from "../util/get-stringed-date";
 import { useContext, useState } from "react";
-import { DataContext, DataDispatchContext } from "../App";
+import { DataContext } from "../App";
 import dateSelectArrow from "../assets/SVG_NewPresentation/date-select-arrow.svg";
 import selectArrow from "../assets/SVG_NewPresentation/presenter-select-arrow.svg";
 import FileUploadBox from "../components/FileUploadBox";
 import TeamMemberListModal from "../components/TeamMemberListModal";
 import DatePickerModal from "../components/DatePickerModal";
 import useOutsideClick from "../hooks/useOutsideClick";
-import api from "../api";
 import { getIsoDateString } from "../util/getIsoDateString";
-import { extractText, generateCue, generateQnA } from "../api/fileApi";
+import {
+  extractText,
+  generateCue,
+  generateQnA,
+  uploadFile,
+  uploadResource,
+} from "../api/fileApi";
 import LoadingScreen from "../components/LoadingScreen";
+import { createProject } from "../api/projectApi";
 
 const NewPresentation = () => {
   const nav = useNavigate();
@@ -83,11 +89,12 @@ const NewPresentation = () => {
         // fileIds: optFileId ? [uploadedFileId, optFileId] : [uploadedFileId],
       };
 
-      const createRes = await api.post(
-        `/workspace/${workspaceId}/projects/create`,
-        createBody
-      );
-      const { projectId } = createRes.data;
+      const createRes = await createProject(workspaceId, createBody);
+      // const createRes = await api.post(
+      //   `/workspace/${workspaceId}/projects/create`,
+      //   createBody
+      // );
+      const { projectId } = createRes;
       console.log("프로젝트 생성 완료: ", projectId);
 
       setCreatedProjectId(projectId);
@@ -95,39 +102,35 @@ const NewPresentation = () => {
       //2. 파일 업로드
       const formData = new FormData();
       formData.append("file", file);
+      const uploadRes = await uploadFile(currentUser.id, projectId, formData);
 
-      const uploadRes = await api.post(
-        `/files/upload?uploaderId=${currentUser.id}&projectId=${projectId}`,
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
+      // const uploadRes = await api.post(
+      //   `/files/upload?uploaderId=${currentUser.id}&projectId=${projectId}`,
+      //   formData,
+      //   {
+      //     headers: { "Content-Type": "multipart/form-data" },
+      //   }
+      // );
 
-      const uploadedFileId = uploadRes.data.fileId;
+      const uploadedFileId = uploadRes.fileId;
       console.log("파일 업로드 성공: ", uploadedFileId);
 
       //[옵션]자료조사 파일 업로드
-      // let optFileId = null;
-      // if (optionFile) {
-      //   const optForm = new FormData();
-      //   optForm.append("file", optionFile);
-      //   const optUploadRes = await api.post(
-      //     `/files/upload?uploaderId=${currentUser.id}&projectId=${projectId}`,
-      //     optForm,
-      //     {
-      //       headers: { "Content-Type": "multipart/form-data" },
-      //     }
-      //   );
-      //   optFileId = optUploadRes.data.fileId;
-      //   console.log("옵션 파일 업로드 성공: ", optFileId);
-      // }
+      let optFileId = null;
+      if (optionFile) {
+        const optForm = new FormData();
+        optForm.append("file", optionFile);
+        const optUploadRes = await uploadResource(
+          currentUser.id,
+          projectId,
+          optForm
+        );
+        optFileId = optUploadRes.fileId;
+        console.log("옵션 파일 업로드 성공: ", optFileId);
+      }
 
       //3. 파일에서 텍스트 추출
       await extractText(uploadedFileId);
-      // if (optFileId) {
-      //   await extractText(optFileId);
-      // }
 
       //4. 큐카드 생성
       const cueRes = await generateCue(uploadedFileId);

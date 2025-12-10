@@ -5,10 +5,12 @@ import PresentationCard from "./PresentationCard";
 import { getIsEmpty } from "../util/get-is-empty";
 import { getProjectList } from "../api/projectApi";
 import { getWorkspaceProjectList } from "../api/workspaceApi";
+import { AuthContext } from "../contexts/AuthContext";
 
 const Presentations = ({ context = "home", workspaceId }) => {
   const [sortBy, setSortBy] = useState("date");
   const [presentations, setPresentations] = useState([]);
+  const { isAuthenticated } = useContext(AuthContext);
 
   const SORT_OPTIONS =
     context === "home"
@@ -44,7 +46,7 @@ const Presentations = ({ context = "home", workspaceId }) => {
     };
 
     fetchPresentations();
-  }, [context, sortBy, workspaceId]);
+  }, [context, sortBy, workspaceId, isAuthenticated]);
 
   // function getSortedData(presentations) {
   //   const list = Object.values(presentations);

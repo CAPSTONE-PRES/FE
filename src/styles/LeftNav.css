@@ -59,6 +59,9 @@
   white-space: nowrap;
   animation: fadeIn 0.2s ease forwards;
 }
+.LeftNav__label.disabled {
+  color: #f2f3f7;
+}
 
 @keyframes fadeIn {
   from {

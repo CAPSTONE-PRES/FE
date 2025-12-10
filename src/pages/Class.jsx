@@ -1,6 +1,5 @@
 import "../styles/Class.css";
 import backIcon from "../assets/SVG_NewClass/back.svg";
-import api from "../api";
 import selectArrow from "../assets/SVG_ClassHome/select-arrow.svg";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -105,7 +104,7 @@ const Class = () => {
         <Presentations context="class" workspaceId={workspaceId} />
       </div>
       {/* 임시 삭제 버튼(state 반영X) */}
-      <button
+      {/* <button
         onClick={async () => {
           try {
             await deleteWorkspace(workspaceId);
@@ -116,7 +115,7 @@ const Class = () => {
         }}
       >
         클래스 삭제
-      </button>
+      </button> */}
     </div>
   );
 };

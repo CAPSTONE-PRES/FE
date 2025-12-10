@@ -1,6 +1,4 @@
-import api from "./index";
-
-const BASE_URL = "http://54.180.107.216:8080/api";
+import { api } from "./api";
 
 //슬라이드 이미지
 export const getSlides = async (fileId) => {
@@ -69,6 +67,7 @@ export const generateQnA = async (fileId) => {
   }
 };
 
+//qna 불러오기
 export const getSavedQnA = async (fileId) => {
   try {
     const res = await api.get(`/files/qna/${fileId}`);
@@ -76,5 +75,58 @@ export const getSavedQnA = async (fileId) => {
     return res.data;
   } catch (err) {
     console.error("예상질문 불러오기 실패:", err);
+  }
+};
+
+//파일 업로드
+export const uploadFile = async (uploaderId, projectId, file) => {
+  try {
+    const res = await api.post(
+      `/files/upload?uploaderId=${uploaderId}&projectId=${projectId}`,
+      file,
+      {
+        headers: { "Content-Type": "multipart/form-data" },
+      }
+    );
+    return res.data;
+  } catch (err) {
+    console.error("파일 업로드 실패: ", err);
+    throw err;
+  }
+};
+
+//추가 자료 업로드
+export const uploadResource = async (uploaderId, projectId, file) => {
+  try {
+    const res = await api.post(
+      `/files/upload-resource?uploaderId=${uploaderId}&projectId=${projectId}`,
+      file,
+      {
+        headers: { "Content-Type": "multipart/form-data" },
+      }
+    );
+    return res.data;
+  } catch (err) {
+    console.error("추가 자료 업로드 실패: ", err);
+    throw err;
+  }
+};
+
+//발표자료 pdf 다운로드
+export const downloadPresentationPdf = async (fileId, fileName) => {
+  try {
+    const res = await api.get(`/files/download-pdf/${fileId}`, {
+      responseType: "blob",
+    });
+
+    const url = window.URL.createObjectURL(new Blob([res.data]));
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", `${fileName}.pdf`);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  } catch (err) {
+    console.error("발표자료 다운로드 실패:", err);
   }
 };

@@ -1,7 +1,7 @@
 import "./App.css";
-import api from "./api";
-import { Routes, Route, data } from "react-router-dom";
-import { createContext, useState, useEffect } from "react";
+import { Routes, Route, data, Navigate } from "react-router-dom";
+import { createContext, useState, useEffect, useContext } from "react";
+import KakaoCallback from "./pages/KakaoCallback";
 import Home from "./pages/Home";
 import Presentation from "./pages/Presentation";
 import ClassHome from "./pages/ClassHome";
@@ -10,9 +10,7 @@ import Class from "./pages/Class";
 import Notfound from "./pages/Notfound";
 import Storage from "./pages/Storage";
 import Settings from "./pages/Settings";
-
 import Feedback from "./pages/Feedback";
-
 import NewPresentation from "./pages/NewPresentation";
 import PracticeMode from "./pages/PracticeMode";
 import Login from "./pages/Login";
@@ -21,9 +19,11 @@ import ResetPassword from "./pages/ResetPassword";
 import MobileCueCard from "./pages/MobileCueCard";
 import { getFavWorkspaces } from "./api/workspaceApi";
 import DesktopLayout from "./layouts/DesktopLayout";
+import { AuthContext } from "./contexts/AuthContext";
+import ProtectedRoute from "./components/ProtectedRoute";
+import { api } from "./api/api";
 
 export const DataContext = createContext();
-export const DataDispatchContext = createContext();
 
 // function classReducer(state, action) {
 //   let nextState;
@@ -46,10 +46,17 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [currentUser, setCurrentUser] = useState(null);
 
-  // const classIdRef = useRef();
+  const { isAuthenticated } = useContext(AuthContext);
 
   useEffect(() => {
     const fetchData = async () => {
+      if (!isAuthenticated) {
+        setLoading(false);
+        return;
+      }
+
+      setLoading(true);
+
       try {
         const [userRes, favRes] = await Promise.all([
           api.get("/user/me"),
@@ -67,7 +74,7 @@ function App() {
     };
 
     fetchData();
-  }, []);
+  }, [isAuthenticated]);
 
   console.log("currentUser: ", currentUser);
 
@@ -105,16 +112,15 @@ function App() {
           setFavoriteIds,
         }}
       >
-        {/* <DataDispatchContext.Provider
-          value={{ onCreateClass, onCreatePresentation }}
-        > */}
         <Routes>
           <Route
             path="/"
             element={
-              <DesktopLayout>
-                <Home />
-              </DesktopLayout>
+              <ProtectedRoute>
+                <DesktopLayout>
+                  <Home />
+                </DesktopLayout>
+              </ProtectedRoute>
             }
           />
           <Route
@@ -192,9 +198,13 @@ function App() {
           <Route
             path="/login"
             element={
-              <DesktopLayout>
-                <Login />
-              </DesktopLayout>
+              isAuthenticated ? (
+                <Navigate to="/" replace />
+              ) : (
+                <DesktopLayout>
+                  <Login />
+                </DesktopLayout>
+              )
             }
           />
           <Route
@@ -214,8 +224,8 @@ function App() {
             }
           />
           <Route path="/mobile-cuecard/:slug" element={<MobileCueCard />} />
+          <Route path="/kakao/callback" element={<KakaoCallback />} />
         </Routes>
-        {/* </DataDispatchContext.Provider> */}
       </DataContext.Provider>
     </>
   );

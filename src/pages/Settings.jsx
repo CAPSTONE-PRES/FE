@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import PrimaryButton from "../components/PrimaryButton";
@@ -6,6 +6,8 @@ import TextButton from "../components/TextButton";
 import TextInput from "../components/TextInput";
 import userIcon from "../assets/SVG_Main/user/user1.svg";
 import "../styles/Settings.css";
+import { logoutApi } from "../api/authApi";
+import { AuthContext } from "../contexts/AuthContext";
 
 const Settings = () => {
   const navigate = useNavigate();
@@ -17,6 +19,8 @@ const Settings = () => {
   const [profileImage, setProfileImage] = useState(null);
   const fileInputRef = useRef(null);
   const previousUrlRef = useRef(null);
+
+  const { logout } = useContext(AuthContext);
 
   useEffect(() => {
     return () => {
@@ -50,6 +54,17 @@ const Settings = () => {
     setProfileImage(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await logoutApi();
+      logout();
+      navigate("/login");
+    } catch (err) {
+      console.error(err);
+      alert("오류가 발생했습니다");
     }
   };
 
@@ -254,9 +269,7 @@ const Settings = () => {
 
           {selectedMenu === "account" && (
             <div className="Settings__actions">
-              <PrimaryButton onClick={() => navigate("/login")}>
-                로그아웃
-              </PrimaryButton>
+              <PrimaryButton onClick={handleLogout}>로그아웃</PrimaryButton>
               <a href="#" className="Settings__delete-link">
                 계정 탈퇴
               </a>

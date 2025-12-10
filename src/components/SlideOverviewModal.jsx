@@ -14,7 +14,12 @@ const SlideOverviewModal = ({
   };
 
   return (
-    <BaseModal isOpen={isOpen} onClose={onClose} header={"전체페이지"}>
+    <BaseModal
+      isOpen={isOpen}
+      onClose={onClose}
+      header={"전체페이지"}
+      variant={"slides"}
+    >
       <div className="SlideOverviewModal__grid">
         {slides.map((slide, index) => (
           <div

@@ -733,9 +733,7 @@ const Feedback = () => {
                                                     0,
                                                     Math.min(
                                                       100,
-                                                      (issue.spmUser /
-                                                        issue.spmAverage) *
-                                                        50
+                                                      (issue.spmUser / 330) * 50
                                                     )
                                                   )}%`,
                                                 }}
@@ -748,7 +746,7 @@ const Feedback = () => {
 
                                           <div className="speed-item">
                                             <span className="speed-label">
-                                              평균 속도
+                                              적정 속도
                                             </span>
                                             <div className="speed-bar-container">
                                               <div
@@ -758,7 +756,7 @@ const Feedback = () => {
                                                 }}
                                               ></div>
                                               <span className="speed-value">
-                                                SPM: {issue.spmAverage}
+                                                SPM: 330
                                               </span>
                                             </div>
                                           </div>
