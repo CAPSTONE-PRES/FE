@@ -1,10 +1,12 @@
 import "../styles/Header.css";
 import pres_mainLogo from "../assets/SVG_Main/pres/logoss.svg";
 import mail from "../assets/SVG_Main/mail.svg";
-import user from "../assets/SVG_Main/user/user1.svg";
 import { Link, useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { DataContext } from "../App";
 
 const Header = () => {
+  const { currentUser } = useContext(DataContext);
   const nav = useNavigate();
   return (
     <header className="Header">
@@ -27,9 +29,6 @@ const Header = () => {
               <Link to={"/classHome"}>Class</Link>
             </li>
             <li>
-              <Link to={"/storage"}>보관 및 다운로드</Link>
-            </li>
-            <li>
               <Link to={"/settings"}>설정</Link>
             </li>
           </ul>
@@ -38,8 +37,8 @@ const Header = () => {
         <button className="mail-icon">
           <img src={mail} />
         </button>
-        <button className="user-icon">
-          <img src={user} />
+        <button className="user-icon" onClick={() => nav("/settings")}>
+          <img src={currentUser.profileUrl} />
         </button>
       </div>
     </header>

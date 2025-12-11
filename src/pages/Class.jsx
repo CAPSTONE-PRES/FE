@@ -95,7 +95,12 @@ const Class = () => {
             <NewButton
               text={"발표자료 추가하기"}
               link={"/newPresentation"}
-              state={{ workspaceId, workspaceMemberList, workspaceName }}
+              state={{
+                workspaceId,
+                workspaceMemberList,
+                workspaceName,
+                mode: "create",
+              }}
             />
           </div>
         </div>

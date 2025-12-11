@@ -58,7 +58,7 @@ const Login = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            <div style={{ textAlign: "right", marginBottom: "8px" }}>
+            {/* <div style={{ textAlign: "right", marginBottom: "8px" }}>
               <Link
                 to="/reset-password"
                 style={{
@@ -69,7 +69,7 @@ const Login = () => {
               >
                 비밀번호를 잊어버리셨나요?
               </Link>
-            </div>
+            </div> */}
 
             <PrimaryButton type="submit">로그인</PrimaryButton>
           </form>

@@ -8,13 +8,13 @@ import ClassHome from "./pages/ClassHome";
 import NewClass from "./pages/NewClass";
 import Class from "./pages/Class";
 import Notfound from "./pages/Notfound";
-import Storage from "./pages/Storage";
 import Settings from "./pages/Settings";
 import Feedback from "./pages/Feedback";
 import NewPresentation from "./pages/NewPresentation";
 import PracticeMode from "./pages/PracticeMode";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import InsufficientPage from "./pages/InsufficientPage";
 import ResetPassword from "./pages/ResetPassword";
 import MobileCueCard from "./pages/MobileCueCard";
 import { getFavWorkspaces } from "./api/workspaceApi";
@@ -172,14 +172,6 @@ function App() {
             }
           />
           <Route
-            path="/storage"
-            element={
-              <DesktopLayout>
-                <Storage />
-              </DesktopLayout>
-            }
-          />
-          <Route
             path="/settings"
             element={
               <DesktopLayout>
@@ -223,6 +215,15 @@ function App() {
               </DesktopLayout>
             }
           />
+          <Route
+            path="/insufficient"
+            element={
+              <DesktopLayout>
+                <InsufficientPage />
+              </DesktopLayout>
+            }
+          />
+
           <Route path="/mobile-cuecard/:slug" element={<MobileCueCard />} />
           <Route path="/kakao/callback" element={<KakaoCallback />} />
         </Routes>

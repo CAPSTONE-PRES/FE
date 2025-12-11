@@ -29,6 +29,7 @@ import {
 import SlideOverviewModal from "../components/SlideOverviewModal";
 import QuestionModal from "../components/QuestionModal";
 import ExportModal from "../components/ExportModal";
+import FeedbackModal from "../components/FeedbackModal";
 
 const Presentation = () => {
   //pid: params.id
@@ -361,8 +362,14 @@ const Presentation = () => {
     return <div className="Presentation"></div>;
   }
 
-  const { projectId, projectTitle, workspaceName, workspaceId, fileIds } =
-    projectInfo;
+  const {
+    projectId,
+    projectTitle,
+    workspaceName,
+    workspaceId,
+    fileIds,
+    latestSession,
+  } = projectInfo;
 
   return (
     <div className="Presentation">
@@ -589,6 +596,11 @@ const Presentation = () => {
         onClose={() => setOpenedMenu(null)}
         projectTitle={projectTitle}
         fileId={fileIds?.[0]}
+      />
+      <FeedbackModal
+        isOpen={openedMenu === "feedback"}
+        onClose={() => setOpenedMenu(null)}
+        sessionId={latestSession}
       />
     </div>
   );

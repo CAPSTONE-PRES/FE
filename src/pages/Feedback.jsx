@@ -29,7 +29,7 @@ const Feedback = () => {
     useState(false);
 
   // 기본값 설정 (API 호출 실패 시 사용)
-  const defaultFeedbackData = useMemo(() => mockFeedbackData, []);
+  // const defaultFeedbackData = useMemo(() => mockFeedbackData, []);
 
   const [feedbackData, setFeedbackData] = useState(null);
   const [qnaFeedbackData, setQnaFeedbackData] = useState(null);
@@ -43,9 +43,9 @@ const Feedback = () => {
   useEffect(() => {
     const fetchFeedback = async () => {
       if (!sessionId) {
-        // sessionId가 없으면 기본값 사용
-        setFeedbackData(defaultFeedbackData);
-        setLoading(false);
+        // // sessionId가 없으면 기본값 사용
+        // setFeedbackData(defaultFeedbackData);
+        // setLoading(false);
         return;
       }
 
@@ -64,7 +64,7 @@ const Feedback = () => {
       } catch (err) {
         console.error("피드백 조회 실패:", err);
         // API 호출 실패 시 기본값 사용
-        setFeedbackData(defaultFeedbackData);
+        // setFeedbackData(defaultFeedbackData);
         setError(null); // 에러를 표시하지 않고 기본값 사용
       } finally {
         setLoading(false);
@@ -274,6 +274,11 @@ const Feedback = () => {
         </div>
       </div>
     );
+  }
+
+  if (!feedbackData) {
+    window.alert("피드백이 존재하지 않아요.");
+    navigate("/", { replace: true });
   }
 
   const {

@@ -48,3 +48,8 @@ export const createProject = async (workspaceId, createBody) => {
   );
   return res.data;
 };
+
+export const updateProject = async (projectId, updateBody) => {
+  const res = await api.patch(`/projects/${projectId}/update`, updateBody);
+  return res.data;
+};

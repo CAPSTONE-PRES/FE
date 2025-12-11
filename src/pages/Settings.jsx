@@ -8,12 +8,22 @@ import userIcon from "../assets/SVG_Main/user/user1.svg";
 import "../styles/Settings.css";
 import { logoutApi } from "../api/authApi";
 import { AuthContext } from "../contexts/AuthContext";
+import {
+  getMyInfo,
+  updateMyInfo,
+  uploadProfileImage,
+  deleteProfileImage,
+} from "../api/userApi";
 
 const Settings = () => {
   const navigate = useNavigate();
   const [selectedMenu, setSelectedMenu] = useState("account");
-  const [profileName, setProfileName] = useState("박민영");
-  const [email, setEmail] = useState("minyoung1234@gmail.com");
+  const [userInfo, setUserInfo] = useState({});
+  const [profileName, setProfileName] = useState("");
+  const [email, setEmail] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+
+  const [isEditingPassword, setIsEditingPassword] = useState(false);
   const [isEditingName, setIsEditingName] = useState(false);
   const [isEditingEmail, setIsEditingEmail] = useState(false);
   const [profileImage, setProfileImage] = useState(null);
@@ -21,6 +31,26 @@ const Settings = () => {
   const previousUrlRef = useRef(null);
 
   const { logout } = useContext(AuthContext);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getMyInfo();
+
+        setUserInfo(data);
+        setProfileName(data.username);
+        setEmail(data.email);
+
+        if (data.profileUrl) {
+          setProfileImage(data.profileUrl);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   useEffect(() => {
     return () => {
@@ -34,26 +64,87 @@ const Settings = () => {
     if (fileInputRef.current) fileInputRef.current.click();
   };
 
-  const handleProfileFileChange = (e) => {
-    const file = e.target.files && e.target.files[0];
-    if (file) {
-      const objectUrl = URL.createObjectURL(file);
+  const handleProfileFileChange = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      await uploadProfileImage(file);
+
+      const previewUrl = URL.createObjectURL(file);
+
       if (previousUrlRef.current) {
         URL.revokeObjectURL(previousUrlRef.current);
       }
-      previousUrlRef.current = objectUrl;
-      setProfileImage(objectUrl);
+
+      previousUrlRef.current = previewUrl;
+      setProfileImage(previewUrl);
+    } catch (err) {
+      console.error(err);
+      alert("이미지 업로드에 실패했습니다.");
     }
   };
 
-  const handleRemoveProfileImage = () => {
-    if (previousUrlRef.current) {
-      URL.revokeObjectURL(previousUrlRef.current);
-      previousUrlRef.current = null;
+  const handleRemoveProfileImage = async () => {
+    try {
+      await deleteProfileImage();
+    } catch (err) {
+      console.error(err);
     }
+
+    if (previousUrlRef.current) URL.revokeObjectURL(previousUrlRef.current);
+    previousUrlRef.current = null;
+
     setProfileImage(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
+
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const saveProfileName = async () => {
+    try {
+      await updateMyInfo({
+        username: profileName,
+      });
+
+      setUserInfo((prev) => ({ ...prev, username: profileName }));
+      setIsEditingName(false);
+    } catch (err) {
+      console.error(err);
+      alert("이름 업데이트 실패");
+    }
+  };
+
+  const saveEmail = async () => {
+    try {
+      await updateMyInfo({
+        email: email,
+      });
+
+      setUserInfo((prev) => ({ ...prev, email }));
+      setIsEditingEmail(false);
+    } catch (err) {
+      console.error(err);
+      alert("이메일 업데이트 실패");
+    }
+  };
+
+  const savePassword = async () => {
+    if (!newPassword || newPassword.length < 8) {
+      alert("비밀번호는 8자 이상이어야 합니다.");
+      return;
+    }
+
+    try {
+      await updateMyInfo({
+        password: newPassword,
+      });
+
+      alert("비밀번호가 변경되었습니다.");
+      setIsEditingPassword(false);
+      setNewPassword("");
+    } catch (err) {
+      console.error(err);
+      alert("비밀번호 변경 실패");
     }
   };
 
@@ -70,9 +161,9 @@ const Settings = () => {
 
   const menuItems = [
     { id: "account", label: "계정" },
-    { id: "notifications", label: "알림" },
-    { id: "permissions", label: "웹사이트 권한" },
-    { id: "terms", label: "약관 정보" },
+    // { id: "notifications", label: "알림" },
+    // { id: "permissions", label: "웹사이트 권한" },
+    // { id: "terms", label: "약관 정보" },
   ];
 
   const renderContent = () => {
@@ -135,7 +226,7 @@ const Settings = () => {
                           onChange={(e) => setProfileName(e.target.value)}
                           placeholder="프로필 이름"
                         />
-                        <TextButton onClick={() => setIsEditingName(false)}>
+                        <TextButton onClick={saveProfileName}>
                           저장하기
                         </TextButton>
                       </>
@@ -164,9 +255,7 @@ const Settings = () => {
                           onChange={(e) => setEmail(e.target.value)}
                           placeholder="이메일"
                         />
-                        <TextButton onClick={() => setIsEditingEmail(false)}>
-                          저장하기
-                        </TextButton>
+                        <TextButton onClick={saveEmail}>저장하기</TextButton>
                       </>
                     ) : (
                       <>
@@ -193,14 +282,30 @@ const Settings = () => {
                 <div className="Settings__field">
                   <label className="Settings__field-label">비밀번호</label>
                   <div className="Settings__field-content">
-                    <TextInput
-                      id="settings-password"
-                      type="password"
-                      value={"password"}
-                      readOnly
-                      placeholder="••••••••"
-                    />
-                    <TextButton onClick={() => {}}>변경하기</TextButton>
+                    {isEditingPassword ? (
+                      <>
+                        <TextInput
+                          id="settings-password"
+                          type="password"
+                          value={newPassword}
+                          onChange={(e) => setNewPassword(e.target.value)}
+                          placeholder="새 비밀번호 입력 (8자 이상)"
+                        />
+                        <TextButton onClick={savePassword}>저장하기</TextButton>
+                      </>
+                    ) : (
+                      <>
+                        <TextInput
+                          id="settings-password"
+                          type="password"
+                          value={"********"}
+                          readOnly
+                        />
+                        <TextButton onClick={() => setIsEditingPassword(true)}>
+                          변경하기
+                        </TextButton>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
@@ -270,9 +375,9 @@ const Settings = () => {
           {selectedMenu === "account" && (
             <div className="Settings__actions">
               <PrimaryButton onClick={handleLogout}>로그아웃</PrimaryButton>
-              <a href="#" className="Settings__delete-link">
+              {/* <a href="#" className="Settings__delete-link">
                 계정 탈퇴
-              </a>
+              </a> */}
             </div>
           )}
         </div>

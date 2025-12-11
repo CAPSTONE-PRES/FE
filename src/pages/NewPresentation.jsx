@@ -3,7 +3,7 @@ import "../styles/NewPresentation.css";
 import Header from "../components/Header";
 import BackButton from "../components/BackButton";
 import { getStringedDate } from "../util/get-stringed-date";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { DataContext } from "../App";
 import dateSelectArrow from "../assets/SVG_NewPresentation/date-select-arrow.svg";
 import selectArrow from "../assets/SVG_NewPresentation/presenter-select-arrow.svg";
@@ -18,25 +18,41 @@ import {
   generateQnA,
   uploadFile,
   uploadResource,
+  deleteFile,
 } from "../api/fileApi";
 import LoadingScreen from "../components/LoadingScreen";
-import { createProject } from "../api/projectApi";
+import {
+  createProject,
+  getProjectInfo,
+  updateProject,
+} from "../api/projectApi";
 
 const NewPresentation = () => {
   const nav = useNavigate();
   const location = useLocation();
+  const mode = location.state?.mode ?? "create";
+
   const { workspaceId, workspaceMemberList, workspaceName } = location.state;
   const { currentUser } = useContext(DataContext);
-  // const { onCreatePresentation } = useContext(DataDispatchContext);
+
+  // edit 모드는 기존 프로젝트 정보 세팅
+  const [projectId, setProjectId] = useState(location.state?.projectId ?? null);
+
+  const [originalFileId, setOriginalFileId] = useState(
+    location.state?.fileId ?? null
+  );
+  // const [originalFileName, setOriginalFileName] = useState(
+  //   location.state?.fileName
+  // );
+  const [file, setFile] = useState(null); //업로드된 새 파일
+  const [optionFile, setOptionFile] = useState(null);
 
   const [title, setTitle] = useState("");
   const [date, setDate] = useState(new Date());
   const [time, setTime] = useState("00:00");
+
   const [minute, setMinute] = useState(5);
   const [second, setSecond] = useState(0);
-  const [file, setFile] = useState(null);
-  const [optionFile, setOptionFile] = useState(null);
-  const [createdProjectId, setCreatedProjectId] = useState(null);
 
   const [isLoading, setIsLoading] = useState(false);
   const [loadingText, setLoadingText] = useState("");
@@ -54,8 +70,39 @@ const NewPresentation = () => {
 
   const isTeamProject = (workspaceMemberList?.length ?? 0) > 1;
 
+  //-----------------------------------------------------------------//
+
+  //edit모드 진입 시 초기화
+  useEffect(() => {
+    if (mode !== "edit") return;
+
+    // insufficient → edit 진입 시 fileId와 file이 전달될 수 있음
+    if (location.state?.fileId) {
+      setOriginalFileId(location.state.fileId);
+    }
+
+    // projectId가 있어야 서버에서 정보 조회 가능
+    if (projectId) {
+      fetchProjectInfo();
+    }
+  }, [mode, projectId]);
+
+  const fetchProjectInfo = async () => {
+    const info = await getProjectInfo(projectId);
+
+    setTitle(info.projectTitle);
+    setDate(new Date(info.dueDate));
+    setMinute(info.limitTime.minute);
+    setSecond(info.limitTime.second);
+    // setOriginalFileName(info.fileNames?.[0]); // 필요 시
+  };
+
+  //버튼 활성화 조건
   function isBtnValid() {
-    return title !== "" && file;
+    if (mode === "create") return title !== "" && file;
+    if (mode === "edit") {
+      return title !== "" && (file || originalFileId) && optionFile;
+    }
   }
 
   useOutsideClick(".np-presenter-setting", () =>
@@ -65,85 +112,236 @@ const NewPresentation = () => {
     setIsDateModalOpen(false)
   );
 
-  const handleAddPresentation = async () => {
-    if (!isBtnValid()) return;
-    setLoadingText("대본 카드 생성 중");
-    setIsLoading(true);
+  const getLimitedTimeString = (minute, second) => {
+    const mm = String(minute).padStart(2, "0");
+    const ss = String(second).padStart(2, "0");
+    return `${mm}:${ss}`;
+  };
 
+  // const handleAddPresentation = async () => {
+  //   if (!isBtnValid()) return;
+  //   setLoadingText("대본 카드 생성 중");
+  //   setIsLoading(true);
+
+  //   try {
+  //     //0. dueDate 계산
+  //     /**      const dueDate = new Date(
+  //       date.getFullYear(),
+  //       date.getMonth(),
+  //       date.getDate(),
+  //       parseInt(time.split(":")[0]),
+  //       parseInt(time.split(":")[1])
+  //     ).toISOString(); */
+
+  //     //1. 발표 생성 요청
+  //     const createBody = {
+  //       title,
+  //       dueDate: getIsoDateString(date), //dueDate?
+  //       limitedTime: { minute: Number(minute), second: Number(second) },
+  //       presenterId: presenter.memberId ?? null,
+  //       // fileIds: optFileId ? [uploadedFileId, optFileId] : [uploadedFileId],
+  //     };
+
+  //     const createRes = await createProject(workspaceId, createBody);
+  //     // const createRes = await api.post(
+  //     //   `/workspace/${workspaceId}/projects/create`,
+  //     //   createBody
+  //     // );
+  //     const { projectId } = createRes;
+  //     console.log("프로젝트 생성 완료: ", projectId);
+
+  //     setCreatedProjectId(projectId);
+
+  //     //2. 파일 업로드
+  //     const formData = new FormData();
+  //     formData.append("file", file);
+  //     const uploadRes = await uploadFile(currentUser.id, projectId, formData);
+
+  //     // const uploadRes = await api.post(
+  //     //   `/files/upload?uploaderId=${currentUser.id}&projectId=${projectId}`,
+  //     //   formData,
+  //     //   {
+  //     //     headers: { "Content-Type": "multipart/form-data" },
+  //     //   }
+  //     // );
+
+  //     const uploadedFileId = uploadRes.fileId;
+  //     console.log("파일 업로드 성공: ", uploadedFileId);
+
+  //     //[옵션]자료조사 파일 업로드
+  //     let optFileId = null;
+  //     if (optionFile) {
+  //       const optForm = new FormData();
+  //       optForm.append("file", optionFile);
+  //       const optUploadRes = await uploadResource(
+  //         currentUser.id,
+  //         projectId,
+  //         optForm
+  //       );
+  //       optFileId = optUploadRes.fileId;
+  //       console.log("옵션 파일 업로드 성공: ", optFileId);
+  //     }
+
+  //     //3. 파일에서 텍스트 추출
+  //     await extractText(uploadedFileId);
+
+  //     //4. 큐카드 생성
+  //     const cueRes = await generateCue(uploadedFileId);
+
+  //     //5. qna 생성
+  //     await generateQnA(uploadedFileId);
+
+  //     //모든 api 완료 후
+  //     setApiDone(true);
+  //   } catch (err) {
+  //     console.error("발표 생성 실패: ", err);
+  //     setLoadingText("문제가 발생했습니다. 다시 시도해주세요.");
+  //     setTimeout(() => setIsLoading(false), 600);
+  //   }
+  // };
+
+  //생성
+  const handleCreate = async () => {
     try {
-      //0. dueDate 계산
-      /**      const dueDate = new Date(
-        date.getFullYear(),
-        date.getMonth(),
-        date.getDate(),
-        parseInt(time.split(":")[0]),
-        parseInt(time.split(":")[1])
-      ).toISOString(); */
+      setIsLoading(true);
+      setLoadingText("파일 업로드 중...");
 
-      //1. 발표 생성 요청
+      // 1. 프로젝트 생성
       const createBody = {
         title,
-        dueDate: getIsoDateString(date), //dueDate?
-        limitedTime: { minute: Number(minute), second: Number(second) },
+        dueDate: getIsoDateString(date),
+        limitedTime: { minute, second },
         presenterId: presenter.memberId ?? null,
-        // fileIds: optFileId ? [uploadedFileId, optFileId] : [uploadedFileId],
       };
 
       const createRes = await createProject(workspaceId, createBody);
-      // const createRes = await api.post(
-      //   `/workspace/${workspaceId}/projects/create`,
-      //   createBody
-      // );
-      const { projectId } = createRes;
-      console.log("프로젝트 생성 완료: ", projectId);
+      const newProjectId = createRes.projectId;
+      setProjectId(newProjectId);
+      console.log("프로젝트 생성 완료: ", newProjectId);
 
-      setCreatedProjectId(projectId);
-
-      //2. 파일 업로드
+      // 2. 메인 발표자료 업로드
       const formData = new FormData();
       formData.append("file", file);
-      const uploadRes = await uploadFile(currentUser.id, projectId, formData);
+      const uploadRes = await uploadFile(
+        currentUser.id,
+        newProjectId,
+        formData
+      );
+      const mainFileId = uploadRes.fileId;
+      console.log("파일 업로드 성공: ", mainFileId);
 
-      // const uploadRes = await api.post(
-      //   `/files/upload?uploaderId=${currentUser.id}&projectId=${projectId}`,
-      //   formData,
-      //   {
-      //     headers: { "Content-Type": "multipart/form-data" },
-      //   }
-      // );
-
-      const uploadedFileId = uploadRes.fileId;
-      console.log("파일 업로드 성공: ", uploadedFileId);
-
-      //[옵션]자료조사 파일 업로드
+      // 3. 추가자료(optFile) 업로드 (있을 때만)
       let optFileId = null;
       if (optionFile) {
         const optForm = new FormData();
         optForm.append("file", optionFile);
-        const optUploadRes = await uploadResource(
+        const optRes = await uploadResource(
           currentUser.id,
-          projectId,
+          newProjectId,
           optForm
         );
-        optFileId = optUploadRes.fileId;
+        optFileId = optRes.fileId;
         console.log("옵션 파일 업로드 성공: ", optFileId);
       }
 
-      //3. 파일에서 텍스트 추출
-      await extractText(uploadedFileId);
+      // 4. extract-text
+      const extractRes = await extractText(mainFileId);
+      const { isSufficient, insufficientSlidePreviews } = extractRes;
 
-      //4. 큐카드 생성
-      const cueRes = await generateCue(uploadedFileId);
+      // optFile이 없고 insufficient이면 insufficient 페이지로 이동
+      if (!optFileId && !isSufficient) {
+        return nav("/insufficient", {
+          state: {
+            projectId: newProjectId,
+            file,
+            fileId: mainFileId,
+            insufficientSlidePreviews,
+            workspaceId,
+            workspaceName,
+            workspaceMemberList,
+          },
+        });
+      }
 
-      //5. qna 생성
-      await generateQnA(uploadedFileId);
+      // 5. generate cue + qna
+      setLoadingText("대본 카드 생성 중...");
+      await generateCue(mainFileId, optFileId ?? undefined);
+      await generateQnA(mainFileId);
 
-      //모든 api 완료 후
       setApiDone(true);
-    } catch (err) {
-      console.error("발표 생성 실패: ", err);
-      setLoadingText("문제가 발생했습니다. 다시 시도해주세요.");
-      setTimeout(() => setIsLoading(false), 600);
+    } catch (e) {
+      console.error(e);
+      setLoadingText("오류가 발생했습니다");
+      setTimeout(() => setIsLoading(false), 800);
+    }
+  };
+
+  //편집
+  //createbody의 필드 중 변한 값이 있으면 updateProject~extract, 없으면 ???
+  const handleEdit = async () => {
+    try {
+      setIsLoading(true);
+      setLoadingText("파일 업로드 중...");
+
+      // // 1. 프로젝트 정보 수정
+      // await updateProject(projectId, {
+      //   title,
+      //   dueDate: getIsoDateString(date),
+      //   // limitedTime: { minute, second },
+      //   limitedTime: getLimitedTimeString(minute, second),
+      //   presenterId: presenter.memberId ?? null,
+      // });
+
+      let mainFileId = originalFileId;
+
+      // 2. 발표자료 파일을 수정했으면 재업로드
+      if (file) {
+        if (originalFileId) await deleteFile(originalFileId);
+
+        const formData = new FormData();
+        formData.append("file", file);
+        const uploadRes = await uploadFile(currentUser.id, projectId, formData);
+        mainFileId = uploadRes.fileId;
+
+        const extractRes = await extractText(mainFileId);
+        const { isSufficient, insufficientSlidePreviews } = extractRes;
+
+        // edit 모드에서는 optFile 없으면 다음 단계로 못감
+        if (!optionFile && !isSufficient) {
+          return nav("/insufficient", {
+            state: {
+              projectId,
+              file,
+              fileId: mainFileId,
+              insufficientSlidePreviews,
+              workspaceId,
+              workspaceName,
+              workspaceMemberList,
+            },
+          });
+        }
+      }
+
+      // 3. optFile은 반드시 있어야 함 (버튼도 disable해두는 것이 안전)
+      let optFileId = null;
+      if (optionFile) {
+        const optForm = new FormData();
+        optForm.append("file", optionFile);
+        const optRes = await uploadResource(currentUser.id, projectId, optForm);
+        optFileId = optRes.fileId;
+        console.log("옵션 파일 업로드 완료:", optFileId);
+      }
+
+      // 4. generate cue + qna
+      setLoadingText("대본 카드 생성 중...");
+      await generateCue(mainFileId, optFileId);
+      await generateQnA(mainFileId);
+
+      setApiDone(true);
+    } catch (e) {
+      console.error(e);
+      setLoadingText("문제가 발생했습니다");
+      setTimeout(() => setIsLoading(false), 800);
     }
   };
 
@@ -156,7 +354,7 @@ const NewPresentation = () => {
           duration={150}
           isComplete={apiDone}
           onComplete={() => {
-            nav(`/presentation/${createdProjectId}`);
+            if (projectId) nav(`/presentation/${projectId}`);
           }}
         />
       ) : (
@@ -320,7 +518,7 @@ const NewPresentation = () => {
           <div className="np-footer">
             <button
               className={`np-add-btn ${isBtnValid() ? "active" : ""}`}
-              onClick={handleAddPresentation}
+              onClick={mode === "edit" ? handleEdit : handleCreate}
               disabled={!isBtnValid()}
             >
               발표자료 추가하기

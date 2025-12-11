@@ -29,12 +29,12 @@ const LeftNav = ({ openedMenu, setOpenedMenu }) => {
       label: "다운로드",
       onClick: () => setOpenedMenu("export"),
     },
-    {
-      id: 4,
-      icon: presIconOff, //비활성화
-      label: "피드백보기",
-      onClick: () => setOpenedMenu("feedback"),
-    },
+    // {
+    //   id: 4,
+    //   icon: presIconOff, //비활성화
+    //   label: "피드백보기",
+    //   onClick: () => setOpenedMenu("feedback"),
+    // },
   ];
 
   return (

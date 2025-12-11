@@ -98,6 +98,7 @@ const ClassCard = ({
                 workspaceTimeList,
                 workspaceMemberList,
                 workspaceOwnerName,
+                mode: "create",
               },
             });
           }}

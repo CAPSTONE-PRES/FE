@@ -11,3 +11,7 @@
 .hero-fav-classes {
   margin-top: 74px;
 }
+
+.search-wrapper {
+  position: relative;
+}

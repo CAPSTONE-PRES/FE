@@ -12,8 +12,12 @@ import {
   getAllProjects,
   getNextProject,
   getProjectsByDate,
+  searchProjects,
 } from "../api/projectApi";
+import { searchWorkspaces } from "../api/workspaceApi";
 import { getIsoDateString } from "../util/getIsoDateString";
+import SearchModal from "./SearchModal";
+import useOutsideClick from "../hooks/useOutsideClick";
 
 const today = new Date();
 const isSameDay = (a, b) => getStringedDate(a) === getStringedDate(b);
@@ -47,6 +51,43 @@ const HomeHero = () => {
   const [dailyProjects, setDailyProjects] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
   const [nearestUpcoming, setNearestUpcoming] = useState(null);
+
+  //검색
+  const [keyword, setKeyword] = useState("");
+  const [workspaceResults, setWorkspaceResults] = useState([]);
+  const [projectResults, setProjectResults] = useState([]);
+  const [searchOpen, setSearchOpen] = useState(false);
+
+  useOutsideClick(".hero-search", () => setSearchOpen(false));
+
+  //searchModal 업데이트
+  useEffect(() => {
+    const delay = setTimeout(async () => {
+      if (!keyword.trim()) {
+        setWorkspaceResults([]);
+        setProjectResults([]);
+        return;
+      }
+
+      try {
+        const ws = await searchWorkspaces(keyword);
+        const pj = await searchProjects(keyword);
+
+        setWorkspaceResults(ws);
+        setProjectResults(pj);
+
+        if (ws.length > 0 || pj.length > 0) {
+          setSearchOpen(true);
+        } else {
+          setSearchOpen(false);
+        }
+      } catch (err) {
+        console.error("검색 실패:", err);
+      }
+    }, 300); // 0.3초 딜레이 (debounce)
+
+    return () => clearTimeout(delay);
+  }, [keyword]);
 
   //전체 프로젝트 불러오기
   useEffect(() => {
@@ -137,9 +178,26 @@ const HomeHero = () => {
           </h2>
         </div>
         <div className="hero-search">
-          <SearchBar />
+          <SearchBar
+            keyword={keyword}
+            setKeyword={setKeyword}
+            onFocus={() => {
+              if (workspaceResults.length > 0 || projectResults.length > 0) {
+                setSearchOpen(true);
+              }
+            }}
+          />
+
+          {searchOpen &&
+            (workspaceResults.length > 0 || projectResults.length > 0) && (
+              <SearchModal
+                workspaces={workspaceResults}
+                projects={projectResults}
+              />
+            )}
         </div>
       </section>
+
       <section className="hero-bottom">
         <div className="hero-dday">
           <h3>

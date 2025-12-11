@@ -20,6 +20,12 @@ const Signup = () => {
 
   const nav = useNavigate();
 
+  const BASE_URL = "http://54.180.167.52:8080/api";
+
+  const handleKakaoLogin = () => {
+    window.location.href = `${BASE_URL}/auth/kakao/login`;
+  };
+
   //이메일 인증 코드 보내기
   const handleSendEmail = async (e) => {
     e.preventDefault();
@@ -180,7 +186,11 @@ const Signup = () => {
                   <span>또는 간편 로그인</span>
                 </div>
 
-                <button className="btn btn-kakao" type="button">
+                <button
+                  className="btn btn-kakao"
+                  type="button"
+                  onClick={handleKakaoLogin}
+                >
                   <img src={iconKakao} className="kakao-dot" /> 카카오로
                   시작하기
                 </button>

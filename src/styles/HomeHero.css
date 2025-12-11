@@ -29,6 +29,7 @@
 .hero-search {
   margin-top: 34px;
   margin-bottom: 6px;
+  position: relative;
 }
 
 .hero-bottom {

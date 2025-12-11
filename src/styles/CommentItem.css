@@ -45,6 +45,12 @@
 .CommentItem__author img {
   width: 16px;
   height: 16px;
+
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .CommentItem__meta {

@@ -23,9 +23,11 @@ export const extractText = async (fileId) => {
 };
 
 //큐카드 생성
-export const generateCue = async (fileId) => {
+export const generateCue = async (fileId, additionalFileId) => {
   try {
-    const res = await api.post(`/files/generate-cue/${fileId}`);
+    const res = await api.post(`/files/generate-cue/${fileId}`, null, {
+      params: { additionalFileId },
+    });
     console.log("큐카드 생성 완료:", res.data);
     return res.data;
   } catch (err) {
@@ -108,6 +110,17 @@ export const uploadResource = async (uploaderId, projectId, file) => {
     return res.data;
   } catch (err) {
     console.error("추가 자료 업로드 실패: ", err);
+    throw err;
+  }
+};
+
+//파일 삭제
+export const deleteFile = async (fileId) => {
+  try {
+    const res = await api.delete(`/files/${fileId}`);
+    return res.data;
+  } catch (err) {
+    console.error("파일 삭제 실패:", err);
     throw err;
   }
 };

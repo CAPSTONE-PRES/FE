@@ -1,0 +1,148 @@
+.SearchModal {
+  position: absolute;
+  top: 72px;
+  z-index: 99;
+  display: flex;
+  width: 464px;
+  padding: 20px 0;
+  flex-direction: column;
+  align-items: flex-start;
+  align-self: stretch;
+
+  border-radius: var(--4, 10px);
+  background: var(--Pres-white-1, #fff);
+
+  /* Pres/500 */
+  box-shadow: 0 3px 20px 0 rgba(0, 0, 0, 0.1);
+}
+
+.SearchModal__content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.search-section h4 {
+  margin: 0;
+  padding: 0 16px;
+  color: var(--Pres-gray-1, #7a7a7a);
+
+  /* Pres Caption 2 */
+  font-family: "NotoSans";
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+}
+
+.workspace-item-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.workspace-item {
+  cursor: pointer;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  padding: 16px 8px 16px 16px;
+  align-items: center;
+  justify-content: space-between;
+  align-self: stretch;
+  background: var(--Pres-white-1, #fff);
+}
+
+.workspace-item-left {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.workspace-title {
+  color: var(--Pres-black-1, #2e2e2e);
+
+  /* Pres SubHead 2 */
+  font-family: "GothicA1";
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 150%; /* 27px */
+}
+
+.workspace-times {
+  color: var(--Pres-gray-2, #a9a9a9);
+
+  /* Pres Caption */
+  font-family: "NotoSans";
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+}
+
+/* 발표자료 전체 wrapper */
+.project-item {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 16px 8px 16px 16px;
+  box-sizing: border-box;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+/* 썸네일 */
+.project-thumb {
+  width: 120px;
+  height: 67px;
+  border-radius: var(--6, 4px);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* 텍스트 영역 */
+.project-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* 제목 */
+.project-title {
+  color: var(--Pres-black-1, #2e2e2e);
+
+  /* Pres Body-md */
+  font-family: "NotoSans";
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+}
+
+/* 보조 정보 (클래스명 + 날짜 or 시간) */
+.project-sub {
+  display: flex;
+  flex-direction: column;
+}
+
+.project-workspace {
+  font-family: "NotoSans";
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--Pres-gray-1, #7a7a7a);
+  margin: 0;
+}
+
+.project-date {
+  font-family: "NotoSans";
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--Pres-gray-2, #a9a9a9);
+  margin: 0;
+}
