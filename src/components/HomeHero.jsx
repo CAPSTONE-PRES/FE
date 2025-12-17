@@ -2,7 +2,6 @@ import "../styles/HomeHero.css";
 import SearchBar from "./SearchBar";
 import UpcomingItem from "./UpcomingItem";
 import notice_Button from "../assets/SVG_Main/notice_Button.svg";
-import { getIsEmpty } from "../util/get-is-empty";
 import { getStringedDate } from "../util/get-stringed-date";
 import { useContext, useState, useMemo, useEffect } from "react";
 import { DataContext } from "../App";
@@ -19,23 +18,17 @@ import { getIsoDateString } from "../util/getIsoDateString";
 import SearchModal from "./SearchModal";
 import useOutsideClick from "../hooks/useOutsideClick";
 
-const today = new Date();
-const isSameDay = (a, b) => getStringedDate(a) === getStringedDate(b);
+const now = new Date();
+const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
 //dday 계산
 function daysUntil(targetISO) {
   const target = new Date(targetISO);
-  const now = new Date();
 
   const startOfTarget = new Date(
     target.getFullYear(),
     target.getMonth(),
     target.getDate()
-  );
-  const startOfToday = new Date(
-    now.getFullYear(),
-    now.getMonth(),
-    now.getDate()
   );
 
   const MS_PER_DAY = 24 * 60 * 60 * 1000;
@@ -128,7 +121,7 @@ const HomeHero = () => {
         const data = await getProjectsByDate(getIsoDateString(selectedDate));
         setDailyProjects(data);
       } catch (err) {
-        console.error("데일리 프로젝트 불러오기 실패:".err);
+        console.error("데일리 프로젝트 불러오기 실패:", err);
       }
     };
 
@@ -153,11 +146,12 @@ const HomeHero = () => {
   const upcomingTwo = useMemo(() => {
     if (selectedDate) return dailyProjects;
 
-    const oneWeekLater = new Date(today);
-    oneWeekLater.setDate(today.getDate() + 7);
+    const oneWeekLater = new Date(startOfToday);
+    oneWeekLater.setDate(startOfToday.getDate() + 7);
     return allProjects
       .filter(
-        (p) => new Date(p.date) >= today && new Date(p.date) <= oneWeekLater
+        (p) =>
+          new Date(p.date) >= startOfToday && new Date(p.date) <= oneWeekLater
       )
       .slice(0, 2);
   }, [allProjects, dailyProjects, selectedDate]);

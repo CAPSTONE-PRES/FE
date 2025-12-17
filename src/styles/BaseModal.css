@@ -18,10 +18,6 @@
   overflow: hidden;
 }
 
-/* .ModalContent::-webkit-scrollbar {
-  display: none;
-} */
-
 .BaseModal__header {
   position: relative;
   display: flex;
@@ -31,6 +27,7 @@
   border-radius: var(--3, 15px) var(--3, 15px) 0 0;
   background: #fff;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+  z-index: 100;
 }
 
 .BaseModal__header p {
@@ -79,4 +76,16 @@
 
 .BaseModal__body--question {
   padding: 29px 44px;
+}
+
+/* 실제 스크롤 주체 */
+.BaseModal__body {
+  overflow-y: auto;
+
+  scrollbar-width: none; /* Firefox */
+  scrollbar-gutter: auto;
+}
+
+.BaseModal__body::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
 }

@@ -14,6 +14,7 @@ import {
   uploadProfileImage,
   deleteProfileImage,
 } from "../api/userApi";
+import SettingsNotifications from "../components/SettingsNotifications";
 
 const Settings = () => {
   const navigate = useNavigate();
@@ -161,9 +162,9 @@ const Settings = () => {
 
   const menuItems = [
     { id: "account", label: "계정" },
-    // { id: "notifications", label: "알림" },
-    // { id: "permissions", label: "웹사이트 권한" },
-    // { id: "terms", label: "약관 정보" },
+    { id: "notifications", label: "알림" },
+    { id: "permissions", label: "웹사이트 권한" },
+    { id: "terms", label: "약관 정보" },
   ];
 
   const renderContent = () => {
@@ -179,39 +180,37 @@ const Settings = () => {
               </p>
 
               <div className="Settings__card">
-                <div className="Settings__field">
-                  <label className="Settings__field-label">프로필 사진</label>
-                  <div className="Settings__field-content">
-                    <div className="Settings__profile-avatar">
-                      <img
-                        src={profileImage || userIcon}
-                        alt="user"
-                        width={48}
-                        height={48}
-                      />
-                    </div>
-                    {profileImage ? (
-                      <div style={{ display: "flex", gap: 8 }}>
-                        <TextButton onClick={handleRemoveProfileImage}>
-                          제거하기
-                        </TextButton>
-                        <TextButton onClick={handleSelectProfileImage}>
-                          변경하기
-                        </TextButton>
-                      </div>
-                    ) : (
-                      <TextButton onClick={handleSelectProfileImage}>
-                        프로필 사진 추가하기
-                      </TextButton>
-                    )}
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      accept="image/*"
-                      style={{ display: "none" }}
-                      onChange={handleProfileFileChange}
+                <label className="Settings__field-label">프로필 사진</label>
+                <div className="Settings__field-content">
+                  <div className="Settings__profile-avatar">
+                    <img
+                      src={profileImage || userIcon}
+                      alt="user"
+                      width={48}
+                      height={48}
                     />
                   </div>
+                  {profileImage ? (
+                    <div style={{ display: "flex", gap: 8 }}>
+                      <TextButton onClick={handleRemoveProfileImage}>
+                        제거하기
+                      </TextButton>
+                      <TextButton onClick={handleSelectProfileImage}>
+                        변경하기
+                      </TextButton>
+                    </div>
+                  ) : (
+                    <TextButton onClick={handleSelectProfileImage}>
+                      프로필 사진 추가하기
+                    </TextButton>
+                  )}
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    style={{ display: "none" }}
+                    onChange={handleProfileFileChange}
+                  />
                 </div>
 
                 <div className="Settings__field">
@@ -315,10 +314,7 @@ const Settings = () => {
       case "notifications":
         return (
           <div className="Settings__section">
-            <h2 className="Settings__section-title">알림</h2>
-            <p className="Settings__section-description">
-              알림 설정을 관리할 수 있어요.
-            </p>
+            <SettingsNotifications />
           </div>
         );
       case "permissions":

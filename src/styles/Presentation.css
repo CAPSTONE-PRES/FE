@@ -105,21 +105,21 @@
   font-size: 14px;
 }
 
-.Presentation__toggle-switch {
+.toggle-switch {
   position: relative;
   display: inline-block;
   width: 36px;
   height: 20px;
 }
 
-.Presentation__toggle-switch input {
+.toggle-switch input {
   opacity: 0;
   width: 0;
   height: 0;
 }
 
 /*배경 영역*/
-.presentation__slider {
+.toggle-slider {
   cursor: pointer;
   position: absolute;
   inset: 0;
@@ -129,7 +129,7 @@
 }
 
 /*원*/
-.presentation__slider::before {
+.toggle-slider::before {
   content: "";
   position: absolute;
   width: 18px;
@@ -139,11 +139,11 @@
   transition: all 0.3s ease;
 }
 
-.Presentation__toggle-switch input:checked + .presentation__slider {
+.toggle-switch input:checked + .toggle-slider {
   background: linear-gradient(180deg, #c2f5df 0%, #8bb0dd 100%);
 }
 
-.Presentation__toggle-switch input:checked + .presentation__slider::before {
+.toggle-switch input:checked + .toggle-slider::before {
   transform: translateX(16px);
 }
 

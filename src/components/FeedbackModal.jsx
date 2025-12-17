@@ -1,7 +1,10 @@
+import { useRef } from "react";
 import BaseModal from "./BaseModal";
-import FeedbackCompact from "./FeedbackCompact"; // 새로 만들 축약 UI
+import Feedback from "../pages/Feedback";
 
 const FeedbackModal = ({ isOpen, onClose, sessionId }) => {
+  const scrollRef = useRef(null);
+
   return (
     <BaseModal
       isOpen={isOpen}
@@ -11,7 +14,13 @@ const FeedbackModal = ({ isOpen, onClose, sessionId }) => {
       width="960px"
       height="640px"
     >
-      <FeedbackCompact sessionId={sessionId} />
+      <div ref={scrollRef} style={{ height: "100%", overflowY: "auto" }}>
+        <Feedback
+          sessionId={sessionId}
+          mode="modal"
+          scrollContainerRef={scrollRef}
+        />
+      </div>
     </BaseModal>
   );
 };

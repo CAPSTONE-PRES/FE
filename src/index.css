@@ -111,6 +111,13 @@ body {
   max-width: 100%;
 }
 
+body {
+  -ms-overflow-style: none;
+}
+::-webkit-scrollbar {
+  display: none;
+}
+
 #root {
   /* min-width: 1440px; */
   width: 100%;

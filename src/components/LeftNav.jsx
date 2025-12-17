@@ -29,12 +29,12 @@ const LeftNav = ({ openedMenu, setOpenedMenu }) => {
       label: "다운로드",
       onClick: () => setOpenedMenu("export"),
     },
-    // {
-    //   id: 4,
-    //   icon: presIconOff, //비활성화
-    //   label: "피드백보기",
-    //   onClick: () => setOpenedMenu("feedback"),
-    // },
+    {
+      id: 4,
+      icon: presIcon,
+      label: "피드백보기",
+      onClick: () => setOpenedMenu("feedback"),
+    },
   ];
 
   return (
@@ -50,12 +50,11 @@ const LeftNav = ({ openedMenu, setOpenedMenu }) => {
             className="LeftNav__item"
             title={item.label}
             onClick={item.onClick}
-            disabled={item.id === 4}
           >
             <img src={item.icon} />
             {isHovered && (
               <span
-                className={`LeftNav__labe ${item.id === 4 ? "disabled" : ""}`}
+                className={`LeftNav__label ${item.id === 5 ? "disabled" : ""}`}
               >
                 {item.label}
               </span>

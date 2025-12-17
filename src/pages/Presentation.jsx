@@ -542,13 +542,13 @@ const Presentation = () => {
           <div className={"Presentation__floating-action"}>
             <div className="Presentation__version-toggle">
               <span>심화버전</span>
-              <label className="Presentation__toggle-switch">
+              <label className="toggle-switch">
                 <input
                   type="checkbox"
                   checked={isDeepMode}
                   onChange={() => setIsDeepMode(!isDeepMode)}
                 />
-                <span className="presentation__slider" />
+                <span className="toggle-slider" />
               </label>
             </div>
 

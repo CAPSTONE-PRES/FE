@@ -1,6 +1,6 @@
 import "../styles/Feedback.css";
 import Header from "../components/Header";
-import { useState, useRef, useEffect, useMemo } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { getFeedback } from "../api/feedbackApi";
 import { mockFeedbackData } from "../mockFeedbackData";
@@ -17,9 +17,15 @@ import iconHesitate from "../assets/SVG_Feedback/icon-type-hesitate.svg";
 import iconAim from "../assets/SVG_Feedback/icon-type-aim.svg";
 import { getQnaFeedback } from "../api/practiceApi";
 
-const Feedback = () => {
-  const { sessionId } = useParams();
-  console.log("sessionId:", sessionId);
+const Feedback = ({
+  mode = "page",
+  scrollContainerRef,
+  sessionId: sessionIdFromProps,
+}) => {
+  const params = useParams();
+
+  const sessionId = mode === "modal" ? sessionIdFromProps : params.sessionId;
+
   const navigate = useNavigate();
   const location = useLocation();
   console.log("로케이션state:", location.state);
@@ -74,76 +80,138 @@ const Feedback = () => {
     fetchFeedback();
   }, [sessionId]);
 
-  const toggleCard = (pageNumber) => {
+  const getScrollTarget = () =>
+    mode === "modal" && scrollContainerRef?.current
+      ? scrollContainerRef.current
+      : window;
+
+  const toggleCard = (key) => {
     // 기준 요소: 카드 헤더의 화면 내 위치를 기준으로
     const header = document.querySelector(
-      `.timeline-item[data-page="${pageNumber}"] .card-header`
+      `.timeline-item[data-page="${key}"] .card-header`
     );
 
     const beforeTop = header?.getBoundingClientRect().top ?? null;
 
     setExpandedCards((prev) => ({
       ...prev,
-      [pageNumber]: !prev[pageNumber],
+      [key]: !prev[key],
     }));
 
     // 레이아웃 적용된 직후 프레임에서 재측정
     if (beforeTop !== null) {
       requestAnimationFrame(() => {
         if (!header) return;
+
         const afterTop = header.getBoundingClientRect().top;
         const diff = afterTop - beforeTop;
         // 뷰포트 역이동
-        if (diff !== 0) {
-          window.scrollBy({ top: diff, left: 0, behavior: "auto" });
+        // if (diff !== 0) {
+        //   window.scrollBy({ top: diff, left: 0, behavior: "auto" });
+        // }
+        if (diff === 0) return;
+
+        const target = getScrollTarget();
+
+        if (target === window) {
+          window.scrollBy({ top: diff, behavior: "auto" });
+        } else {
+          target.scrollTop += diff;
         }
       });
     }
   };
 
-  useEffect(() => {
+  // useEffect(() => {
+  //   const containerEl = containerRef.current;
+  //   const lineEl = lineRef.current;
+  //   if (!containerEl || !lineEl) return;
+
+  //   if (activeTab !== "page") return;
+
+  //   const recalc = () => {
+  //     const nodes = Array.from(containerEl.querySelectorAll(".timeline-node"));
+
+  //     if (nodes.length < 2) {
+  //       lineEl.style.height = "0px";
+  //       return;
+  //     }
+
+  //     const containerTop = containerEl.getBoundingClientRect().top;
+  //     const centers = nodes.map((n) => {
+  //       const r = n.getBoundingClientRect();
+  //       return r.top - containerTop + r.height / 2;
+  //     });
+
+  //     const firstY = Math.min(...centers);
+  //     const lastY = Math.max(...centers);
+
+  //     lineEl.style.top = `${firstY}px`;
+  //     lineEl.style.height = `${lastY - firstY}px`;
+  //   };
+
+  //   recalc();
+
+  //   const onResize = () => recalc();
+  //   const onScroll = () => recalc();
+
+  //   window.addEventListener("resize", onResize);
+  //   scrollRef.current?.addEventListener("scroll", onScroll);
+
+  //   return () => {
+  //     window.removeEventListener("resize", onResize);
+  //     scrollRef.current?.removeEventListener("scroll", onScroll);
+  //   };
+  // }, [activeTab, expandedCards]);
+
+  const recalc = useCallback(() => {
     const containerEl = containerRef.current;
     const lineEl = lineRef.current;
+
     if (!containerEl || !lineEl) return;
 
-    if (activeTab !== "page") return;
+    const nodes = Array.from(containerEl.querySelectorAll(".timeline-node"));
 
-    const recalc = () => {
-      const nodes = Array.from(containerEl.querySelectorAll(".timeline-node"));
+    if (nodes.length < 2) {
+      lineEl.style.height = "0px";
+      return;
+    }
 
-      if (nodes.length < 2) {
-        lineEl.style.height = "0px";
-        return;
-      }
+    const containerTop = containerEl.getBoundingClientRect().top;
 
-      const containerTop = containerEl.getBoundingClientRect().top;
-      const centers = nodes.map((n) => {
-        const r = n.getBoundingClientRect();
-        return r.top - containerTop + r.height / 2;
+    const centers = nodes.map((n) => {
+      const r = n.getBoundingClientRect();
+      // 컨테이너 기준 y 위치 계산 (노드의 중심)
+      return r.top - containerTop + r.height / 2;
+    });
+
+    const top = Math.min(...centers);
+    const bottom = Math.max(...centers);
+
+    lineEl.style.top = `${top}px`;
+    lineEl.style.height = `${bottom - top}px`;
+  }, []); // recalc 자체는 DOM 참조만 사용하므로 의존성 없음
+
+  // 레이아웃 변경 감지 및 recalc 실행
+  useEffect(() => {
+    // 1. DOM 변경 후 안정된 다음 계산을 위한 헬퍼 함수
+    const handleRecalc = () => {
+      requestAnimationFrame(() => {
+        setTimeout(recalc, 50);
       });
-
-      const firstY = Math.min(...centers);
-      const lastY = Math.max(...centers);
-
-      lineEl.style.top = `${firstY}px`;
-      lineEl.style.height = `${lastY - firstY}px`;
     };
 
-    recalc();
+    // 초기 로드, 탭 변경, 카드 확장/축소, 데이터 로딩 완료 시 계산 실행
+    handleRecalc();
 
-    const onResize = () => recalc();
-    const onScroll = () => recalc();
-
-    window.addEventListener("resize", onResize);
-    scrollRef.current?.addEventListener("scroll", onScroll);
+    // 2. 리사이즈 이벤트 리스너 추가
+    window.addEventListener("resize", recalc);
 
     return () => {
-      window.removeEventListener("resize", onResize);
-      scrollRef.current?.removeEventListener("scroll", onScroll);
+      // 클린업: 리사이즈 이벤트 리스너 제거
+      window.removeEventListener("resize", recalc);
     };
-  }, [activeTab, expandedCards]);
-
-  /*----------이전코드------------------- */
+  }, [expandedCards, activeTab, mode, feedbackData, recalc]);
 
   // tag-count 텍스트 속 어휘 추출 및 텍스트 강조 함수
   const highlightKeywords = (text, tagCountText) => {
@@ -188,7 +256,6 @@ const Feedback = () => {
     const highlighted = highlightKeywords(text, tagCountText);
     return <span dangerouslySetInnerHTML={{ __html: highlighted }} />;
   };
-  /*------------------------ */
 
   const mergeOffsets = (offsets) => {
     if (offsets.length === 0) return [];
@@ -261,7 +328,8 @@ const Feedback = () => {
   if (loading) {
     return (
       <div className="Feedback">
-        <Header />
+        {mode === "page" && <Header />}
+
         <div
           style={{
             display: "flex",
@@ -332,47 +400,53 @@ const Feedback = () => {
 
   const feedbackMessage = getFeedbackMessage();
 
+  const historyLimit = mode === "modal" ? 1 : 2;
+
   return (
-    <div className="Feedback">
-      <Header />
+    <div className={`Feedback ${mode === "modal" ? "Feedback--compact" : ""}`}>
+      {mode === "page" && <Header />}
 
       {/* 배경 SVG들 */}
-      <img
-        src={backgroundWave}
-        style={{
-          position: "absolute",
-          left: "-220px",
-          top: "5px",
-          width: "1180px",
-          height: "444px",
-          opacity: 1,
-          zIndex: 0,
-        }}
-      />
-      <img
-        src={backgroundLine}
-        style={{
-          position: "absolute",
-          left: "-66px",
-          top: "520px",
-          height: "180px",
-          opacity: 0.7,
-          zIndex: 0,
-        }}
-      />
-      <img
-        src={backgroundChart}
-        style={{
-          position: "absolute",
-          left: "1154px",
-          top: "150px",
-          width: "173px",
-          height: "356px",
-          opacity: 0.8,
-          zIndex: 0,
-          borderTopRightRadius: "8px",
-        }}
-      />
+      {mode === "page" && (
+        <>
+          <img
+            src={backgroundWave}
+            style={{
+              position: "absolute",
+              left: "-220px",
+              top: "5px",
+              width: "1180px",
+              height: "444px",
+              opacity: 1,
+              zIndex: 0,
+            }}
+          />
+          <img
+            src={backgroundLine}
+            style={{
+              position: "absolute",
+              left: "-66px",
+              top: "520px",
+              height: "180px",
+              opacity: 0.7,
+              zIndex: 0,
+            }}
+          />
+          <img
+            src={backgroundChart}
+            style={{
+              position: "absolute",
+              left: "1154px",
+              top: "150px",
+              width: "173px",
+              height: "356px",
+              opacity: 0.8,
+              zIndex: 0,
+              borderTopRightRadius: "8px",
+            }}
+          />
+        </>
+      )}
 
       <div className="feedback-content">
         <div className="feedback-top">
@@ -402,17 +476,19 @@ const Feedback = () => {
                 {totalDurationSeconds && formatTime(totalDurationSeconds)}
               </span>
             </div>
-            <button
-              className="practice-button"
-              onClick={() => {
-                // TODO: 연습 페이지로 돌아가기 (projectId나 sessionId를 이용해 practice 페이지로 이동)
-                // 현재는 sessionId만 있으므로, projectId를 조회하는 API가 필요할 수 있습니다.
-                navigate(-1);
-              }}
-            >
-              <img src={iconRetry} alt="재시도" className="practice-icon" />
-              다시 연습해보기
-            </button>
+            {mode === "page" && (
+              <button
+                className="practice-button"
+                onClick={() => {
+                  // TODO: 연습 페이지로 돌아가기 (projectId나 sessionId를 이용해 practice 페이지로 이동)
+                  // 현재는 sessionId만 있으므로, projectId를 조회하는 API가 필요할 수 있습니다.
+                  navigate(-1);
+                }}
+              >
+                <img src={iconRetry} alt="재시도" className="practice-icon" />
+                다시 연습해보기
+              </button>
+            )}
           </div>
         </div>
 
@@ -451,37 +527,52 @@ const Feedback = () => {
                   <div className="record-item current-record">
                     <span className="record-label">현재 점수</span>
                     <div className="record-bar-container">
-                      <div
-                        className="record-bar current-bar"
-                        style={{ width: `${totalScore}%` }}
-                      ></div>
+                      <div className="record-bar-track">
+                        <div
+                          className="record-bar current-bar"
+                          style={{ width: `${100}%` }}
+                        />
+                      </div>
                       <span className="record-score">{totalScore}점</span>
                     </div>
                   </div>
                   {/* 최근 연습 기록 (history) */}
-                  {feedbackData.history?.slice(0, 2).map((h, idx) => {
-                    const date = new Date(h.practicedAt);
-                    const month = String(date.getMonth() + 1).padStart(2, "0");
-                    const day = String(date.getDate()).padStart(2, "0");
-                    const formattedDate = `${month}/${day}`;
+                  {feedbackData.history
+                    ?.slice(0, historyLimit)
+                    .map((h, idx) => {
+                      const date = new Date(h.practicedAt);
+                      const month = String(date.getMonth() + 1).padStart(
+                        2,
+                        "0"
+                      );
+                      const day = String(date.getDate()).padStart(2, "0");
+                      const formattedDate = `${month}/${day}`;
 
-                    return (
-                      <div key={idx} className="record-item">
-                        <span className="record-date">{formattedDate}</span>
-                        <div className="record-bar-container">
-                          <div
-                            className="record-bar"
-                            style={{ width: `${h.totalScore}%` }}
-                          ></div>
-                          <span className="record-score">{h.totalScore}점</span>
+                      return (
+                        <div key={idx} className="record-item">
+                          <span className="record-date">{formattedDate}</span>
+                          <div className="record-bar-container">
+                            <div className="record-bar-track">
+                              <div
+                                className="record-bar"
+                                style={{
+                                  width: `${Math.min(h.totalScore, 100)}%`,
+                                }}
+                              />
+                            </div>
+                            <span className="record-score">
+                              {h.totalScore}점
+                            </span>
+                          </div>
                         </div>
-                      </div>
-                    );
-                  })}
+                      );
+                    })}
                 </div>
               </div>
             </div>
-            <div className="record-note">최근 점수가 3개만 저장됩니다.</div>
+            {mode === "page" && (
+              <div className="record-note">최근 점수가 3개만 저장됩니다.</div>
+            )}
           </div>
         </div>
 
@@ -491,22 +582,26 @@ const Feedback = () => {
               <h2 className="feedback-bottom-title">
                 {activeTab === "page" ? "페이지별 피드백" : "질의응답 피드백"}
               </h2>
-              <div className="tab-buttons">
-                <button
-                  className={`tab-button ${
-                    activeTab === "page" ? "active" : ""
-                  }`}
-                  onClick={() => setActiveTab("page")}
-                >
-                  페이지별
-                </button>
-                <button
-                  className={`tab-button ${activeTab === "qa" ? "active" : ""}`}
-                  onClick={() => setActiveTab("qa")}
-                >
-                  질의응답
-                </button>
-              </div>
+              {mode === "page" && (
+                <div className="tab-buttons">
+                  <button
+                    className={`tab-button ${
+                      activeTab === "page" ? "active" : ""
+                    }`}
+                    onClick={() => setActiveTab("page")}
+                  >
+                    페이지별
+                  </button>
+                  <button
+                    className={`tab-button ${
+                      activeTab === "qa" ? "active" : ""
+                    }`}
+                    onClick={() => setActiveTab("qa")}
+                  >
+                    질의응답
+                  </button>
+                </div>
+              )}
             </div>
             <div className="feedback-content-area" ref={scrollRef}>
               {activeTab === "page" ? (
@@ -514,9 +609,10 @@ const Feedback = () => {
                   <div className="timeline-container" ref={containerRef}>
                     <div className="timeline-line" ref={lineRef}></div>
 
-                    {feedbackData.slideFeedbacks.map((slide) => {
+                    {feedbackData.slideFeedbacks.map((slide, index) => {
+                      const key = index;
                       const page = slide.slideNumber;
-                      const isExpanded = expandedCards[page];
+                      const isExpanded = expandedCards[key];
 
                       const issues = slide.issues || [];
                       const hasFeedback = issues.length > 0;
@@ -611,9 +707,9 @@ const Feedback = () => {
 
                       return (
                         <div
-                          key={page}
+                          key={key}
                           className="timeline-item"
-                          data-page={page}
+                          data-page={key}
                         >
                           {/* ----------------- 타임라인 점 ----------------- */}
                           <div
@@ -672,7 +768,7 @@ const Feedback = () => {
                                   className={`expand-icon ${
                                     isExpanded ? "expanded" : ""
                                   }`}
-                                  onClick={() => toggleCard(page)}
+                                  onClick={() => toggleCard(key)}
                                 >
                                   <img
                                     src={iconChevron}

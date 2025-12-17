@@ -97,6 +97,9 @@
 .Settings__section {
   width: 960px;
   margin-bottom: 56px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .Settings__section-title {
@@ -104,7 +107,7 @@
   font-family: "Gothic A1";
   font-weight: 700;
   color: #4b5f77;
-  margin: 0 0 8px;
+  margin: 0;
 }
 
 .Settings__section-description {
@@ -113,7 +116,7 @@
   font-family: "NotoSans";
   color: #7a7a7a;
   line-height: 1.6;
-  margin: 0 0 24px;
+  margin: 0;
 }
 
 .Settings__card {
@@ -121,17 +124,11 @@
   padding: 40px 60px;
   flex-direction: column;
   align-items: flex-start;
-  gap: 10px;
+  gap: 24px;
   align-self: stretch;
   background: #ffffff;
   border-radius: 16px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.Settings__field {
-  display: flex;
-  flex-direction: column;
-  padding: 16px 0;
 }
 
 .Settings__field:last-child {
