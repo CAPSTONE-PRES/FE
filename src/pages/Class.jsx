@@ -109,18 +109,6 @@ const Class = () => {
         <Presentations context="class" workspaceId={workspaceId} />
       </div>
       {/* 임시 삭제 버튼(state 반영X) */}
-      {/* <button
-        onClick={async () => {
-          try {
-            await deleteWorkspace(workspaceId);
-            nav("/classHome");
-          } catch (err) {
-            console.log("클래스 삭제 실패: ", err);
-          }
-        }}
-      >
-        클래스 삭제
-      </button> */}
     </div>
   );
 };

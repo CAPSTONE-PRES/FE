@@ -20,7 +20,7 @@ const Login = () => {
     try {
       const data = await loginApi(email, password);
       login(data.accessToken);
-      navigate("/");
+      navigate("/home");
     } catch (err) {
       console.error(err);
       alert("이메일 또는 비밀번호를 확인해주세요.");

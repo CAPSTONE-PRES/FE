@@ -17,7 +17,7 @@ const KakaoCallback = () => {
     }
 
     login(accessToken);
-    navigate("/");
+    navigate("/home");
   }, []);
 
   return (

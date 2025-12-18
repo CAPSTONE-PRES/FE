@@ -21,7 +21,10 @@ import { getFavWorkspaces } from "./api/workspaceApi";
 import DesktopLayout from "./layouts/DesktopLayout";
 import { AuthContext } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Landing from "./pages/Landing";
+
 import { api } from "./api/api";
+import { MicPermissionProvider } from "./contexts/MicPermissionContext";
 
 export const DataContext = createContext();
 
@@ -47,6 +50,8 @@ function App() {
   const [currentUser, setCurrentUser] = useState(null);
 
   const { isAuthenticated } = useContext(AuthContext);
+
+  const hasVisited = () => localStorage.getItem("pres_has_visited") === "true";
 
   useEffect(() => {
     const fetchData = async () => {
@@ -112,121 +117,158 @@ function App() {
           setFavoriteIds,
         }}
       >
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <ProtectedRoute>
-                <DesktopLayout>
-                  <Home />
-                </DesktopLayout>
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/class/:id"
-            element={
-              <DesktopLayout>
-                <Class />
-              </DesktopLayout>
-            }
-          />
-          <Route
-            path="/classHome"
-            element={
-              <DesktopLayout>
-                <ClassHome />
-              </DesktopLayout>
-            }
-          />
-          <Route
-            path="/newClass"
-            element={
-              <DesktopLayout>
-                <NewClass />
-              </DesktopLayout>
-            }
-          />
-          <Route
-            path="/presentation/:id"
-            element={
-              <DesktopLayout>
-                <Presentation />
-              </DesktopLayout>
-            }
-          />
-          <Route
-            path="/practice/:id"
-            element={
-              <DesktopLayout>
-                <PracticeMode />
-              </DesktopLayout>
-            }
-          />
-          <Route
-            path="/newPresentation"
-            element={
-              <DesktopLayout>
-                <NewPresentation />
-              </DesktopLayout>
-            }
-          />
-          <Route
-            path="/settings"
-            element={
-              <DesktopLayout>
-                <Settings />
-              </DesktopLayout>
-            }
-          />
-          <Route
-            path="/feedback/:sessionId"
-            element={
-              <DesktopLayout>
-                <Feedback />
-              </DesktopLayout>
-            }
-          />
-          <Route
-            path="/login"
-            element={
-              isAuthenticated ? (
-                <Navigate to="/" replace />
-              ) : (
-                <DesktopLayout>
-                  <Login />
-                </DesktopLayout>
-              )
-            }
-          />
-          <Route
-            path="/signup"
-            element={
-              <DesktopLayout>
-                <Signup />
-              </DesktopLayout>
-            }
-          />
-          <Route
-            path="*"
-            element={
-              <DesktopLayout>
-                <Notfound />
-              </DesktopLayout>
-            }
-          />
-          <Route
-            path="/insufficient"
-            element={
-              <DesktopLayout>
-                <InsufficientPage />
-              </DesktopLayout>
-            }
-          />
+        <MicPermissionProvider>
+          <Routes>
+            <Route
+              path="/entry"
+              element={
+                hasVisited() ? (
+                  isAuthenticated ? (
+                    <Navigate to="/home" replace />
+                  ) : (
+                    <Navigate to="/login" replace />
+                  )
+                ) : (
+                  <Landing />
+                )
+              }
+            />
 
-          <Route path="/mobile-cuecard/:slug" element={<MobileCueCard />} />
-          <Route path="/kakao/callback" element={<KakaoCallback />} />
-        </Routes>
+            <Route path="/" element={<Navigate to="/entry" replace />} />
+
+            <Route
+              path="/home"
+              element={
+                <ProtectedRoute>
+                  <DesktopLayout>
+                    <Home />
+                  </DesktopLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/class/:id"
+              element={
+                <ProtectedRoute>
+                  <DesktopLayout>
+                    <Class />
+                  </DesktopLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/classHome"
+              element={
+                <ProtectedRoute>
+                  <DesktopLayout>
+                    <ClassHome />
+                  </DesktopLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/newClass"
+              element={
+                <ProtectedRoute>
+                  <DesktopLayout>
+                    <NewClass />
+                  </DesktopLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/presentation/:id"
+              element={
+                <ProtectedRoute>
+                  <DesktopLayout>
+                    <Presentation />
+                  </DesktopLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/practice/:id"
+              element={
+                <ProtectedRoute>
+                  <DesktopLayout>
+                    <PracticeMode />
+                  </DesktopLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/newPresentation"
+              element={
+                <ProtectedRoute>
+                  <DesktopLayout>
+                    <NewPresentation />
+                  </DesktopLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/settings"
+              element={
+                <ProtectedRoute>
+                  <DesktopLayout>
+                    <Settings />
+                  </DesktopLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/feedback/:sessionId"
+              element={
+                <ProtectedRoute>
+                  <DesktopLayout>
+                    <Feedback />
+                  </DesktopLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/login"
+              element={
+                isAuthenticated ? (
+                  <Navigate to="/home" replace />
+                ) : (
+                  <DesktopLayout>
+                    <Login />
+                  </DesktopLayout>
+                )
+              }
+            />
+            <Route
+              path="/signup"
+              element={
+                <DesktopLayout>
+                  <Signup />
+                </DesktopLayout>
+              }
+            />
+            <Route
+              path="*"
+              element={
+                <DesktopLayout>
+                  <Notfound />
+                </DesktopLayout>
+              }
+            />
+            <Route
+              path="/insufficient"
+              element={
+                <ProtectedRoute>
+                  <DesktopLayout>
+                    <InsufficientPage />
+                  </DesktopLayout>
+                </ProtectedRoute>
+              }
+            />
+
+            <Route path="/mobile-cuecard/:slug" element={<MobileCueCard />} />
+            <Route path="/kakao/callback" element={<KakaoCallback />} />
+          </Routes>
+        </MicPermissionProvider>
       </DataContext.Provider>
     </>
   );

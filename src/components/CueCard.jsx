@@ -12,6 +12,7 @@ const CueCard = ({
   onBlur,
   onAddComment,
   showNonverbal = true,
+  editable = true,
 }) => {
   const editorRef = useRef();
   const commentRef = useRef(null);
@@ -152,17 +153,24 @@ const CueCard = ({
       <div
         className="CueCard__editor"
         ref={editorRef}
-        contentEditable
+        contentEditable={editable}
         suppressContentEditableWarning
-        onInput={handleInput}
-        onBlur={() => {
-          const newText = htmlToText(editorRef.current.innerHTML);
-          onBlur?.(newText);
-        }}
+        onInput={editable ? handleInput : undefined}
+        onBlur={
+          editable
+            ? () => {
+                const newText = htmlToText(editorRef.current.innerHTML);
+                onBlur?.(newText);
+              }
+            : undefined
+        }
         onClick={(e) => e.stopPropagation()}
-        onKeyDown={(e) => e.stopPropagation()}
-        onCompositionStart={handleCompositionStart}
-        onCompositionEnd={handleCompositionEnd}
+        onKeyDown={(e) => {
+          if (!editable) e.preventDefault(); // 키 입력 차단
+          e.stopPropagation();
+        }}
+        onCompositionStart={editable ? handleCompositionStart : undefined}
+        onCompositionEnd={editable ? handleCompositionEnd : undefined}
       />
 
       {/* 우클릭 메뉴 */}

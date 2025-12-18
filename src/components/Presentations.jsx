@@ -68,6 +68,10 @@ const Presentations = ({ context = "home", workspaceId }) => {
 
   // const sortedData = getSortedData(filteredData);
 
+  const handleDeleted = (deletedId) => {
+    setPresentations((prev) => prev.filter((p) => p.projectId !== deletedId));
+  };
+
   return (
     <div className="Presentations">
       {context === "home" && (
@@ -97,6 +101,7 @@ const Presentations = ({ context = "home", workspaceId }) => {
                 hasShadow={context === "class"}
                 showBadge={context === "home"}
                 {...p}
+                onDeleted={handleDeleted}
               />
             ))}
           </div>

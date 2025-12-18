@@ -83,6 +83,7 @@
 }
 
 .PracticeFooter__btn-mic {
+  position: relative;
   padding: 6px 0;
   display: flex;
   flex-direction: column;
@@ -101,4 +102,42 @@
   font-size: 10px;
   font-weight: 500;
   line-height: normal;
+}
+
+.PracticeFooter__mic-test {
+  position: absolute;
+  bottom: 77px;
+  left: 0;
+  width: 300px;
+  padding: 13px 13px 19px 13px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(26, 26, 26, 0.95);
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 13px;
+}
+
+.PracticeFooter__mic-title {
+  font-family: "NotoSans";
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0;
+  color: #fff;
+}
+
+.PracticeFooter__mic-bar {
+  width: 100%;
+  height: 6px;
+  background: #4b5f77;
+  border-radius: 22px;
+  overflow: hidden;
+}
+
+.PracticeFooter__mic-bar-fill {
+  height: 100%;
+  background: #ccd3e4;
+  transition: width 0.1s linear;
 }

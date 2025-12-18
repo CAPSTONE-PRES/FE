@@ -162,7 +162,7 @@ const MobileCueCard = () => {
             keyword={item.keyword}
             value={item.text}
             showNonverbal={showNonverbal} // 토글 연동
-            // onChange={() => {}}
+            editable={false}
           />
         ))}
       </div>

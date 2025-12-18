@@ -2,7 +2,7 @@ import PresentationHeader from "../components/PresentationHeader";
 import { getProjectInfo } from "../api/projectApi";
 import "../styles/PracticeMode.css";
 import { useNavigate, useParams } from "react-router-dom";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import { getQrInfo, getSlides } from "../api/fileApi";
 import { analyseAudio } from "../api/analyseApi";
 import PracticeFooter from "../components/PracticeFooter";
@@ -10,6 +10,7 @@ import qnaImg from "../assets/SVG_Practice/qna.svg";
 import micIcon from "../assets/SVG_Practice/mic_qna.svg";
 import checkIcon from "../assets/SVG_Practice/checkIcon.svg";
 import LoadingScreen from "../components/LoadingScreen";
+import { MicPermissionContext } from "../contexts/MicPermissionContext";
 import {
   getQuestion,
   uploadAnswer,
@@ -17,6 +18,8 @@ import {
 } from "../api/practiceApi";
 
 const PracticeMode = () => {
+  const { canUseMic, selectedDeviceId } = useContext(MicPermissionContext);
+
   const nav = useNavigate();
   const params = useParams();
   const [projectInfo, setProjectInfo] = useState(null);
@@ -161,9 +164,25 @@ const PracticeMode = () => {
 
   //질의응답 녹음 시작
   const startQnaRecording = async () => {
+    if (!canUseMic) {
+      alert(
+        "마이크 사용이 비활성화되어 있어요.\n설정에서 마이크 사용을 허용해주세요."
+      );
+      return;
+    }
+
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const recorder = new MediaRecorder(stream);
+      const audioConstraints = selectedDeviceId
+        ? { deviceId: { exact: selectedDeviceId } }
+        : true;
+
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: audioConstraints,
+      });
+
+      const recorder = new MediaRecorder(stream, {
+        mimeType: "audio/webm;codecs=opus",
+      });
 
       streamRef.current = stream;
       recorderRef.current = recorder;
@@ -172,7 +191,7 @@ const PracticeMode = () => {
       recorder.ondataavailable = (e) => chunks.push(e.data);
 
       recorder.onstop = async () => {
-        const blob = new Blob(chunks, { type: "audio/wavm" });
+        const blob = new Blob(chunks, { type: "audio/webm;codecs=opus" });
         setQnaAudioData(blob);
 
         setSttResult("음성 인식 중...");

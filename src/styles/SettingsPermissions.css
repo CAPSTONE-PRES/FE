@@ -1,0 +1,178 @@
+/* 전체 마이크 섹션 */
+.MicPermission__section {
+  display: flex;
+  flex-direction: column;
+  gap: 32px; /* 체크문구 ↔ 녹음장치 ↔ 테스트 */
+}
+
+.MicPermission__section-header {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* 체크 상태 문구 */
+.MicPermission__check-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  font-family: "NotoSans";
+  font-size: 16px;
+  font-weight: 500;
+  color: #2e2e2e;
+  margin-bottom: 32px;
+}
+
+.MicPermission__check-row img {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+/* 공통 블록 */
+.MicPermission__block {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* 제목 ↔ 내용 */
+}
+
+.MicPermission__block.disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+/* 소제목 */
+.Settings__label {
+  color: #4b5f77;
+  font-family: "GothicA1";
+  font-size: 18px;
+  font-weight: 700;
+  line-height: normal;
+
+  margin: 0;
+}
+
+.MicPermission__device-wrapper {
+  position: relative;
+  width: fit-content;
+}
+
+/* 녹음장치 셀렉트 */
+.MicPermission__device-select {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+
+  padding: 12px 24px;
+  min-width: 289px;
+  width: fit-content;
+
+  border: 2px solid #ccd3e4;
+  border-radius: 46px;
+  background: #ffffff;
+
+  font-family: "NotoSans";
+  font-size: 16px;
+  font-weight: 500;
+  color: #2e2e2e;
+
+  cursor: pointer;
+}
+
+.MicPermission__device-select img {
+  width: 20px;
+  height: 20px;
+}
+
+/* 드롭다운 리스트 */
+.MicPermission__device-list {
+  margin-top: 8px;
+  width: 250px;
+  border: none;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 8px 0;
+  list-style: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  position: absolute;
+  top: calc(100% + 5px);
+  right: 0;
+
+  font-family: "NotoSans";
+  font-size: 16px;
+  font-weight: 500;
+  color: #2e2e2e;
+}
+
+/* 항목 */
+.MicPermission__device-item {
+  padding: 10px 20px;
+  font-family: "NotoSans";
+  font-size: 14px;
+  color: #2e2e2e;
+  cursor: pointer;
+}
+
+.MicPermission__device-item:hover {
+  background: #f3f5f9;
+}
+
+.MicPermission__device-item.active {
+  background: #eef2ff;
+  font-weight: 600;
+}
+
+/* 비활성 */
+.MicPermission__block.disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+/* 마이크 테스트 영역 */
+.MicPermission__test {
+  display: flex;
+  align-items: center;
+  gap: 24px; /* 버튼 ↔ 게이지 */
+  margin-top: 16px; /* 설명 ↔ 테스트 영역 */
+}
+
+/* 테스트 버튼 */
+.MicPermission__test-button {
+  padding: 10px 22px;
+
+  border: none;
+  border-radius: 48px;
+
+  background: #4b5f77;
+  color: #ffffff;
+
+  font-family: "NotoSans";
+  font-size: 16px;
+  font-weight: 500;
+
+  cursor: pointer;
+}
+
+.MicPermission__test-button:hover {
+  opacity: 0.9;
+}
+
+/* 게이지 바 */
+.MicPermission__gauge {
+  width: 322px;
+  height: 8px;
+
+  background: #ccd3e4;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.MicPermission__gauge-fill {
+  width: 42px; /* 피그마 기준 */
+  height: 100%;
+
+  background: #4b5f77;
+  border-radius: 8px;
+}

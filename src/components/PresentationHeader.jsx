@@ -6,7 +6,6 @@ import xIcon from "../assets/SVG_Practice/x.svg";
 import { useContext } from "react";
 import { DataContext } from "../App";
 import { useNavigate } from "react-router-dom";
-import { deleteProject } from "../api/projectApi";
 
 const PresentationHeader = ({
   id,
@@ -21,7 +20,7 @@ const PresentationHeader = ({
   return (
     <div className="PresentationHeader">
       <div className="header-left">
-        <img src={logo} onClick={() => nav("/")} />
+        <img src={logo} onClick={() => nav("/home")} />
         <div className="header-left_title">
           <span className="header-title">{workspaceName}</span>
           <img src={separator} />
@@ -32,18 +31,6 @@ const PresentationHeader = ({
         {mode === "splitView" ? (
           <>
             {" "}
-            <button
-              onClick={async () => {
-                try {
-                  await deleteProject(id);
-                  nav(`/class/${workspaceId}`);
-                } catch (err) {
-                  console.error("프로젝트 삭제 실패:", err);
-                }
-              }}
-            >
-              삭제
-            </button>
             <button
               className="header_btn-outline"
               onClick={() => nav(`/class/${workspaceId}`)}

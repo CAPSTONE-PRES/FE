@@ -13,8 +13,11 @@ import {
   updateMyInfo,
   uploadProfileImage,
   deleteProfileImage,
+  deleteMyInfo,
 } from "../api/userApi";
 import SettingsNotifications from "../components/SettingsNotifications";
+import SettingsPermissions from "../components/SettingsPermissions";
+import SettingsTerms from "../components/SettingsTerms";
 
 const Settings = () => {
   const navigate = useNavigate();
@@ -157,6 +160,21 @@ const Settings = () => {
     } catch (err) {
       console.error(err);
       alert("오류가 발생했습니다");
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (!window.confirm("정말 계정을 탈퇴하시겠습니까?")) return;
+
+    try {
+      await deleteMyInfo();
+
+      logout(); // AuthContext 정리
+      localStorage.clear(); // 필요 시
+      navigate("/login");
+    } catch (err) {
+      console.error(err);
+      alert("회원 탈퇴에 실패했습니다.");
     }
   };
 
@@ -320,19 +338,13 @@ const Settings = () => {
       case "permissions":
         return (
           <div className="Settings__section">
-            <h2 className="Settings__section-title">웹사이트 권한</h2>
-            <p className="Settings__section-description">
-              웹사이트 권한을 관리할 수 있어요.
-            </p>
+            <SettingsPermissions />
           </div>
         );
       case "terms":
         return (
           <div className="Settings__section">
-            <h2 className="Settings__section-title">약관 정보</h2>
-            <p className="Settings__section-description">
-              약관 정보를 확인할 수 있어요.
-            </p>
+            <SettingsTerms />
           </div>
         );
       default:
@@ -371,9 +383,13 @@ const Settings = () => {
           {selectedMenu === "account" && (
             <div className="Settings__actions">
               <PrimaryButton onClick={handleLogout}>로그아웃</PrimaryButton>
-              {/* <a href="#" className="Settings__delete-link">
+              <a
+                href="#"
+                className="Settings__delete-link"
+                onClick={handleDeleteAccount}
+              >
                 계정 탈퇴
-              </a> */}
+              </a>
             </div>
           )}
         </div>

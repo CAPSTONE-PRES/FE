@@ -346,7 +346,7 @@ const Feedback = ({
 
   if (!feedbackData) {
     window.alert("피드백이 존재하지 않아요.");
-    navigate("/", { replace: true });
+    navigate("/home", { replace: true });
   }
 
   const {

@@ -1,0 +1,35 @@
+/* 전체 컨테이너 */
+.SettingsTerms {
+  width: 100%;
+  max-width: 960px; /* 피그마 기준 우측 콘텐츠 폭 */
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+}
+
+/* 카드 블록 */
+.SettingsTerms__block {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* 기본 본문 */
+.SettingsTerms__text {
+  font-family: "NotoSans";
+  font-size: 14px;
+  font-weight: 400;
+  color: #2e2e2e;
+  margin: 0;
+}
+
+/* 표 이미지 */
+.SettingsTerms__table {
+  margin-top: 16px;
+}
+
+.SettingsTerms__table img {
+  width: 100%;
+  max-width: 565px; /* 피그마 표 가로 */
+  border-radius: 8px;
+}

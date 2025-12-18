@@ -29,3 +29,8 @@ export const deleteProfileImage = async () => {
   const res = await api.delete("/user/me/profile-image");
   return res.data;
 };
+
+export const deleteMyInfo = async () => {
+  const res = await api.delete("/user/me");
+  return res.data;
+};

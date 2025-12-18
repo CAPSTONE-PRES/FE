@@ -37,6 +37,10 @@ const Classes = () => {
     setFilterBy(e.target.value);
   }
 
+  const handleWorkspaceDeleted = (deletedId) => {
+    setWorkspaces((prev) => prev.filter((w) => w.workspaceId !== deletedId));
+  };
+
   //다가오는 발표
   // function getUpcomingDate(classId) {
   //   if (getIsEmpty(presentations)) return null;
@@ -104,7 +108,11 @@ const Classes = () => {
         ) : (
           <div className="class-list-wrapper">
             {filteredWorkspaces.map((w) => (
-              <ClassCard key={w.workspaceId} {...w} />
+              <ClassCard
+                key={w.workspaceId}
+                {...w}
+                onDeleted={handleWorkspaceDeleted}
+              />
             ))}
           </div>
         )}
